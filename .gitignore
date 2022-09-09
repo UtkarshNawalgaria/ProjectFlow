@@ -109,6 +109,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.vscode/
 
 # Spyder project settings
 .spyderproject
@@ -143,8 +144,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
