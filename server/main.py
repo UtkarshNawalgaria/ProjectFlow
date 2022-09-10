@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from db import check_db
+from config import get_settings
 
-origins = [
-    "http://localhost:5173",
-]
+
+def start_application():
+    app = FastAPI()
+    check_db()
+    return app
+
+
+app = start_application()
+settings = get_settings()
+origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
