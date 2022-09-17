@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=fastapi:fastapi . ${HOME_DIR}
 
-RUN chown fastapi:fastapi ${HOME_DIR}
+RUN chown -R fastapi:fastapi ${HOME_DIR}
 
 USER fastapi
 
