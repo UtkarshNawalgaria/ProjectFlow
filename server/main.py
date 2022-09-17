@@ -1,18 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from db import check_db
 from config import get_settings
+from db.config import init_db
 
-
-def start_application():
-    app = FastAPI()
-    check_db()
-    return app
-
-
-app = start_application()
 settings = get_settings()
+init_db()
+
+app = FastAPI()
 origins = ["http://localhost:3000"]
 
 app.add_middleware(
