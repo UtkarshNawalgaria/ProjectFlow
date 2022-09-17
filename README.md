@@ -10,7 +10,7 @@ This is a basic project and task management web application which allows users t
 
 ## Tech Stack
 * [FastAPI](https://fastapi.tiangolo.com/)
-* SQLAlchemy
+* SQLModel
 * Reactjs
 * Vite
 * Tailwindcss
@@ -21,8 +21,8 @@ The whole application is being deployed on AWS. Currently, the frontend applicat
 ## App Features
 What can users do in this application
 
-1. Create New projects
-2. Add many tasks in a project
+1. User can create new projects
+2. User can create many tasks in a project
 3. Organize their tasks into different lists
 4. View their task lists in a **List view** or **Kanban View**
 5. User authentication and authorization
