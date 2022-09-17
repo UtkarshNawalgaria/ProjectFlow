@@ -17,7 +17,7 @@ This is a basic project and task management web application which allows users t
 * Tailwindcss
 
 ## Deployment
-The whole application is being deployed on AWS. Currently, the frontend application will be built and deployed on AWS S3 and the backend will be deployed as a docker container on AWS Fargate. The deployment is done using Github CI/CD
+The whole application is being deployed on AWS. Currently, the frontend application will be built and deployed on Netlify and the backend will be deployed as a docker container on AWS Fargate. The deployment is done using Github CI/CD
 
 ## Database Design
 ![Database models](dbdiagram.png)
