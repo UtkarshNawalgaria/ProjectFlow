@@ -13,7 +13,6 @@ def init_db():
     print(f"Connecting to database...")
 
     with engine.begin() as conn:
-        conn.run_callable(SQLModel.metadata.drop_all)
         conn.run_callable(SQLModel.metadata.create_all)
 
     print(f"Connected to database successfully.")

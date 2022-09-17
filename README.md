@@ -5,6 +5,7 @@ This is a basic project and task management web application which allows users t
 ## Table of Contents
   - [Tech Stack](#tech-stack)
   - [Deployment](#deployment)
+  - [Database Design](#database-design)
   - [App Features](#app-features)
   - [Upcoming Features](#upcoming-features)
 
@@ -17,6 +18,9 @@ This is a basic project and task management web application which allows users t
 
 ## Deployment
 The whole application is being deployed on AWS. Currently, the frontend application will be built and deployed on AWS S3 and the backend will be deployed as a docker container on AWS Fargate. The deployment is done using Github CI/CD
+
+## Database Design
+![Database models](dbdiagram.png)
 
 ## App Features
 What can users do in this application
