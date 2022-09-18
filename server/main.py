@@ -3,11 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
 from db.config import init_db
+from user.router import user_router, auth_router
 
-settings = get_settings()
+
 init_db()
-
+settings = get_settings()
 app = FastAPI()
+
 origins = ["http://localhost:3000"]
 
 app.add_middleware(
@@ -18,7 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(user_router)
+app.include_router(auth_router)
+
 
 @app.get("/")
 def home():
-    return {"hello": "World"}
+    return {"message": "Home"}

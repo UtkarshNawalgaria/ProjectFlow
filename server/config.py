@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "0.0.1"
 
     DATABASE_URL: str
+    JWT_SECRET: str
 
 
 @lru_cache

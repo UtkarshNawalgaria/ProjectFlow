@@ -4,8 +4,8 @@ from typing import List
 
 from sqlmodel import Field, Relationship
 
-from .base import BaseModel
-from .user import Profile
+from db.base import BaseModel
+from user.models import Profile
 
 
 class TaskStatus(Enum):
@@ -15,18 +15,20 @@ class TaskStatus(Enum):
 
 class Project(BaseModel, table=True):
     title: str = Field(nullable=False, max_length=100)
-
     profile_id: int = Field(default=None, foreign_key="profile.id")
+
+    # Relationships
     profile: Profile = Relationship(back_populates="projects")
     lists: List["TaskList"] = Relationship(back_populates="project")
 
 
 class TaskList(BaseModel, table=True):
     title: str = Field(nullable=False, default="No Title", max_length=50)
-
     project_id: int = Field(default=None, foreign_key="project.id")
+
+    # Relationships
     project: Project = Relationship(back_populates="lists")
-    tasks: List["Task"] = Relationship(back_populates="list")
+    tasks: List["Task"] = Relationship(back_populates="tasklist")
 
 
 class Task(BaseModel, table=True):
@@ -37,5 +39,6 @@ class Task(BaseModel, table=True):
     # DateTime fields
     completed_at: datetime = Field(nullable=True)
 
+    # Relationships
     tasklist_id: int = Field(default=None, foreign_key="tasklist.id")
     tasklist: TaskList = Relationship(back_populates="tasks")

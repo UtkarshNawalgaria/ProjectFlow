@@ -1,19 +1,24 @@
+from passlib.hash import bcrypt
 from datetime import datetime
 from typing import List, Optional
+
 from sqlmodel import Field, Relationship
 
-from .base import BaseModel
+from db.base import BaseModel
 
 
 class User(BaseModel, table=True):
     name: str = Field(default=None, max_length=100)
     email: str = Field(max_length=100, index=True, unique=True)
-    password_hash: str = Field(nullable=False)
+    password_hash: str = Field(nullable=False, max_length=128)
 
     # Datetime fields
-    email_verified_at: datetime = Field()
+    email_verified_at: datetime = Field(nullable=True)
 
     profile: Optional["Profile"] = Relationship(back_populates="user")
+
+    def verify_password(self, password: str) -> bool:
+        return bcrypt.verify(password, self.password_hash)
 
 
 class Profile(BaseModel, table=True):

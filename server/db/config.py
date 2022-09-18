@@ -1,8 +1,8 @@
 from sqlmodel import create_engine, Session, SQLModel
 
 from config import get_settings
-from .models.user import *
-from .models.project import *
+from user.models import *
+from projects.models import *
 
 settings = get_settings()
 
