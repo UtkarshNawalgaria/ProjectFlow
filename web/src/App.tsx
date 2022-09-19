@@ -1,8 +1,16 @@
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/home";
+import BooksPage from "./pages/books";
+import ProtectedRoute from "./protectedRoute";
+
 function App() {
   return (
-    <div>
-      <h1 className="text-2xl font-extrabold">Task Management</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/books" element={<BooksPage />}></Route>
+      </Route>
+    </Routes>
   );
 }
 
