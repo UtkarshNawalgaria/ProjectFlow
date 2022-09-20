@@ -13,7 +13,7 @@ from config import get_settings
 
 from .models import User
 from .schemas import UserRead, UserCreate
-from .services import authenticate_user
+from .services import authenticate_user, create_access_token
 
 auth_router = APIRouter(prefix="/auth")
 user_router = APIRouter(prefix="/user", dependencies=[Depends(oauth2_scheme)])
@@ -21,16 +21,16 @@ user_router = APIRouter(prefix="/user", dependencies=[Depends(oauth2_scheme)])
 settings = get_settings()
 
 
-@auth_router.post("/register", response_model=UserRead)
-def register_user(user: UserCreate, session: Session = Depends(get_db_session)):
+@auth_router.post("/register", response_model=UserRead, status_code=201)
+def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session)):
 
-    existing_users = session.exec(select(User).where(User.email == user.email)).all()
+    existing_users = session.exec(select(User).where(User.email == user_in.email)).all()
 
     if len(existing_users):
         raise HTTPException(status_code=400, detail="User with email already exists.")
 
     new_user = User(
-        name="User", email=user.email, password_hash=bcrypt.hash(user.password)
+        name="User", email=user_in.email, password_hash=bcrypt.hash(user_in.password)
     )
 
     session.add(new_user)
@@ -52,10 +52,10 @@ def user_login(
         logger.info(f"{form_data.username} either does not exists or passowrd is wrong")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User email or password is not correct",
+            detail="Incorrect email or password",
         )
 
-    token = jwt.encode(UserRead.from_orm(my_user).dict(), settings.JWT_SECRET)
+    token = create_access_token(subject=my_user.email)
 
     return {"access_token": token, "token_type": "bearer"}
 

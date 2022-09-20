@@ -8,7 +8,10 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "0.0.1"
 
     DATABASE_URL: str
+
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 2
     JWT_SECRET: str
+    ALGORITHM: str = "HS256"
 
 
 @lru_cache
