@@ -4,9 +4,6 @@ ARG HOME_DIR=/app
 
 WORKDIR ${HOME_DIR}
 
-RUN addgroup --system fastapi \
-    && adduser --system --ingroup fastapi fastapi
-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV ENVIRONMENT dev
@@ -26,11 +23,7 @@ COPY ./requirements/local.txt requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY --chown=fastapi:fastapi . ${HOME_DIR}
-
-RUN chown -R fastapi:fastapi ${HOME_DIR}
-
-USER fastapi
+COPY . ${HOME_DIR}
 
 EXPOSE 8000
 
