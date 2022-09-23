@@ -8,12 +8,12 @@ from sqlmodel import Session, select
 
 from db.config import get_db_session
 from auth import oauth2_scheme
-from logger import logger
+from logger import log
 from config import get_settings
 
 from .models import User
 from .schemas import UserRead, UserCreate
-from .services import authenticate_user, create_access_token
+from .services import authenticate_user, create_access_token, verify_access_token
 
 auth_router = APIRouter(prefix="/auth")
 user_router = APIRouter(prefix="/user", dependencies=[Depends(oauth2_scheme)])
@@ -45,11 +45,10 @@ def user_login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_db_session),
 ):
-
     my_user = authenticate_user(form_data.username, form_data.password, session)
 
     if not my_user:
-        logger.info(f"{form_data.username} either does not exists or passowrd is wrong")
+        log.info(f"{form_data.username} either does not exists or passowrd is wrong")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -58,6 +57,12 @@ def user_login(
     token = create_access_token(subject=my_user.email)
 
     return {"access_token": token, "token_type": "bearer"}
+
+
+@auth_router.post("/verify_access_token", status_code=status.HTTP_202_ACCEPTED)
+def verify_token(access_token: str = Depends(oauth2_scheme)):
+    verify_access_token(token=access_token)
+    return {"access_token": access_token}
 
 
 @user_router.get("/", response_model=List[UserRead])
