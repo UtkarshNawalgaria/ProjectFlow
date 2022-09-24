@@ -1,11 +1,13 @@
 import jwt
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Any, Optional, Dict
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from sqlmodel import Session, select
 
+from auth import oauth2_scheme
 from config import get_settings
+from db.config import get_db_session
 from logger import log
 
 from .models import User
@@ -56,3 +58,36 @@ def verify_access_token(*, token: str):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token"
         )
+
+
+def decode_token(*, token: str) -> Dict[str, Any]:
+    user_data = jwt.decode(
+        token,
+        key=settings.JWT_SECRET,
+        algorithms=[
+            settings.ALGORITHM,
+        ],
+    )
+
+    return user_data
+
+
+def get_current_user(
+    cls,
+    session: Session = Depends(get_db_session),
+    token: str = Depends(oauth2_scheme),
+) -> "User":
+    verify_access_token(token=token)
+
+    user_data = decode_token(token=token)
+
+    user = session.exec(select(cls).where(User.email == user_data["sub"])).one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid auth credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user
