@@ -1,4 +1,3 @@
-import jwt
 from typing import List
 from passlib.hash import bcrypt
 
@@ -15,8 +14,10 @@ from .models import User
 from .schemas import UserRead, UserCreate
 from .services import authenticate_user, create_access_token, verify_access_token
 
-auth_router = APIRouter(prefix="/auth")
-user_router = APIRouter(prefix="/user", dependencies=[Depends(oauth2_scheme)])
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
+user_router = APIRouter(
+    prefix="/user", dependencies=[Depends(oauth2_scheme)], tags=["user"]
+)
 
 settings = get_settings()
 
