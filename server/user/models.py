@@ -15,7 +15,10 @@ class User(BaseModel, table=True):
     # Datetime fields
     email_verified_at: datetime = Field(nullable=True)
 
-    profile: Optional["Profile"] = Relationship(back_populates="user")
+    profile: Optional["Profile"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"uselist": False}
+    )
+    projects: Optional[List["Project"]] = Relationship(back_populates="owner")
 
     def verify_password(self, password: str) -> bool:
         return bcrypt.verify(password, self.password_hash)
@@ -23,6 +26,4 @@ class User(BaseModel, table=True):
 
 class Profile(BaseModel, table=True):
     user_id: int = Field(default=None, foreign_key="user.id")
-
     user: User = Relationship(back_populates="profile")
-    projects: List["Project"] = Relationship(back_populates="profile")
