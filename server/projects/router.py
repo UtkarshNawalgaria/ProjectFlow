@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
+from auth import oauth2_scheme
 from db.config import get_db_session
 
 from user.models import User
@@ -11,7 +12,7 @@ from .models import Project
 from .schemas import ProjectCreate, ProjectRead
 
 projects_router = APIRouter(
-    prefix="/project", dependencies=[Depends(get_current_user)], tags=["project"]
+    prefix="/project", dependencies=[Depends(oauth2_scheme)], tags=["project"]
 )
 
 
@@ -61,7 +62,7 @@ def delete_project(
     return {"detail": "Project Deleted"}
 
 
-@projects_router.post("/")
+@projects_router.post("/", response_model=Project)
 def create_new_project(
     project: ProjectCreate,
     session: Session = Depends(get_db_session),
