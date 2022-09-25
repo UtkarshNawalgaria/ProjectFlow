@@ -9,3 +9,8 @@ class UserCreate(SQLModel):
 class UserRead(SQLModel):
     id: int
     email: EmailStr
+
+
+class ProfileRead(SQLModel):
+    id: int
+    user: UserRead

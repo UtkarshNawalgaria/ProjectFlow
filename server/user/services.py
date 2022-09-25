@@ -73,15 +73,16 @@ def decode_token(*, token: str) -> Dict[str, Any]:
 
 
 def get_current_user(
-    cls,
     session: Session = Depends(get_db_session),
     token: str = Depends(oauth2_scheme),
-) -> "User":
+) -> Optional[User]:
     verify_access_token(token=token)
 
     user_data = decode_token(token=token)
 
-    user = session.exec(select(cls).where(User.email == user_data["sub"])).one_or_none()
+    user = session.exec(
+        select(User).where(User.email == user_data["sub"])
+    ).one_or_none()
 
     if not user:
         raise HTTPException(
