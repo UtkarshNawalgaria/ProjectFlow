@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import client, { authTokenKey } from "../hooks/client";
+import client, { authTokenKey } from "../services/client";
 
 const encodeFormData = (data: any) => {
   return Object.keys(data)
@@ -14,16 +14,22 @@ export type TAuth = {
 
 export type AuthContextType = {
   auth: TAuth | null;
+  redirectUrl: string;
   login: (username: string, password: string) => void;
   verifyToken: () => void;
   setAuth: (auth: TAuth | null, logout?: boolean) => void;
   logout?: () => void;
 };
 
+type Props = {
+  children: any;
+  redirectUrl: string;
+};
+
 const AuthContext = createContext<AuthContextType>({});
 
 // eslint-disable-next-line react/prop-types
-export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
+export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   const [value, setValue] = useState<AuthContextType["auth"] | null>(() => {
     const accessToken = window.localStorage.getItem(authTokenKey);
     return accessToken ? { accessToken } : null;
@@ -62,6 +68,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
           email,
           accessToken: data.access_token,
         });
+        window.location.assign(redirectUrl);
       },
       (error) => console.error(error)
     );
@@ -74,7 +81,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ auth: value, setAuth, login, logout, verifyToken }}>
+      value={{ auth: value, redirectUrl, setAuth, login, logout, verifyToken }}>
       {children}
     </AuthContext.Provider>
   );
