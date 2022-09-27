@@ -4,7 +4,10 @@ const Layout = ({ children }) => {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <div className="flex w-full">
+        <aside className="w-[260px] bg-red-300"></aside>
+        <main className="w-full">{children}</main>
+      </div>
     </>
   );
 };
