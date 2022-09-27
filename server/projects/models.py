@@ -9,7 +9,7 @@ from user.models import User
 
 
 class TaskStatus(Enum):
-    CREATED = 0
+    OPEN = 0
     COMPLETED = 1
 
 
@@ -35,10 +35,11 @@ class TaskList(BaseModel, table=True):
 class Task(BaseModel, table=True):
     title: str = Field(nullable=False, default="My Task", max_length=100)
     description: str = Field(nullable=True, max_length=500)
-    status: TaskStatus = Field(default=TaskStatus.CREATED)
+    status: TaskStatus = Field(default=TaskStatus.OPEN)
 
     # DateTime fields
-    completed_at: datetime = Field(nullable=True)
+    start_date: datetime = Field(nullable=True)
+    due_date: datetime = Field(nullable=True)
 
     # Relationships
     tasklist_id: int = Field(default=None, foreign_key="tasklist.id", nullable=False)
