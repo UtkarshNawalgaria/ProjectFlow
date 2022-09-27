@@ -16,19 +16,19 @@ export type ProjectCreate = {
 
 export default {
   getAll: () => {
-    return client<Project[]>("project");
+    return client<Project[]>("project/");
   },
   getById: (projectId: number) => {
-    return client<Project>(`project/${projectId}`);
+    return client<Project>(`project/${projectId}/`);
   },
   createProject: (project: ProjectCreate) => {
-    return client<Project>("project", {
+    return client<Project>("project/", {
       method: "POST",
       body: JSON.stringify(project),
     });
   },
   delete: (projectId: number) => {
-    return client(`project/${projectId}`, {
+    return client(`project/${projectId}/`, {
       method: "delete",
     });
   },
