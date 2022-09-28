@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import get_settings
 from db.config import init_db
 
-from user.router import user_router, auth_router
-from projects.router import projects_router
+from user.api import user_router, auth_router
+from projects.api import projects_router
 
 init_db()
 settings = get_settings()

@@ -14,4 +14,3 @@ class ProjectCreate(ProjectBase):
 
 class ProjectRead(ProjectBase):
     id: int
-    created_at: datetime

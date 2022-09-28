@@ -16,7 +16,7 @@ projects_router = APIRouter(
 )
 
 
-@projects_router.get("/", response_model=List[Project])
+@projects_router.get("/", response_model=List[ProjectRead])
 def get_all_projects(user: User = Depends(get_current_user)):
     return user.projects
 
