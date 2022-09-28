@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { HiArrowLeft } from "react-icons/hi";
+import { Link, useParams } from "react-router-dom";
+import PageHeader from "../components/page-header";
 import ProjectService from "../services/projects";
 
 type Project = {
@@ -21,8 +23,21 @@ const SingleProjectPage = () => {
   }, []);
 
   return (
-    <div>
-      <pre>{JSON.stringify(project)}</pre>
+    <div className="flex flex-col">
+      <PageHeader>
+        <div className="flex gap-4">
+          <Link to="/projects">
+            <span className="p-3 font-bold inline-flex text-gray-700 ring-1 ring-slate-900/10 rounded-lg hover:text-indigo-500 hover:bg-gray-50 hover:ring-indigo-500">
+              <HiArrowLeft />
+            </span>
+          </Link>
+          <h1 className="font-bold text-3xl text-gray-700 ml-4">
+            {project?.title}
+          </h1>
+        </div>
+        <div className="toolbar">Toolbar</div>
+      </PageHeader>
+      <section></section>
     </div>
   );
 };
