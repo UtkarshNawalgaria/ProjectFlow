@@ -115,7 +115,6 @@ def get_all_tasks(
 def create_task(
     task_create: TaskCreate,
     session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
 ):
     print(task_create)
     new_task = Task(**task_create.dict())
@@ -130,6 +129,30 @@ def create_task(
 def delete_task(
     task_id: int,
     session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
 ):
-    pass
+    task = session.exec(select(Task).where(Task.id == task_id)).one_or_none()
+
+    if not task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found",
+        )
+
+    session.delete(task)
+    session.commit()
+
+    return {"detail": "Task Deleted"}
+
+
+@tasks_router.get("/{task_id}/", response_model=TaskRead)
+def get_task(task_id: int, session: Session = Depends(get_db_session)):
+
+    task = session.exec(select(Task).where(Task.id == task_id)).one_or_none()
+
+    if not task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found",
+        )
+
+    return task
