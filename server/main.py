@@ -5,7 +5,7 @@ from config import get_settings
 from db.config import init_db
 
 from user.api import user_router, auth_router
-from projects.api import projects_router
+from projects.api import projects_router, tasks_router
 
 init_db()
 settings = get_settings()
@@ -24,7 +24,7 @@ app.add_middleware(
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(projects_router)
-
+app.include_router(tasks_router)
 
 @app.get("/")
 def home():
