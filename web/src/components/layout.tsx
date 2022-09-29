@@ -1,7 +1,7 @@
 import { HiCog } from "react-icons/hi";
 import Navbar from "./navbar";
 
-const Layout = ({ children }) => {
+const Layout: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return (
     <div className="grid grid-rows-[60px_1fr] w-full h-screen">
       <div className="logo font-extrabold text-3xl p-3 shadow-md">Tasks</div>

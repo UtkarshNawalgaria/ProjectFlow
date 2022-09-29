@@ -26,7 +26,7 @@ type Props = {
   redirectUrl: string;
 };
 
-const AuthContext = createContext<AuthContextType>({});
+const AuthContext = createContext<AuthContextType | null>(null);
 
 // eslint-disable-next-line react/prop-types
 export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {

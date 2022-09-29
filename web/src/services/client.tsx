@@ -8,13 +8,13 @@ export function getErrorMessage(error: unknown) {
 
 export default function client<T>(
   endpoint: string,
-  customConfig = {}
+  customConfig: any = {}
 ): Promise<T> {
   const token = window.localStorage.getItem(authTokenKey);
-  const headers = { "Content-Type": "application/json" };
+  const headers: any = { "Content-Type": "application/json" };
 
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const config = {

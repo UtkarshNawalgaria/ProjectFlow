@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from "react";
-import useAuth from "../context/AuthProvider";
+import useAuth, { AuthContextType } from "../context/AuthProvider";
 
 const HomePage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { login, auth, redirectUrl } = useAuth();
+  const { login, auth, redirectUrl } = useAuth() as AuthContextType;
 
   useEffect(() => {
     if (auth?.accessToken) {

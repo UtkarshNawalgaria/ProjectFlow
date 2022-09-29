@@ -14,10 +14,10 @@ type Project = {
 const SingleProjectPage = () => {
   const { projectId } = useParams();
   const [project, setProject] = useState<Project | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    ProjectService.getById(parseInt(projectId))
+    ProjectService.getById(parseInt(projectId as string))
       .then((data) => setProject(data))
       .catch((e) => setError(e));
   }, []);
