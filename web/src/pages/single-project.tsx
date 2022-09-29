@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { HiArrowLeft } from "react-icons/hi";
 import { Link, useParams } from "react-router-dom";
 import PageHeader from "../components/page-header";
+import TaskList from "../components/task-list";
 import ProjectService from "../services/projects";
+import TaskService, { Task } from "../services/tasks";
 
 type Project = {
   id: number;
@@ -14,12 +16,19 @@ type Project = {
 const SingleProjectPage = () => {
   const { projectId } = useParams();
   const [project, setProject] = useState<Project | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    ProjectService.getById(parseInt(projectId as string))
-      .then((data) => setProject(data))
-      .catch((e) => setError(e));
+    Promise.all([
+      ProjectService.getById(parseInt(projectId as string)),
+      TaskService.getAll(parseInt(projectId as string)),
+    ])
+      .then((values) => {
+        setProject(values[0]);
+        setTasks(values[1]);
+      })
+      .catch((error) => setError(error));
   }, []);
 
   return (
@@ -37,7 +46,9 @@ const SingleProjectPage = () => {
         </div>
         <div className="toolbar">Toolbar</div>
       </PageHeader>
-      <section></section>
+      <section>
+        <TaskList tasks={tasks} />
+      </section>
     </div>
   );
 };

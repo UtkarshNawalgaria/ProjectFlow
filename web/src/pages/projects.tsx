@@ -28,14 +28,16 @@ const ProjectsListView: FC<ProjectViewProps> = ({
         <li
           key={project.id}
           className="flex gap-4 items-center justify-between p-4 hover:bg-gray-50 cursor-pointer rounded-md">
-          <div>
+          <div className="w-full">
             <Link
               to={project.id.toString()}
               className="block font-bold text-gray-700 hover:text-indigo-500">
-              {project.title}
+              <h3>
+                {project.title} ({project.task_count})
+              </h3>
             </Link>
           </div>
-          <div>
+          <div className="w-full text-right">
             <span className="inline-block p-2 rounded-full hover:bg-red-300">
               <HiTrash
                 onClick={() => deleteProject(project.id)}
