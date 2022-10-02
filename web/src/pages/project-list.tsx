@@ -1,13 +1,16 @@
 import { ChangeEvent, FormEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProjectService, { Project, ProjectCreate } from "../services/projects";
+import { BsCardHeading } from "react-icons/bs";
 import { HiFolderAdd, HiPlus, HiTrash } from "react-icons/hi";
 import { AiOutlineSetting, AiOutlineUnorderedList } from "react-icons/ai";
-import { BsCardHeading } from "react-icons/bs";
-import PageHeader from "../components/page-header";
-import Modal from "../components/modal";
-import { ProcessedFormErrorType } from "../utils";
 import { toast } from "react-toastify";
+
+import Modal from "../components/modal";
+import Button from "../components/button";
+import PageHeader from "../components/page-header";
+
+import ProjectService, { Project, ProjectCreate } from "../services/projects";
+import { ProcessedFormErrorType } from "../utils";
 
 const ProjectsViewType = {
   LIST: 0,
@@ -16,7 +19,8 @@ const ProjectsViewType = {
 
 type ProjectViewProps = {
   projects: Project[];
-  deleteProject: (projectId: number) => void;
+  setSelectedProjectId?: any;
+  deleteProject: (projectId: number, confirmDelete?: boolean) => void;
   showProjectSettings?: (projectId: number) => void;
   openModal: () => void;
 };
@@ -25,6 +29,7 @@ const ProjectsListView: FC<ProjectViewProps> = ({
   projects,
   deleteProject,
   openModal,
+  setSelectedProjectId,
 }) => {
   return (
     <>
@@ -45,7 +50,12 @@ const ProjectsListView: FC<ProjectViewProps> = ({
             <div className="w-full text-right">
               <span className="inline-block p-2 rounded-full hover:bg-red-300">
                 <HiTrash
-                  onClick={() => deleteProject(project.id)}
+                  onClick={() => {
+                    setSelectedProjectId(project.id);
+                    project.task_count === 0
+                      ? deleteProject(project.id, true)
+                      : deleteProject(project.id);
+                  }}
                   className="cursor-pointer text-red-700"
                 />
               </span>
@@ -72,6 +82,7 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
   projects,
   deleteProject,
   openModal,
+  setSelectedProjectId,
 }) => {
   return (
     <div className="p-4 flex gap-6">
@@ -96,7 +107,12 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
               <div>
                 <span className="inline-block p-2 rounded-full hover:bg-red-300">
                   <HiTrash
-                    onClick={() => deleteProject(project.id)}
+                    onClick={() => {
+                      setSelectedProjectId(project.id);
+                      project.task_count === 0
+                        ? deleteProject(project.id, true)
+                        : deleteProject(project.id);
+                    }}
                     className="cursor-pointer text-red-700"
                   />
                 </span>
@@ -129,17 +145,31 @@ const ProjectsPage = () => {
     title: "",
     description: "",
   });
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null
+  );
   const [error, setError] = useState<ProcessedFormErrorType | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalToggles, setModalToggles] = useState({
+    CREATE_PROJECT: false,
+    DELETE_PROJECT_CONFIRMATION: false,
+  });
 
   useEffect(() => {
     ProjectService.getAll().then((data) => setProjects(data));
   }, []);
 
-  const deleteProject = (projectId: number) => {
+  const deleteProject = (projectId: number, confirmDelete = false) => {
     const project = projects.find((p) => p.id === projectId);
 
-    if (project?.task_count && project?.task_count > 0) {
+    if (project?.task_count && project?.task_count > 0 && !confirmDelete) {
+      setModalToggles((prevValues) => ({
+        ...prevValues,
+        DELETE_PROJECT_CONFIRMATION: true,
+      }));
+      return;
+    }
+
+    if (!confirmDelete) {
       return;
     }
 
@@ -167,7 +197,10 @@ const ProjectsPage = () => {
     ProjectService.createProject(newProject)
       .then((newProject) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
-        setModalOpen(false);
+        setModalToggles((prevValues) => ({
+          ...prevValues,
+          CREATE_PROJECT: false,
+        }));
         setNewProject({ title: "", description: "" });
         toast.success("Project Created Successfuly", {
           position: toast.POSITION.TOP_RIGHT,
@@ -215,89 +248,141 @@ const ProjectsPage = () => {
             <ProjectsListView
               projects={projects}
               deleteProject={deleteProject}
-              openModal={() => setModalOpen(true)}
+              openModal={() =>
+                setModalToggles((prevValues) => ({
+                  ...prevValues,
+                  CREATE_PROJECT: true,
+                }))
+              }
+              setSelectedProjectId={setSelectedProjectId}
             />
           </div>
         ) : (
           <ProjectsCardView
             projects={projects}
             deleteProject={deleteProject}
-            openModal={() => setModalOpen(true)}
+            openModal={() =>
+              setModalToggles((prevValues) => ({
+                ...prevValues,
+                CREATE_PROJECT: true,
+              }))
+            }
+            setSelectedProjectId={setSelectedProjectId}
           />
         )}
       </section>
-      <Modal
-        toggleModal={modalOpen}
-        modalId="create-new-project-modal"
-        headerText="Create New Project"
-        body={
-          <form className="w-full" onSubmit={createNewProject}>
-            <div className="mb-4">
-              <label
-                htmlFor="title"
-                className="block text-md font-medium text-grey-dark mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={newProject.title}
-                onChange={(e) => setNewProjectFormData(e)}
-                className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
-                  (error !== null && error.title
-                    ? " border-error"
-                    : " border-gray-300")
-                }
-              />
-              {error !== null && error.title ? (
-                <span className="text-sm text-error">{error.title}</span>
-              ) : null}
+      <div className="page-modals">
+        <Modal
+          modalId="create-new-project-modal"
+          headerText="Create New Project"
+          toggleModal={modalToggles.CREATE_PROJECT}
+          body={
+            <form className="w-full" onSubmit={createNewProject}>
+              <div className="mb-4">
+                <label
+                  htmlFor="title"
+                  className="block text-md font-medium text-grey-dark mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={newProject.title}
+                  onChange={(e) => setNewProjectFormData(e)}
+                  className={
+                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                    (error !== null && error.title
+                      ? " border-error"
+                      : " border-gray-300")
+                  }
+                />
+                {error !== null && error.title ? (
+                  <span className="text-sm text-error">{error.title}</span>
+                ) : null}
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="description"
+                  className="block text-md font-medium text-grey-dark mb-1">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={5}
+                  value={newProject.description}
+                  onChange={(e) => setNewProjectFormData(e)}
+                  className={
+                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                    (error !== null && error.description
+                      ? " border-error"
+                      : " border-gray-300")
+                  }
+                />
+                {error !== null && error.description ? (
+                  <span className="text-sm text-error">
+                    {error.description}
+                  </span>
+                ) : null}
+              </div>
+              <div className="flex gap-4">
+                <button
+                  className="w-1/2 bg-gray-500 rounded-md font-semibold text-white cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setError(null);
+                    setNewProject({ title: "", description: "" });
+                    setModalToggles((prevValues) => ({
+                      ...prevValues,
+                      CREATE_PROJECT: false,
+                    }));
+                  }}>
+                  Cancel
+                </button>
+                <input
+                  type="submit"
+                  value="Create Project"
+                  className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2"
+                />
+              </div>
+            </form>
+          }
+        />
+        <Modal
+          modalId="delete-project-modal"
+          headerText="Delete Project ?"
+          toggleModal={modalToggles.DELETE_PROJECT_CONFIRMATION}
+          body={
+            <div className="">
+              <p>
+                This Project has tasks associated with it. Confirm if you want
+                to delete the project along with the tasks.
+              </p>
+              <div className="mt-5 flex gap-4">
+                <Button
+                  text="Cancel"
+                  onButtonClick={() => {
+                    setSelectedProjectId(null);
+                    setModalToggles((prevValues) => ({
+                      ...prevValues,
+                      DELETE_PROJECT_CONFIRMATION: false,
+                    }));
+                  }}
+                  type={"CANCEL"}
+                />
+                <Button
+                  text="Confirm"
+                  onButtonClick={() =>
+                    deleteProject(selectedProjectId as number, true)
+                  }
+                  type={"DANGER"}
+                />
+              </div>
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="description"
-                className="block text-md font-medium text-grey-dark mb-1">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows={5}
-                value={newProject.description}
-                onChange={(e) => setNewProjectFormData(e)}
-                className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
-                  (error !== null && error.description
-                    ? " border-error"
-                    : " border-gray-300")
-                }
-              />
-              {error !== null && error.description ? (
-                <span className="text-sm text-error">{error.description}</span>
-              ) : null}
-            </div>
-            <div className="flex gap-4">
-              <button
-                className="w-1/2 bg-gray-500 rounded-md font-semibold text-white cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setError(null);
-                  setNewProject({ title: "", description: "" });
-                  setModalOpen(false);
-                }}>
-                Cancel
-              </button>
-              <input
-                type="submit"
-                value="Create Project"
-                className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2"
-              />
-            </div>
-          </form>
-        }
-      />
+          }
+        />
+      </div>
     </div>
   );
 };
