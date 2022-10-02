@@ -5,8 +5,15 @@ module.exports = {
     extend: {
       colors: {
         outline: "#e7e7e7",
+        primary: "#6366f1",
+        error: "#dc2626",
+        "grey-lightest": "#f8fafc",
+        "grey-dark": "#374151",
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  daisyui: {
+    themes: [],
+  },
+  plugins: [require("@tailwindcss/forms"), require("daisyui")],
 };
