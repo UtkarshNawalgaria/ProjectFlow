@@ -79,7 +79,7 @@ def delete_project(
     return {"detail": "Project Deleted"}
 
 
-@projects_router.post("/", response_model=Project)
+@projects_router.post("/", response_model=ProjectRead)
 def create_new_project(
     project: ProjectCreate,
     session: Session = Depends(get_db_session),
