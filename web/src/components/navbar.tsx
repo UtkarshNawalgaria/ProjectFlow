@@ -6,8 +6,8 @@ const Navbar = () => {
 
   const isPathActive = (linkPath: string, isLink = true): string => {
     const returnCss = isLink
-      ? "bg-gray-50 border-r-8 border-indigo-500"
-      : "text-indigo-500";
+      ? "bg-grey-lightest border-r-8 border-primary"
+      : "text-primary";
 
     return location.pathname.includes(linkPath) ? returnCss : "";
   };
@@ -18,11 +18,11 @@ const Navbar = () => {
         {navItems.map((item, index) => (
           <li
             key={index}
-            className={`py-2 pl-4 cursor-pointer hover:bg-gray-50 hover:border-r-8 hover:border-indigo-500 ${isPathActive(
+            className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary ${isPathActive(
               item.path
             )}`}>
             <Link
-              className={`block text-gray-700 font-bold hover:text-indigo-500 active:text-indigo-500 ${isPathActive(
+              className={`block text-grey-dark font-bold hover:text-primary active:text-primary ${isPathActive(
                 item.path,
                 false
               )}`}

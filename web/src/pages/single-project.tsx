@@ -36,11 +36,11 @@ const SingleProjectPage = () => {
       <PageHeader>
         <div className="flex gap-4">
           <Link to="/projects">
-            <span className="p-3 font-bold inline-flex text-gray-700 ring-1 ring-slate-900/10 rounded-lg hover:text-indigo-500 hover:bg-gray-50 hover:ring-indigo-500">
+            <span className="p-3 font-bold inline-flex text-grey-dark ring-1 ring-slate-900/10 rounded-lg hover:text-primary hover:bg-grey-lightest hover:ring-primary">
               <HiArrowLeft />
             </span>
           </Link>
-          <h1 className="font-bold text-3xl text-gray-700 ml-4">
+          <h1 className="font-bold text-3xl text-grey-dark ml-4">
             {project?.title}
           </h1>
         </div>

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import client, { authTokenKey } from "../services/client";
 
-const encodeFormData = (data: any) => {
+const encodeFormData = (data: { [key: string]: string }) => {
   return Object.keys(data)
     .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
     .join("&");
@@ -22,7 +22,7 @@ export type AuthContextType = {
 };
 
 type Props = {
-  children: any;
+  children: JSX.Element;
   redirectUrl: string;
 };
 
