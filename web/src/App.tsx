@@ -20,7 +20,7 @@ function App() {
         </Route>
         <Route path="*" element={<div>404</div>} />
       </Routes>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
     </>
   );
 }
