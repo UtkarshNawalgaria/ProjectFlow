@@ -10,10 +10,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "daisyui": "^2.31.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
-    "react-router-dom": "^6.4.0"
+    "react-router-dom": "^6.4.0",
+    "react-toastify": "^9.0.8"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
