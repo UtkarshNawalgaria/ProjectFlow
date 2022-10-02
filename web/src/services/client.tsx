@@ -1,3 +1,5 @@
+import { parseValidationErrorResponse } from "../utils";
+
 const BASE_URL = "http://localhost:8000/";
 export const authTokenKey = "accessToken";
 
@@ -33,7 +35,11 @@ export default function client<T>(
         window.localStorage.removeItem(authTokenKey);
         window.location.assign("/");
         return Promise.reject(response);
+      } else if (response.status === 422) {
+        const { detail } = await response.json();
+        return Promise.reject(parseValidationErrorResponse(detail));
       }
+
       if (response.ok) {
         return await response.json();
       } else {
