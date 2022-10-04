@@ -8,8 +8,15 @@ from db.config import get_db_session
 from user.models import User
 from user.services import get_current_user
 
-from .models import Project, Task
-from .schemas import ProjectCreate, ProjectRead, TaskCreate, TaskRead
+from .models import Project, Task, TaskList
+from .schemas import (
+    ProjectCreate,
+    ProjectRead,
+    TaskCreate,
+    TaskListCreate,
+    TaskListRead,
+    TaskRead,
+)
 
 projects_router = APIRouter(
     prefix="/project", dependencies=[Depends(oauth2_scheme)], tags=["project"]
@@ -116,7 +123,6 @@ def create_task(
     task_create: TaskCreate,
     session: Session = Depends(get_db_session),
 ):
-    print(task_create)
     new_task = Task(**task_create.dict())
     session.add(new_task)
     session.commit()
@@ -145,7 +151,7 @@ def delete_task(
 
 
 @tasks_router.get("/{task_id}/", response_model=TaskRead)
-def get_task(task_id: int, session: Session = Depends(get_db_session)):
+def get_task_by_id(task_id: int, session: Session = Depends(get_db_session)):
 
     task = session.exec(select(Task).where(Task.id == task_id)).one_or_none()
 
@@ -156,3 +162,18 @@ def get_task(task_id: int, session: Session = Depends(get_db_session)):
         )
 
     return task
+
+
+@tasks_router.post("/create_list", response_model=TaskListRead)
+def create_task_list(list: TaskListCreate, session: Session = Depends(get_db_session)):
+    new_task_list = TaskList(**list.dict())
+    session.add(new_task_list)
+    session.commit()
+    session.refresh(new_task_list)
+
+    return new_task_list
+
+@tasks_router.get("/get_list", response_model=List[TaskListRead])
+def get_task_lists(project_id: int, session: Session = Depends(get_db_session)):
+    lists = session.exec(select(TaskList).where(TaskList.project_id == project_id)).all()
+    return lists
