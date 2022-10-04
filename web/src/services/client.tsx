@@ -3,6 +3,12 @@ import { parseValidationErrorResponse } from "../utils";
 const BASE_URL = "http://localhost:8000/";
 export const authTokenKey = "accessToken";
 
+export type FetchConfigType = {
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  body?: string;
+  headers?: { [key: string]: string };
+};
+
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return String(error);
@@ -10,10 +16,12 @@ export function getErrorMessage(error: unknown) {
 
 export default function client<T>(
   endpoint: string,
-  customConfig: any = {}
+  customConfig: FetchConfigType = {}
 ): Promise<T> {
   const token = window.localStorage.getItem(authTokenKey);
-  const headers: any = { "Content-Type": "application/json" };
+  const headers: FetchConfigType["headers"] = {
+    "Content-Type": "application/json",
+  };
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
