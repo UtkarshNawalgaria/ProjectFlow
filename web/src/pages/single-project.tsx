@@ -1,35 +1,155 @@
-import { useEffect, useState } from "react";
-import { HiArrowLeft } from "react-icons/hi";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import PageHeader from "../components/page-header";
-import TaskList from "../components/task-list";
-import ProjectService from "../services/projects";
-import TaskService, { Task } from "../services/tasks";
+import { AiOutlineUnorderedList } from "react-icons/ai";
+import { BsKanban } from "react-icons/bs";
+import { FiEdit } from "react-icons/fi";
+import { HiArrowLeft, HiChevronDown, HiTrash } from "react-icons/hi";
 
-type Project = {
-  id: number;
-  title: string;
-  description?: string;
-  created_at: string;
+import Collapsable, {
+  CollapsableBody,
+  CollapsableHead,
+} from "../components/collapsable";
+import PageHeader from "../components/page-header";
+
+import ProjectService, { Project } from "../services/projects";
+import TaskService, {
+  DefaultTaskList,
+  Task,
+  TaskList,
+} from "../services/tasks";
+
+type GroupedTasks = Array<{
+  list: TaskList;
+  tasks: Task[];
+}>;
+
+type TaskViewProps = {
+  groupedTasks: GroupedTasks;
+  deleteTask: (taskId: number) => void;
+};
+
+const TasksViewType = {
+  LIST: 0,
+  KANBAN: 1,
+};
+
+const TaskActions = () => {
+  return (
+    <div className="w-full text-left">
+      <span className="inline-block p-2 rounded-full cursor-pointer hover:bg-indigo-300">
+        <FiEdit className="text-indigo-700" />
+      </span>
+      <span className="inline-block p-2 rounded-full cursor-pointer hover:bg-red-300">
+        <HiTrash className="text-red-700" />
+      </span>
+    </div>
+  );
+};
+
+const TaskListView = ({ groupedTasks }: TaskViewProps) => {
+  if (groupedTasks.length === 0) {
+    return <div>No tasks in this project</div>;
+  }
+
+  return (
+    <>
+      <div className="flex">
+        <div className="w-full pl-8 py-2">Task</div>
+        <div className="w-full pl-4 py-2">Status</div>
+        <div className="w-full pl-4 py-2">Start Date</div>
+        <div className="w-full pl-4 py-2">Due Date</div>
+        <div className="w-full pl-4 py-2">Actions</div>
+      </div>
+      {groupedTasks.map((item) => {
+        return (
+          <div key={item.list.id}>
+            <Collapsable>
+              <CollapsableHead styles="py-2 px-3 border flex w-full cursor-pointer font-bold">
+                <div>
+                  <HiChevronDown className="inline-block" />
+                  <span className="pl-4">{item.list.title}</span>
+                </div>
+              </CollapsableHead>
+              <CollapsableBody>
+                <div className="px-4">
+                  {item.tasks.map((task, index) => {
+                    return (
+                      <div
+                        key={task.id}
+                        className={`${
+                          index % 2 === 0 ? "bg-gray-50 " : "bg-gray-200"
+                        }`}>
+                        <div className="flex items-center">
+                          <div className="w-full pl-8 py-2">{task.title}</div>
+                          <div className="w-full pl-4 py-2">
+                            {task.status === 0 ? "Open" : "Completed"}
+                          </div>
+                          <div className="w-full pl-4 py-2">
+                            {task?.start_date}
+                          </div>
+                          <div className="w-full pl-4 py-2">
+                            {task.due_date}
+                          </div>
+                          <TaskActions />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CollapsableBody>
+            </Collapsable>
+          </div>
+        );
+      })}
+    </>
+  );
 };
 
 const SingleProjectPage = () => {
   const { projectId } = useParams();
+  const [view, setView] = useState(TasksViewType.LIST);
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [lists, setLists] = useState<TaskList[]>([]);
   const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       ProjectService.getById(parseInt(projectId as string)),
       TaskService.getAll(parseInt(projectId as string)),
+      TaskService.getAllTaskLists(parseInt(projectId as string)),
     ])
       .then((values) => {
         setProject(values[0]);
         setTasks(values[1]);
+        setLists(values[2]);
       })
       .catch((error) => setError(error));
   }, []);
+
+  const groupedTasks = useMemo<GroupedTasks>(() => {
+    const outputData: GroupedTasks = [];
+
+    if (lists.length == 0) return [];
+
+    outputData.push({
+      list: DefaultTaskList,
+      tasks: tasks.filter((task) => task.tasklist_id === null),
+    });
+
+    lists.forEach((list) => {
+      const listTasks = tasks.filter((task) => task.tasklist_id === list.id);
+      outputData.push({ list, tasks: listTasks });
+    });
+
+    return outputData;
+  }, [tasks, lists]);
+
+  const deleteTask = (taskId: number) => {
+    TaskService.delete(taskId).then(() => {
+      setTasks((prevData) => prevData.filter((task) => task.id !== taskId));
+    });
+  };
 
   return (
     <div className="flex flex-col">
@@ -44,10 +164,37 @@ const SingleProjectPage = () => {
             {project?.title}
           </h1>
         </div>
-        <div className="toolbar">Toolbar</div>
+        <div className="toolbar">
+          <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
+            <span
+              className={
+                "p-1 block cursor-pointer m-1" +
+                (view === TasksViewType.LIST
+                  ? " bg-white rounded-md text-grey-dark"
+                  : "")
+              }
+              onClick={() => setView(TasksViewType.LIST)}>
+              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
+            </span>
+            <span
+              className={
+                "p-1 block cursor-pointer m-1" +
+                (view === TasksViewType.KANBAN
+                  ? " bg-white rounded-md text-grey-dark"
+                  : "")
+              }
+              onClick={() => setView(TasksViewType.KANBAN)}>
+              <BsKanban className="h-6 w-6 text-black" />
+            </span>
+          </div>
+        </div>
       </PageHeader>
-      <section>
-        <TaskList tasks={tasks} />
+      <section className="px-4">
+        {view === TasksViewType.LIST ? (
+          <TaskListView deleteTask={deleteTask} groupedTasks={groupedTasks} />
+        ) : (
+          <div>Kanban View</div>
+        )}
       </section>
     </div>
   );
