@@ -37,7 +37,7 @@ const ProjectsListView: FC<ProjectViewProps> = ({
         {projects.map((project) => (
           <li
             key={project.id}
-            className="flex gap-4 items-center justify-between p-4 mb-4 bg-grey-lightest cursor-pointer rounded-md hover:bg-gray-100">
+            className="flex gap-4 items-center justify-between px-4 py-2 mb-4 bg-grey-lightest cursor-pointer rounded-md hover:bg-gray-100">
             <div className="w-full">
               <Link
                 to={project.id.toString()}
@@ -139,7 +139,7 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
 };
 
 const ProjectsPage = () => {
-  const [view, setView] = useState<number>(ProjectsViewType.LIST);
+  const [view, setView] = useState(ProjectsViewType.LIST);
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<ProjectCreate>({
     title: "",
@@ -214,7 +214,7 @@ const ProjectsPage = () => {
   return (
     <div>
       <PageHeader>
-        <div className="font-bold text-2xl text-grey-dark pl-4">
+        <div className="font-bold text-2xl text-grey-dark">
           Projects ({projects.length})
         </div>
         <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
@@ -240,7 +240,7 @@ const ProjectsPage = () => {
           </span>
         </div>
       </PageHeader>
-      <section>
+      <section className="px-4">
         {projects.length === 0 ? (
           <div>No projects found</div>
         ) : view == ProjectsViewType.LIST ? (
@@ -328,7 +328,7 @@ const ProjectsPage = () => {
               </div>
               <div className="flex gap-4">
                 <button
-                  className="w-1/2 bg-gray-500 rounded-md font-semibold text-white cursor-pointer"
+                  className="w-1/2 outline outline-1 rounded-md font-semibold text-primary cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
                     setError(null);
@@ -340,11 +340,9 @@ const ProjectsPage = () => {
                   }}>
                   Cancel
                 </button>
-                <input
-                  type="submit"
-                  value="Create Project"
-                  className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2"
-                />
+                <button className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2">
+                  Create Project
+                </button>
               </div>
             </form>
           }
@@ -362,7 +360,7 @@ const ProjectsPage = () => {
               <div className="mt-5 flex gap-4">
                 <Button
                   text="Cancel"
-                  onButtonClick={() => {
+                  onClick={() => {
                     setSelectedProjectId(null);
                     setModalToggles((prevValues) => ({
                       ...prevValues,
@@ -373,7 +371,7 @@ const ProjectsPage = () => {
                 />
                 <Button
                   text="Confirm"
-                  onButtonClick={() =>
+                  onClick={() =>
                     deleteProject(selectedProjectId as number, true)
                   }
                   type={"DANGER"}
