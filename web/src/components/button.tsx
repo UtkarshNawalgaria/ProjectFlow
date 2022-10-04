@@ -1,20 +1,20 @@
 type ButtonProps = {
   text: string;
   type: "CANCEL" | "CONFIRM" | "DANGER";
-  onButtonClick?: () => void;
+  onClick?: () => void;
 };
 
-const Button = ({ text, type, onButtonClick }: ButtonProps) => {
+const Button = ({ text, type, onClick }: ButtonProps) => {
   const typetoColor = {
-    CONFIRM: "bg-primary",
-    CANCEL: "bg-gray-500",
-    DANGER: "bg-error",
+    CONFIRM: "bg-primary text-white",
+    CANCEL: "text-primary",
+    DANGER: "bg-error text-white",
   };
 
   return (
     <button
-      onClick={onButtonClick}
-      className={`${typetoColor[type]} rounded-md font-semibold text-white cursor-pointer py-2 px-6`}>
+      onClick={onClick}
+      className={`rounded-md font-semibold cursor-pointer py-2 px-6 outline outline-1 ${typetoColor[type]}`}>
       {text}
     </button>
   );
