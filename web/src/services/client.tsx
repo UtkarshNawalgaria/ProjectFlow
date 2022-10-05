@@ -4,7 +4,7 @@ const BASE_URL = "http://localhost:8000/";
 export const authTokenKey = "accessToken";
 
 export type FetchConfigType = {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
   headers?: { [key: string]: string };
 };
