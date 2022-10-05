@@ -3,7 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-import { HiArrowLeft, HiChevronDown, HiTrash } from "react-icons/hi";
+import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
+
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 import Collapsable, {
   CollapsableBody,
@@ -17,6 +19,8 @@ import TaskService, {
   Task,
   TaskList,
 } from "../services/tasks";
+import KanbanCard from "../components/kanban-card";
+import KanbanList from "../components/kanban-column";
 
 type GroupedTasks = Array<{
   list: TaskList;
@@ -25,7 +29,9 @@ type GroupedTasks = Array<{
 
 type TaskViewProps = {
   groupedTasks: GroupedTasks;
+  setTasks: any;
   deleteTask: (taskId: number) => void;
+  updateTask: (taskId: number, data: any) => void;
 };
 
 const TasksViewType = {
@@ -42,6 +48,75 @@ const TaskActions = () => {
       <span className="inline-block p-2 rounded-full cursor-pointer hover:bg-red-300">
         <HiTrash className="text-red-700" />
       </span>
+    </div>
+  );
+};
+
+const TaskKanbanView = ({
+  groupedTasks,
+  setTasks,
+  updateTask,
+}: TaskViewProps) => {
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    const taskId = active.id;
+    const newTaskListId = over?.id as number;
+
+    if (newTaskListId == null) return;
+
+    // Change the moved task's `tasklist_id` value in the frontend
+    // before updating on the backend to avoid lag in changing the
+    // tasks list in kanban mode
+    setTasks((prevTasks: Task[]) => {
+      const currTask = prevTasks.find((task) => task.id === taskId);
+      const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
+
+      if (currTask) {
+        currTask.tasklist_id = newTaskListId != 0 ? newTaskListId : null;
+        remainingTasks.push(currTask);
+      }
+
+      return remainingTasks;
+    });
+
+    updateTask(taskId as number, {
+      tasklist_id: newTaskListId === 0 ? null : newTaskListId,
+    });
+  }
+
+  return (
+    <div>
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="flex gap-4">
+          {groupedTasks.map((item) => {
+            return (
+              <div key={item.list.id} className="w-[300px]">
+                <KanbanList listId={item.list.id}>
+                  <header className="mb-4">
+                    <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
+                      <h3>{item.list.title}</h3>
+                      <span className="block">
+                        <HiPlus />
+                      </span>
+                    </div>
+                  </header>
+                  <div className="px-4">
+                    {item.tasks.map((task) => {
+                      return (
+                        <div key={task.id}>
+                          <KanbanCard taskId={task.id} listId={item.list.id}>
+                            <div>{task.title}</div>
+                          </KanbanCard>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </KanbanList>
+              </div>
+            );
+          })}
+        </div>
+      </DndContext>
     </div>
   );
 };
@@ -107,7 +182,7 @@ const TaskListView = ({ groupedTasks }: TaskViewProps) => {
 
 const SingleProjectPage = () => {
   const { projectId } = useParams();
-  const [view, setView] = useState(TasksViewType.LIST);
+  const [view, setView] = useState(TasksViewType.KANBAN);
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<TaskList[]>([]);
@@ -151,6 +226,14 @@ const SingleProjectPage = () => {
     });
   };
 
+  const updateTask = (taskId: number, data: any) => {
+    TaskService.updateTask(taskId, data).then((updatedTask) => {
+      setTasks((prevTasks) => {
+        return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
+      });
+    });
+  };
+
   return (
     <div className="flex flex-col">
       <PageHeader>
@@ -191,9 +274,19 @@ const SingleProjectPage = () => {
       </PageHeader>
       <section className="px-4">
         {view === TasksViewType.LIST ? (
-          <TaskListView deleteTask={deleteTask} groupedTasks={groupedTasks} />
+          <TaskListView
+            deleteTask={deleteTask}
+            groupedTasks={groupedTasks}
+            setTasks={setTasks}
+            updateTask={updateTask}
+          />
         ) : (
-          <div>Kanban View</div>
+          <TaskKanbanView
+            deleteTask={deleteTask}
+            groupedTasks={groupedTasks}
+            setTasks={setTasks}
+            updateTask={updateTask}
+          />
         )}
       </section>
     </div>
