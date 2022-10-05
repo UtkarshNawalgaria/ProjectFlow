@@ -12,10 +12,11 @@ from .models import Project, Task, TaskList
 from .schemas import (
     ProjectCreate,
     ProjectRead,
+    TaskRead,
     TaskCreate,
     TaskListCreate,
     TaskListRead,
-    TaskRead,
+    TaskUpdate,
 )
 
 projects_router = APIRouter(
@@ -131,6 +132,29 @@ def create_task(
     return new_task
 
 
+@tasks_router.patch("/{task_id}", response_model=TaskRead)
+def update_task(
+    task_id: int, task: TaskUpdate, session: Session = Depends(get_db_session)
+):
+    db_task = session.exec(select(Task).where(Task.id == task_id)).one_or_none()
+
+    if not db_task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
+
+    new_task_data = task.dict(exclude_unset=True)
+
+    for key, value in new_task_data.items():
+        setattr(db_task, key, value)
+
+    session.add(db_task)
+    session.commit()
+    session.refresh(db_task)
+
+    return db_task
+
+
 @tasks_router.delete("/{task_id}/", status_code=status.HTTP_200_OK)
 def delete_task(
     task_id: int,
@@ -173,7 +197,10 @@ def create_task_list(list: TaskListCreate, session: Session = Depends(get_db_ses
 
     return new_task_list
 
+
 @tasks_router.get("/get_list", response_model=List[TaskListRead])
 def get_task_lists(project_id: int, session: Session = Depends(get_db_session)):
-    lists = session.exec(select(TaskList).where(TaskList.project_id == project_id)).all()
+    lists = session.exec(
+        select(TaskList).where(TaskList.project_id == project_id)
+    ).all()
     return lists

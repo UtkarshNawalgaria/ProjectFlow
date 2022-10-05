@@ -5,25 +5,32 @@ from sqlmodel import SQLModel, Field
 from .models import TaskStatus
 
 
-class TaskRead(SQLModel):
-    id: int
+class TaskBase(SQLModel):
     title: str
-    description: str
-    status: TaskStatus
-    tasklist_id: Optional[int]
-    start_date: Optional[datetime]
-    due_date: Optional[datetime]
-
-
-class TaskCreate(SQLModel):
     project_id: int
-    title: str
     status: TaskStatus
     description: Optional[str]
     tasklist_id: Optional[int]
-    description: Optional[str]
-    start_date: Optional[datetime]
     due_date: Optional[datetime]
+    start_date: Optional[datetime]
+
+
+class TaskRead(TaskBase):
+    id: int
+
+
+class TaskUpdate(TaskBase):
+    title: Optional[str]
+    project_id: Optional[int]
+    status: Optional[TaskStatus]
+    description: Optional[str]
+    tasklist_id: Optional[int]
+    due_date: Optional[datetime]
+    start_date: Optional[datetime]
+
+
+class TaskCreate(TaskBase):
+    pass
 
 
 class ProjectBase(SQLModel):
