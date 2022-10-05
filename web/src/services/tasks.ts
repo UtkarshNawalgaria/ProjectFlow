@@ -50,6 +50,12 @@ export default {
       body: JSON.stringify(task),
     });
   },
+  updateTask: (taskId: number, update_data: any) => {
+    return client<Task>(`task/${taskId}`, {
+      method: "PATCH",
+      body: JSON.stringify(update_data),
+    });
+  },
   delete: (taskId: number) => {
     return client(`task/${taskId}`, {
       method: "DELETE",
