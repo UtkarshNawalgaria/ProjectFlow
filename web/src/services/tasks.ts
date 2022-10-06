@@ -26,7 +26,7 @@ export type TaskCreate = {
 };
 
 export type TaskList = {
-  id: number;
+  id?: number;
   title: string;
   project_id: number;
 };
@@ -69,11 +69,17 @@ export default {
     });
   },
   delete: (taskId: number) => {
-    return client(`task/${taskId}`, {
+    return client(`task/${taskId}/`, {
       method: "DELETE",
     });
   },
   getAllTaskLists: (projectId: number) => {
     return client<TaskList[]>(`task/get_list?project_id=${projectId}`);
+  },
+  createTaskList: (data: TaskList) => {
+    return client<TaskList>("task/create_list/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   },
 };

@@ -211,6 +211,14 @@ const ProjectsPage = () => {
       });
   };
 
+  const resetData = () => {
+    setSelectedProjectId(null);
+    setModalToggles((prevValues) => ({
+      ...prevValues,
+      DELETE_PROJECT_CONFIRMATION: false,
+    }));
+  };
+
   return (
     <div>
       <PageHeader>
@@ -358,19 +366,9 @@ const ProjectsPage = () => {
                 to delete the project along with the tasks.
               </p>
               <div className="mt-5 flex gap-4">
+                <Button text="Cancel" onClick={resetData} type={"CANCEL"} />
                 <Button
-                  text="Cancel"
-                  onClick={() => {
-                    setSelectedProjectId(null);
-                    setModalToggles((prevValues) => ({
-                      ...prevValues,
-                      DELETE_PROJECT_CONFIRMATION: false,
-                    }));
-                  }}
-                  type={"CANCEL"}
-                />
-                <Button
-                  text="Confirm"
+                  text="Delete"
                   onClick={() =>
                     deleteProject(selectedProjectId as number, true)
                   }
