@@ -1,19 +1,20 @@
 import { useDraggable } from "@dnd-kit/core";
+import { Task, TaskList } from "../services/tasks";
 
 function KanbanCard({
   children,
-  taskId,
-  listId,
+  task,
+  list,
 }: {
   children: JSX.Element;
-  taskId: number;
-  listId: number;
+  task: Task;
+  list: TaskList;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id: taskId,
+      id: task.id,
       data: {
-        listId: listId,
+        list: list,
       },
     });
   const style = transform

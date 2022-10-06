@@ -21,6 +21,7 @@ import TaskService, {
 } from "../services/tasks";
 import KanbanCard from "../components/kanban-card";
 import KanbanList from "../components/kanban-column";
+import { toast } from "react-toastify";
 
 type GroupedTasks = Array<{
   list: TaskList;
@@ -64,6 +65,9 @@ const TaskKanbanView = ({
 
     if (newTaskListId == null) return;
 
+    const prevList = active?.data?.current?.list;
+    const currList = over?.data?.current?.tasklist;
+
     // Change the moved task's `tasklist_id` value in the frontend
     // before updating on the backend to avoid lag in changing the
     // tasks list in kanban mode
@@ -82,6 +86,10 @@ const TaskKanbanView = ({
     updateTask(taskId as number, {
       tasklist_id: newTaskListId === 0 ? null : newTaskListId,
     });
+
+    toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
   }
 
   return (
@@ -91,7 +99,7 @@ const TaskKanbanView = ({
           {groupedTasks.map((item) => {
             return (
               <div key={item.list.id} className="w-[300px]">
-                <KanbanList listId={item.list.id}>
+                <KanbanList tasklist={item.list}>
                   <header className="mb-4">
                     <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
                       <h3>{item.list.title}</h3>
@@ -104,7 +112,7 @@ const TaskKanbanView = ({
                     {item.tasks.map((task) => {
                       return (
                         <div key={task.id}>
-                          <KanbanCard taskId={task.id} listId={item.list.id}>
+                          <KanbanCard task={task} list={item.list}>
                             <div>{task.title}</div>
                           </KanbanCard>
                         </div>

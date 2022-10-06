@@ -1,21 +1,23 @@
 import { useDroppable } from "@dnd-kit/core";
 import { useState } from "react";
+import { TaskList } from "../services/tasks";
 
 const KanbanList = ({
   children,
-  listId,
+  tasklist,
 }: {
   children: JSX.Element[];
-  listId: number;
+  tasklist: TaskList;
 }) => {
-  const [containerId] = useState(listId);
+  const [containerId] = useState(tasklist.id);
   const { setNodeRef, isOver, active } = useDroppable({
-    id: listId,
+    id: tasklist.id,
     data: {
-      listId: listId,
+      tasklist: tasklist,
     },
   });
-  const prevContainerId = active?.data?.current?.listId;
+
+  const prevContainerId = active?.data?.current?.list.id;
 
   return (
     <div ref={setNodeRef} className="rounded-md mt-10 h-full bg-gray-50">
