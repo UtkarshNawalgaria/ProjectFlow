@@ -20,15 +20,24 @@ export type TaskCreate = {
   title: string;
   project_id: number;
   description?: string;
-  tasklist_id?: number;
-  start_date?: string;
-  due_date?: string;
+  tasklist_id?: number | null;
+  start_date?: string | null;
+  due_date?: string | null;
 };
 
 export type TaskList = {
   id: number;
   title: string;
   project_id: number;
+};
+
+export const emptyTask: TaskCreate = {
+  title: "",
+  project_id: 0,
+  description: "",
+  tasklist_id: null,
+  start_date: null,
+  due_date: null,
 };
 
 export const DefaultTaskList = {
@@ -50,7 +59,10 @@ export default {
       body: JSON.stringify(task),
     });
   },
-  updateTask: (taskId: number, update_data: any) => {
+  updateTask: (
+    taskId: number,
+    update_data: { [key: string]: string | number }
+  ) => {
     return client<Task>(`task/${taskId}`, {
       method: "PATCH",
       body: JSON.stringify(update_data),

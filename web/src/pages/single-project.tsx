@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
@@ -16,12 +16,17 @@ import PageHeader from "../components/page-header";
 import ProjectService, { Project } from "../services/projects";
 import TaskService, {
   DefaultTaskList,
+  emptyTask,
   Task,
+  TaskCreate,
   TaskList,
 } from "../services/tasks";
 import KanbanCard from "../components/kanban-card";
 import KanbanList from "../components/kanban-column";
 import { toast } from "react-toastify";
+import Modal from "../components/modal";
+import { ProcessedFormErrorType } from "../utils";
+import Button from "../components/button";
 
 type GroupedTasks = Array<{
   list: TaskList;
@@ -53,7 +58,7 @@ const TaskActions = () => {
   );
 };
 
-const TaskKanbanView = ({
+const TasksKanbanView = ({
   groupedTasks,
   setTasks,
   updateTask,
@@ -87,9 +92,11 @@ const TaskKanbanView = ({
       tasklist_id: newTaskListId === 0 ? null : newTaskListId,
     });
 
-    toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
+    if (prevList.id !== currList.id) {
+      toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   }
 
   return (
@@ -103,9 +110,6 @@ const TaskKanbanView = ({
                   <header className="mb-4">
                     <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
                       <h3>{item.list.title}</h3>
-                      <span className="block">
-                        <HiPlus />
-                      </span>
                     </div>
                   </header>
                   <div className="px-4">
@@ -129,7 +133,7 @@ const TaskKanbanView = ({
   );
 };
 
-const TaskListView = ({ groupedTasks }: TaskViewProps) => {
+const TasksListView = ({ groupedTasks }: TaskViewProps) => {
   if (groupedTasks.length === 0) {
     return <div>No tasks in this project</div>;
   }
@@ -194,7 +198,12 @@ const SingleProjectPage = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<TaskList[]>([]);
-  const [, setError] = useState<string | null>(null);
+  const [createTask, setCreateTask] = useState(false);
+  const [newTask, setNewTask] = useState<TaskCreate>({
+    ...emptyTask,
+    project_id: parseInt(projectId as string),
+  });
+  const [error, setError] = useState<ProcessedFormErrorType | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -234,12 +243,48 @@ const SingleProjectPage = () => {
     });
   };
 
-  const updateTask = (taskId: number, data: any) => {
+  const updateTask = (
+    taskId: number,
+    data: { [key: string]: string | number }
+  ) => {
     TaskService.updateTask(taskId, data).then((updatedTask) => {
       setTasks((prevTasks) => {
         return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
       });
     });
+  };
+
+  const setNewTaskFormData = (
+    event:
+      | ChangeEvent<HTMLInputElement>
+      | ChangeEvent<HTMLTextAreaElement>
+      | ChangeEvent<HTMLSelectElement>
+  ) => {
+    setNewTask((prevData) => {
+      return { ...prevData, [event.target.name]: event.target.value };
+    });
+  };
+
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    TaskService.createTask(newTask)
+      .then((newTask) => {
+        setTasks((allTasks) => [...allTasks, newTask]);
+        setNewTask({
+          ...emptyTask,
+          project_id: parseInt(projectId as string),
+        });
+        setCreateTask(false);
+        toast.success("New Task Created", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      })
+      .catch((e) => {
+        setError(e);
+        toast.error("Error creating Task", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
 
   return (
@@ -255,7 +300,15 @@ const SingleProjectPage = () => {
             {project?.title}
           </h1>
         </div>
-        <div className="toolbar">
+        <div className="toolbar flex items-center gap-8">
+          <div>
+            <Button
+              text="Add Task"
+              type="CONFIRM"
+              onClick={() => setCreateTask(true)}
+              icon={<HiPlus className="font-semibold text-lg" />}
+            />
+          </div>
           <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
             <span
               className={
@@ -282,14 +335,14 @@ const SingleProjectPage = () => {
       </PageHeader>
       <section className="px-4">
         {view === TasksViewType.LIST ? (
-          <TaskListView
+          <TasksListView
             deleteTask={deleteTask}
             groupedTasks={groupedTasks}
             setTasks={setTasks}
             updateTask={updateTask}
           />
         ) : (
-          <TaskKanbanView
+          <TasksKanbanView
             deleteTask={deleteTask}
             groupedTasks={groupedTasks}
             setTasks={setTasks}
@@ -297,6 +350,100 @@ const SingleProjectPage = () => {
           />
         )}
       </section>
+      <div>
+        <Modal
+          modalId="create-new-task"
+          headerText="Add new task"
+          toggleModal={createTask}
+          body={
+            <form className="w-full" onSubmit={handleFormSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="title"
+                  className="block text-md font-medium text-grey-dark mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={newTask?.title}
+                  onChange={(e) => setNewTaskFormData(e)}
+                  className={
+                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                    (error !== null && error.title
+                      ? " border-error"
+                      : " border-gray-300")
+                  }
+                />
+                {error !== null && error.title ? (
+                  <span className="text-sm text-error">{error.title}</span>
+                ) : null}
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="description"
+                  className="block text-md font-medium text-grey-dark mb-1">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={5}
+                  value={newTask.description}
+                  onChange={(e) => setNewTaskFormData(e)}
+                  className={
+                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                    (error !== null && error.description
+                      ? " border-error"
+                      : " border-gray-300")
+                  }
+                />
+                {error !== null && error.description ? (
+                  <span className="text-sm text-error">
+                    {error.description}
+                  </span>
+                ) : null}
+              </div>
+              <div className="mb-4">
+                <label className="block text-md font-medium text-grey-dark mb-1">
+                  Choose List
+                </label>
+                <select
+                  onChange={(e) => setNewTaskFormData(e)}
+                  className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2"
+                  name="tasklist_id"
+                  defaultValue={undefined}>
+                  <option value="0">Todo</option>
+                  {lists.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-4 mt-10">
+                <button
+                  className="w-1/2 outline outline-1 rounded-md font-semibold text-primary cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setError(null);
+                    setNewTask({
+                      ...emptyTask,
+                      project_id: parseInt(projectId as string),
+                    });
+                    setCreateTask(false);
+                  }}>
+                  Cancel
+                </button>
+                <button className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2">
+                  Create Project
+                </button>
+              </div>
+            </form>
+          }
+        />
+      </div>
     </div>
   );
 };
