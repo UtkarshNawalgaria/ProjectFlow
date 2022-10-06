@@ -8,7 +8,6 @@ from .models import TaskStatus
 class TaskBase(SQLModel):
     title: str
     project_id: int
-    status: TaskStatus
     description: Optional[str]
     tasklist_id: Optional[int]
     due_date: Optional[datetime]
@@ -17,6 +16,7 @@ class TaskBase(SQLModel):
 
 class TaskRead(TaskBase):
     id: int
+    status: TaskStatus
 
 
 class TaskUpdate(TaskBase):
@@ -30,7 +30,7 @@ class TaskUpdate(TaskBase):
 
 
 class TaskCreate(TaskBase):
-    pass
+    title: str = Field(min_length=5)
 
 
 class ProjectBase(SQLModel):
