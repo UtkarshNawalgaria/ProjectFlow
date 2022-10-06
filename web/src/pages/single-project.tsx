@@ -164,7 +164,7 @@ const TasksListView = ({ groupedTasks, deleteTask }: TaskViewProps) => {
         return (
           <div key={item.list.id}>
             <Collapsable>
-              <CollapsableHead styles="py-2 px-3 border flex w-full cursor-pointer font-bold">
+              <CollapsableHead styles="py-2 px-3 border-x border-t flex w-full cursor-pointer font-bold">
                 <div>
                   <HiChevronDown className="inline-block" />
                   <span className="pl-4">{item.list.title}</span>

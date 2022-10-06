@@ -145,10 +145,8 @@ const ProjectsPage = () => {
     null
   );
   const [error, setError] = useState<ProcessedFormErrorType | null>(null);
-  const [modalToggles, setModalToggles] = useState({
-    CREATE_PROJECT: false,
-    DELETE_PROJECT_CONFIRMATION: false,
-  });
+  const [showNewProjectModal, toggleNewProjectModal] = useState(false);
+  const [showDeleteConfirmModal, toggleDeleteConfirmModal] = useState(false);
 
   useEffect(() => {
     ProjectService.getAll().then((data) => setProjects(data));
@@ -156,10 +154,7 @@ const ProjectsPage = () => {
 
   const deleteProject = (projectId: number, confirmDelete = false) => {
     if (!confirmDelete) {
-      setModalToggles((prevValues) => ({
-        ...prevValues,
-        DELETE_PROJECT_CONFIRMATION: true,
-      }));
+      toggleDeleteConfirmModal(true);
       return;
     }
 
@@ -187,10 +182,7 @@ const ProjectsPage = () => {
     ProjectService.createProject(newProject)
       .then((newProject) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
-        setModalToggles((prevValues) => ({
-          ...prevValues,
-          CREATE_PROJECT: false,
-        }));
+        toggleNewProjectModal(false);
         setNewProject({ title: "", description: "" });
         toast.success("Project Created Successfuly", {
           position: toast.POSITION.TOP_RIGHT,
@@ -203,10 +195,7 @@ const ProjectsPage = () => {
 
   const resetData = () => {
     setSelectedProjectId(null);
-    setModalToggles((prevValues) => ({
-      ...prevValues,
-      DELETE_PROJECT_CONFIRMATION: false,
-    }));
+    toggleDeleteConfirmModal(false);
   };
 
   return (
@@ -246,12 +235,7 @@ const ProjectsPage = () => {
             <ProjectsListView
               projects={projects}
               deleteProject={deleteProject}
-              openModal={() =>
-                setModalToggles((prevValues) => ({
-                  ...prevValues,
-                  CREATE_PROJECT: true,
-                }))
-              }
+              openModal={() => toggleNewProjectModal(true)}
               setSelectedProjectId={setSelectedProjectId}
             />
           </div>
@@ -259,12 +243,7 @@ const ProjectsPage = () => {
           <ProjectsCardView
             projects={projects}
             deleteProject={deleteProject}
-            openModal={() =>
-              setModalToggles((prevValues) => ({
-                ...prevValues,
-                CREATE_PROJECT: true,
-              }))
-            }
+            openModal={() => () => toggleNewProjectModal(true)}
             setSelectedProjectId={setSelectedProjectId}
           />
         )}
@@ -273,7 +252,7 @@ const ProjectsPage = () => {
         <Modal
           modalId="create-new-project-modal"
           headerText="Create New Project"
-          toggleModal={modalToggles.CREATE_PROJECT}
+          toggleModal={showNewProjectModal}
           body={
             <form className="w-full" onSubmit={createNewProject}>
               <div className="mb-4">
@@ -331,10 +310,7 @@ const ProjectsPage = () => {
                     e.preventDefault();
                     setError(null);
                     setNewProject({ title: "", description: "" });
-                    setModalToggles((prevValues) => ({
-                      ...prevValues,
-                      CREATE_PROJECT: false,
-                    }));
+                    toggleNewProjectModal(false);
                   }}>
                   Cancel
                 </button>
@@ -348,7 +324,7 @@ const ProjectsPage = () => {
         <Modal
           modalId="delete-project-modal"
           headerText="Delete Project ?"
-          toggleModal={modalToggles.DELETE_PROJECT_CONFIRMATION}
+          toggleModal={showDeleteConfirmModal}
           body={
             <div className="">
               <p>
