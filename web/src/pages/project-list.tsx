@@ -52,9 +52,7 @@ const ProjectsListView: FC<ProjectViewProps> = ({
                 <HiTrash
                   onClick={() => {
                     setSelectedProjectId(project.id);
-                    project.task_count === 0
-                      ? deleteProject(project.id, true)
-                      : deleteProject(project.id);
+                    deleteProject(project.id);
                   }}
                   className="cursor-pointer text-red-700"
                 />
@@ -109,9 +107,7 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
                   <HiTrash
                     onClick={() => {
                       setSelectedProjectId(project.id);
-                      project.task_count === 0
-                        ? deleteProject(project.id, true)
-                        : deleteProject(project.id);
+                      deleteProject(project.id);
                     }}
                     className="cursor-pointer text-red-700"
                   />
@@ -159,17 +155,11 @@ const ProjectsPage = () => {
   }, []);
 
   const deleteProject = (projectId: number, confirmDelete = false) => {
-    const project = projects.find((p) => p.id === projectId);
-
-    if (project?.task_count && project?.task_count > 0 && !confirmDelete) {
+    if (!confirmDelete) {
       setModalToggles((prevValues) => ({
         ...prevValues,
         DELETE_PROJECT_CONFIRMATION: true,
       }));
-      return;
-    }
-
-    if (!confirmDelete) {
       return;
     }
 
