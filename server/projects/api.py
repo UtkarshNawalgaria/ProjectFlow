@@ -132,7 +132,7 @@ def create_task(
     return new_task
 
 
-@tasks_router.patch("/{task_id}", response_model=TaskRead)
+@tasks_router.patch("/{task_id}/", response_model=TaskRead)
 def update_task(
     task_id: int, task: TaskUpdate, session: Session = Depends(get_db_session)
 ):
@@ -188,7 +188,7 @@ def get_task_by_id(task_id: int, session: Session = Depends(get_db_session)):
     return task
 
 
-@tasks_router.post("/create_list", response_model=TaskListRead)
+@tasks_router.post("/create_list/", response_model=TaskListRead)
 def create_task_list(list: TaskListCreate, session: Session = Depends(get_db_session)):
     new_task_list = TaskList(**list.dict())
     session.add(new_task_list)
