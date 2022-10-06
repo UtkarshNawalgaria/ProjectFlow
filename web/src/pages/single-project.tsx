@@ -115,7 +115,9 @@ const TasksKanbanView = ({
                 <KanbanList tasklist={item.list}>
                   <header className="mb-4">
                     <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
-                      <h3>{item.list.title}</h3>
+                      <h3>
+                        {item.list.title} ({item.tasks.length})
+                      </h3>
                     </div>
                   </header>
                   <div className="px-4">
@@ -219,6 +221,7 @@ const SingleProjectPage = () => {
   const [showCreateTask, toggleCreateTaskModal] = useState(false);
   const [showTaskListModal, toggleTaskListModal] = useState(false);
 
+  // Fetch project details, tasks and tasklists related to the project
   useEffect(() => {
     Promise.all([
       ProjectService.getById(parseInt(projectId as string)),
@@ -268,13 +271,19 @@ const SingleProjectPage = () => {
       setTasks((prevTasks) => {
         return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
       });
+      toast.success("Task Updated successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     });
   };
 
   const createTaskList = (list: TaskList) => {
-    TaskService.createTaskList(list).then((list) =>
-      setLists((lists) => [...lists, list])
-    );
+    TaskService.createTaskList(list).then((list) => {
+      setLists((lists) => [...lists, list]);
+      toast.success("Task List Created Successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    });
   };
 
   const props = {
