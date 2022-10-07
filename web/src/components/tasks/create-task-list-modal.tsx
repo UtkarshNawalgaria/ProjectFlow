@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 import { HiX } from "react-icons/hi";
-import { TaskList } from "../../services/tasks";
+import { TaskList, TaskListCreate } from "../../services/tasks";
 
 const NewTaskListModal = ({
   modalId,
@@ -10,10 +10,10 @@ const NewTaskListModal = ({
 }: {
   modalId: string;
   toggleModal: any;
-  onFormSubmit: (list: TaskList) => void;
+  onFormSubmit: (list: TaskListCreate) => void;
 }) => {
   const { projectId } = useParams();
-  const [list, setList] = useState<TaskList>({
+  const [list, setList] = useState<TaskListCreate>({
     title: "",
     project_id: parseInt(projectId as string),
   });

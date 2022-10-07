@@ -165,6 +165,7 @@ const ProjectsPage = () => {
       toast.success("Project Deleted Successfuly", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      toggleDeleteConfirmModal(false);
     });
   };
 
@@ -183,6 +184,7 @@ const ProjectsPage = () => {
       .then((newProject) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
         toggleNewProjectModal(false);
+        setError(null);
         setNewProject({ title: "", description: "" });
         toast.success("Project Created Successfuly", {
           position: toast.POSITION.TOP_RIGHT,

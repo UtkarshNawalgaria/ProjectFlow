@@ -23,6 +23,7 @@ import TaskService, {
   DefaultTaskList,
   Task,
   TaskList,
+  TaskListCreate,
 } from "../services/tasks";
 import { ProcessedFormErrorType } from "../utils";
 
@@ -35,7 +36,10 @@ type TaskViewProps = {
   groupedTasks: GroupedTasks;
   setTasks: any;
   deleteTask: (taskId: number) => void;
-  updateTask: (taskId: number, data: any) => void;
+  updateTask: (
+    taskId: number,
+    data: { [key: string]: string | number | null }
+  ) => void;
   toggleModal: any;
 };
 
@@ -79,26 +83,25 @@ const TasksKanbanView = ({
     const prevList = active?.data?.current?.list;
     const currList = over?.data?.current?.tasklist;
 
-    // Change the moved task's `tasklist_id` value in the frontend
-    // before updating on the backend to avoid lag in changing the
-    // tasks list in kanban mode
-    setTasks((prevTasks: Task[]) => {
-      const currTask = prevTasks.find((task) => task.id === taskId);
-      const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
-
-      if (currTask) {
-        currTask.tasklist_id = newTaskListId != 0 ? newTaskListId : null;
-        remainingTasks.push(currTask);
-      }
-
-      return remainingTasks;
-    });
-
-    updateTask(taskId as number, {
-      tasklist_id: newTaskListId === 0 ? null : newTaskListId,
-    });
-
     if (prevList.id !== currList.id) {
+      // Change the moved task's `tasklist_id` value in the frontend
+      // before updating on the backend to avoid lag in changing the
+      // tasks list in kanban mode
+      setTasks((prevTasks: Task[]) => {
+        const currTask = prevTasks.find((task) => task.id === taskId);
+        const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
+
+        if (currTask) {
+          currTask.tasklist_id = newTaskListId != 0 ? newTaskListId : null;
+          remainingTasks.push(currTask);
+        }
+
+        return remainingTasks;
+      });
+
+      updateTask(taskId as number, {
+        tasklist_id: newTaskListId === 0 ? null : newTaskListId,
+      });
       toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -250,9 +253,9 @@ const SingleProjectPage = () => {
       const listTasks = tasks.filter((task) => task.tasklist_id === list.id);
       outputData.push({ list, tasks: listTasks });
     });
-
+    console.log(outputData);
     return outputData;
-  }, [tasks, lists]);
+  }, [tasks]);
 
   const deleteTask = (taskId: number) => {
     TaskService.delete(taskId).then(() => {
@@ -265,7 +268,7 @@ const SingleProjectPage = () => {
 
   const updateTask = (
     taskId: number,
-    data: { [key: string]: string | number }
+    data: { [key: string]: string | number | null }
   ) => {
     TaskService.updateTask(taskId, data).then((updatedTask) => {
       setTasks((prevTasks) => {
@@ -277,7 +280,7 @@ const SingleProjectPage = () => {
     });
   };
 
-  const createTaskList = (list: TaskList) => {
+  const createTaskList = (list: TaskListCreate) => {
     TaskService.createTaskList(list).then((list) => {
       setLists((lists) => [...lists, list]);
       toast.success("Task List Created Successfully", {
@@ -360,7 +363,9 @@ const SingleProjectPage = () => {
             modalId="new-task-modal"
             toggleModal={toggleCreateTaskModal}
             lists={lists}
-            setTasks={setTasks}
+            addNewTask={(newTask: Task) =>
+              setTasks((prevTasks) => [...prevTasks, newTask])
+            }
           />
         ) : null}
       </div>

@@ -5,6 +5,7 @@ import TaskService, {
   TaskCreate,
   emptyTask,
   TaskList,
+  Task,
 } from "../../services/tasks";
 import { ProcessedFormErrorType } from "../../utils";
 import { toast } from "react-toastify";
@@ -13,11 +14,11 @@ const NewTaskModal = ({
   modalId,
   toggleModal,
   lists,
-  setTasks,
+  addNewTask,
 }: {
   modalId: string;
-  toggleModal: any;
-  setTasks: any;
+  toggleModal: React.Dispatch<boolean>;
+  addNewTask: (x: Task) => void;
   lists: TaskList[];
 }) => {
   const { projectId } = useParams();
@@ -43,7 +44,7 @@ const NewTaskModal = ({
 
     TaskService.createTask(newTask)
       .then((newTask) => {
-        setTasks((allTasks) => [...allTasks, newTask]);
+        addNewTask(newTask);
         setNewTask({
           ...emptyTask,
           project_id: parseInt(projectId as string),

@@ -25,11 +25,14 @@ export type TaskCreate = {
   due_date?: string | null;
 };
 
-export type TaskList = {
-  id?: number;
+export type TaskListCreate = {
   title: string;
   project_id: number;
 };
+
+export type TaskList = {
+  id: number;
+} & TaskListCreate;
 
 export const emptyTask: TaskCreate = {
   title: "",
@@ -51,7 +54,7 @@ export default {
     return client<Task[]>(`task/?project_id=${projectId}`);
   },
   getById: (taskId: number) => {
-    return client<Task>(`task/${taskId}`);
+    return client<Task>(`task/${taskId}/`);
   },
   createTask: (task: TaskCreate) => {
     return client<Task>("task/", {
@@ -61,9 +64,9 @@ export default {
   },
   updateTask: (
     taskId: number,
-    update_data: { [key: string]: string | number }
+    update_data: { [key: string]: string | number | null }
   ) => {
-    return client<Task>(`task/${taskId}`, {
+    return client<Task>(`task/${taskId}/`, {
       method: "PATCH",
       body: JSON.stringify(update_data),
     });
@@ -76,7 +79,7 @@ export default {
   getAllTaskLists: (projectId: number) => {
     return client<TaskList[]>(`task/get_list?project_id=${projectId}`);
   },
-  createTaskList: (data: TaskList) => {
+  createTaskList: (data: TaskListCreate) => {
     return client<TaskList>("task/create_list/", {
       method: "POST",
       body: JSON.stringify(data),
