@@ -11,7 +11,11 @@ init_db()
 settings = get_settings()
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
+origins = [
+    "http://localhost:3000",
+    "http://localhost:4173",
+    "https://tasks.utkarshnawalgaria.com",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,6 +29,7 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(tasks_router)
+
 
 @app.get("/")
 def home():
