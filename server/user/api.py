@@ -27,7 +27,7 @@ user_router = APIRouter(
 settings = get_settings()
 
 
-@auth_router.post("/register", status_code=201)
+@auth_router.post("/register/", status_code=201)
 def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session)):
 
     existing_users = session.exec(select(User).where(User.email == user_in.email)).all()
@@ -46,7 +46,7 @@ def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session))
     return {"message": "User Created"}
 
 
-@auth_router.post("/login")
+@auth_router.post("/login/")
 def user_login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_db_session),
