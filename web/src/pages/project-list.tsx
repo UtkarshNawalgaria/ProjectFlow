@@ -28,7 +28,6 @@ type ProjectViewProps = {
 const ProjectsListView: FC<ProjectViewProps> = ({
   projects,
   deleteProject,
-  openModal,
   setSelectedProjectId,
 }) => {
   return (
@@ -64,14 +63,6 @@ const ProjectsListView: FC<ProjectViewProps> = ({
           </li>
         ))}
       </ul>
-      <button
-        className="w-full p-4 mt-8 bg-gray-100 outline-dashed outline-gray-300 outline-2 text-gray-800 cursor-pointer rounded-md flex items-center justify-center gap-2 hover:text-gray-600 hover:bg-grey-lightest hover:outline-gray-200 hover:outline-dashed"
-        onClick={openModal}>
-        <span>Create Project</span>
-        <span>
-          <HiPlus />
-        </span>
-      </button>
     </>
   );
 };
@@ -206,27 +197,37 @@ const ProjectsPage = () => {
         <div className="font-bold text-2xl text-grey-dark">
           Projects ({projects.length})
         </div>
-        <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
-          <span
-            className={
-              "p-1 block cursor-pointer m-1" +
-              (view === ProjectsViewType.LIST
-                ? " bg-white rounded-md text-grey-dark"
-                : "")
-            }
-            onClick={() => setView(ProjectsViewType.LIST)}>
-            <AiOutlineUnorderedList className="h-6 w-6 text-black" />
-          </span>
-          <span
-            className={
-              "p-1 block cursor-pointer m-1" +
-              (view === ProjectsViewType.CARD
-                ? " bg-white rounded-md text-grey-dark"
-                : "")
-            }
-            onClick={() => setView(ProjectsViewType.CARD)}>
-            <BsCardHeading className="h-6 w-6 text-black" />
-          </span>
+        <div className="flex items-center gap-8" id="toolbar">
+          <div>
+            <Button
+              text="Create Project"
+              type="CONFIRM"
+              onClick={() => toggleNewProjectModal(true)}
+              icon={<HiPlus className="font-semibold text-lg" />}
+            />
+          </div>
+          <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
+            <span
+              className={
+                "p-1 block cursor-pointer m-1" +
+                (view === ProjectsViewType.LIST
+                  ? " bg-white rounded-md text-grey-dark"
+                  : "")
+              }
+              onClick={() => setView(ProjectsViewType.LIST)}>
+              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
+            </span>
+            <span
+              className={
+                "p-1 block cursor-pointer m-1" +
+                (view === ProjectsViewType.CARD
+                  ? " bg-white rounded-md text-grey-dark"
+                  : "")
+              }
+              onClick={() => setView(ProjectsViewType.CARD)}>
+              <BsCardHeading className="h-6 w-6 text-black" />
+            </span>
+          </div>
         </div>
       </PageHeader>
       <section className="px-4">
@@ -252,100 +253,94 @@ const ProjectsPage = () => {
       </section>
       <div className="page-modals">
         <Modal
-          modalId="create-new-project-modal"
-          headerText="Create New Project"
-          toggleModal={showNewProjectModal}
-          body={
-            <form className="w-full" onSubmit={createNewProject}>
-              <div className="mb-4">
-                <label
-                  htmlFor="title"
-                  className="block text-md font-medium text-grey-dark mb-1">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={newProject.title}
-                  onChange={(e) => setNewProjectFormData(e)}
-                  className={
-                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
-                    (error !== null && error.title
-                      ? " border-error"
-                      : " border-gray-300")
-                  }
-                />
-                {error !== null && error.title ? (
-                  <span className="text-sm text-error">{error.title}</span>
-                ) : null}
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="description"
-                  className="block text-md font-medium text-grey-dark mb-1">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={5}
-                  value={newProject.description}
-                  onChange={(e) => setNewProjectFormData(e)}
-                  className={
-                    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
-                    (error !== null && error.description
-                      ? " border-error"
-                      : " border-gray-300")
-                  }
-                />
-                {error !== null && error.description ? (
-                  <span className="text-sm text-error">
-                    {error.description}
-                  </span>
-                ) : null}
-              </div>
-              <div className="flex gap-4">
-                <button
-                  className="w-1/2 outline outline-1 rounded-md font-semibold text-primary cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setError(null);
-                    setNewProject({ title: "", description: "" });
-                    toggleNewProjectModal(false);
-                  }}>
-                  Cancel
-                </button>
-                <button className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2">
-                  Create Project
-                </button>
-              </div>
-            </form>
-          }
-        />
-        <Modal
-          modalId="delete-project-modal"
-          headerText="Delete Project ?"
-          toggleModal={showDeleteConfirmModal}
-          body={
-            <div className="">
-              <p>
-                This Project has tasks associated with it. Confirm if you want
-                to delete the project along with the tasks.
-              </p>
-              <div className="mt-5 flex gap-4">
-                <Button text="Cancel" onClick={resetData} type={"CANCEL"} />
-                <Button
-                  text="Delete"
-                  onClick={() =>
-                    deleteProject(selectedProjectId as number, true)
-                  }
-                  type={"DANGER"}
-                />
-              </div>
+          title="Create New Project"
+          open={showNewProjectModal}
+          closeModal={() => {
+            setError(null);
+            setNewProject({ title: "", description: "" });
+            toggleNewProjectModal(false);
+          }}>
+          <form className="w-full" onSubmit={createNewProject}>
+            <div className="mb-4">
+              <label
+                htmlFor="title"
+                className="block text-md font-medium text-grey-dark mb-1">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={newProject.title}
+                onChange={(e) => setNewProjectFormData(e)}
+                className={
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                  (error !== null && error.title
+                    ? " border-error"
+                    : " border-gray-300")
+                }
+              />
+              {error !== null && error.title ? (
+                <span className="text-sm text-error">{error.title}</span>
+              ) : null}
             </div>
-          }
-        />
+            <div className="mb-4">
+              <label
+                htmlFor="description"
+                className="block text-md font-medium text-grey-dark mb-1">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={5}
+                value={newProject.description}
+                onChange={(e) => setNewProjectFormData(e)}
+                className={
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                  (error !== null && error.description
+                    ? " border-error"
+                    : " border-gray-300")
+                }
+              />
+              {error !== null && error.description ? (
+                <span className="text-sm text-error">{error.description}</span>
+              ) : null}
+            </div>
+            <div className="flex gap-4">
+              <button
+                className="w-1/2 outline outline-1 rounded-md font-semibold text-primary cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setError(null);
+                  setNewProject({ title: "", description: "" });
+                  toggleNewProjectModal(false);
+                }}>
+                Cancel
+              </button>
+              <button className="text-center bg-primary py-3 rounded-md font-semibold text-white cursor-pointer w-1/2">
+                Create Project
+              </button>
+            </div>
+          </form>
+        </Modal>
+        <Modal
+          title="Delete Project ?"
+          open={showDeleteConfirmModal}
+          closeModal={() => toggleDeleteConfirmModal(false)}>
+          <p>
+            This Project has tasks associated with it. Confirm if you want to
+            delete the project along with the tasks.
+          </p>
+          <div className="mt-5 flex gap-4">
+            <Button text="Cancel" onClick={resetData} type={"CANCEL"} />
+            <Button
+              text="Delete"
+              onClick={() => deleteProject(selectedProjectId as number, true)}
+              type={"DANGER"}
+            />
+          </div>
+        </Modal>
       </div>
     </div>
   );

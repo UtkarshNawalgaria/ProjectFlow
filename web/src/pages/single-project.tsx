@@ -253,7 +253,7 @@ const SingleProjectPage = () => {
       const listTasks = tasks.filter((task) => task.tasklist_id === list.id);
       outputData.push({ list, tasks: listTasks });
     });
-    console.log(outputData);
+
     return outputData;
   }, [tasks]);
 
@@ -310,7 +310,7 @@ const SingleProjectPage = () => {
             {project?.title}
           </h1>
         </div>
-        <div className="toolbar flex items-center gap-8">
+        <div className="flex items-center gap-8" id="toolbar">
           <div>
             <Button
               text="Add Task"
@@ -350,25 +350,19 @@ const SingleProjectPage = () => {
           <TasksKanbanView {...props} />
         )}
       </section>
-      <div>
-        {showTaskListModal ? (
-          <NewTaskListModal
-            modalId="new-task-list-modal"
-            toggleModal={toggleTaskListModal}
-            onFormSubmit={createTaskList}
-          />
-        ) : null}
-        {showCreateTask ? (
-          <NewTaskModal
-            modalId="new-task-modal"
-            toggleModal={toggleCreateTaskModal}
-            lists={lists}
-            addNewTask={(newTask: Task) =>
-              setTasks((prevTasks) => [...prevTasks, newTask])
-            }
-          />
-        ) : null}
-      </div>
+      <NewTaskListModal
+        open={showTaskListModal}
+        closeModal={() => toggleTaskListModal(false)}
+        onFormSubmit={createTaskList}
+      />
+      <NewTaskModal
+        open={showCreateTask}
+        closeModal={() => toggleCreateTaskModal(false)}
+        lists={lists}
+        addNewTask={(newTask: Task) =>
+          setTasks((prevTasks) => [...prevTasks, newTask])
+        }
+      />
     </div>
   );
 };
