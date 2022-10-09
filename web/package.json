@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.5",
-    "daisyui": "^2.31.0",
+    "@headlessui/react": "^1.7.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
