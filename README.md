@@ -18,7 +18,7 @@ This is a basic project and task management web application which allows users t
 * Tailwindcss
 
 ## Deployment
-The whole application is being deployed on AWS. Currently, the frontend application will be built and deployed on Netlify and the backend will be deployed as a docker container on AWS Fargate. The deployment is done using Github CI/CD
+The api server has been deployed on [railway.app](https://railway.app/) and the frontend is deployed on cloudflare pages.
 
 ## Database Design
 ![Database models](images/dbdiagram.png)
