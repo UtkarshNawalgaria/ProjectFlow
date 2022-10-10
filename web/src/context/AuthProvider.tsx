@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { toast } from "react-toastify";
 import client, { authTokenKey } from "../services/client";
 
 const encodeFormData = (data: { [key: string]: string }) => {
@@ -12,10 +13,17 @@ export type TAuth = {
   accessToken: string;
 };
 
+export type TAuthData = {
+  name?: string;
+  email: string;
+  password: string;
+};
+
 export type AuthContextType = {
   auth: TAuth | null;
   redirectUrl: string;
   login: (username: string, password: string) => void;
+  register: (data: TAuthData, onSuccess: () => void) => void;
   verifyToken: () => void;
   setAuth: (auth: TAuth | null, logout?: boolean) => void;
   logout?: () => void;
@@ -50,6 +58,24 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     });
   }
 
+  function register(data: TAuthData, onSuccess: () => void) {
+    client("auth/register/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        toast.success("You have registered successfuly", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        onSuccess();
+      })
+      .catch((error) => {
+        toast.error(`${error.message}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  }
+
   function login(email: string, password: string): void {
     client<{
       access_token: string;
@@ -75,13 +101,22 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   }
 
   function logout(): void {
-    setAuth(null, true);
+    setAuth(null, false);
     window.localStorage.removeItem(authTokenKey);
+    window.location.assign("/");
   }
 
   return (
     <AuthContext.Provider
-      value={{ auth: value, redirectUrl, setAuth, login, logout, verifyToken }}>
+      value={{
+        auth: value,
+        redirectUrl,
+        setAuth,
+        register,
+        login,
+        logout,
+        verifyToken,
+      }}>
       {children}
     </AuthContext.Provider>
   );

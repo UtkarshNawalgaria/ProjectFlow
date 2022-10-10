@@ -1,7 +1,10 @@
+from typing import Optional
 from sqlmodel import SQLModel
 from pydantic import EmailStr
 
+
 class UserCreate(SQLModel):
+    name: Optional[str]
     email: EmailStr
     password: str
 
