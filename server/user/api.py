@@ -46,7 +46,7 @@ def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session))
     return {"message": "User Created"}
 
 
-@auth_router.post("/login/")
+@auth_router.post("/login/", status_code=201)
 def user_login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_db_session),
@@ -56,7 +56,7 @@ def user_login(
     if not my_user:
         log.info(f"{form_data.username} either does not exists or passowrd is wrong")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password",
         )
 

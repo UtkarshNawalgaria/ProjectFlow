@@ -22,8 +22,16 @@ export type TAuthData = {
 export type AuthContextType = {
   auth: TAuth | null;
   redirectUrl: string;
-  login: (username: string, password: string) => void;
-  register: (data: TAuthData, onSuccess: () => void) => void;
+  login: (
+    username: string,
+    password: string,
+    onError: (error: Error) => void
+  ) => void;
+  register: (
+    data: TAuthData,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
   verifyToken: () => void;
   setAuth: (auth: TAuth | null, logout?: boolean) => void;
   logout?: () => void;
@@ -58,7 +66,11 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     });
   }
 
-  function register(data: TAuthData, onSuccess: () => void) {
+  function register(
+    data: TAuthData,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) {
     client("auth/register/", {
       method: "POST",
       body: JSON.stringify(data),
@@ -70,13 +82,18 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
         onSuccess();
       })
       .catch((error) => {
+        onError(error);
         toast.error(`${error.message}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
   }
 
-  function login(email: string, password: string): void {
+  function login(
+    email: string,
+    password: string,
+    onError: (error: Error) => void
+  ): void {
     client<{
       access_token: string;
       token_type: string;
@@ -96,7 +113,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
         });
         window.location.assign(redirectUrl);
       },
-      (error) => console.error(error)
+      (error) => onError(error)
     );
   }
 
