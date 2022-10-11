@@ -101,9 +101,10 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   }
 
   function guestLogin() {
-    UserService.login(
+    login(
       import.meta.env.VITE_GUEST_USER_EMAIL,
-      import.meta.env.VITE_GUEST_USER_PASSWORD
+      import.meta.env.VITE_GUEST_USER_PASSWORD,
+      (error) => console.error(error.message)
     );
   }
 
