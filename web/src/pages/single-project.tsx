@@ -126,11 +126,11 @@ const TasksKanbanView = ({
                   <div className="px-4">
                     {item.tasks.map((task) => {
                       return (
-                        <div key={task.id}>
-                          <KanbanCard task={task} list={item.list}>
-                            <div>{task.title}</div>
-                          </KanbanCard>
-                        </div>
+                        <KanbanCard
+                          task={task}
+                          list={item.list}
+                          key={task.id}
+                        />
                       );
                     })}
                   </div>
@@ -184,7 +184,7 @@ const TasksListView = ({ groupedTasks, deleteTask }: TaskViewProps) => {
                         }`}>
                         <div className="flex items-center">
                           <div className="w-full pl-8 py-2">{task.title}</div>
-                          <div className="w-full pl-4 py-2">
+                          <div className="w-full pl-2 py-2">
                             {task.status === 0 ? "Open" : "Completed"}
                           </div>
                           <div className="w-full pl-4 py-2">
@@ -255,7 +255,7 @@ const SingleProjectPage = () => {
     });
 
     return outputData;
-  }, [tasks]);
+  }, [tasks, lists]);
 
   const deleteTask = (taskId: number) => {
     TaskService.delete(taskId).then(() => {
