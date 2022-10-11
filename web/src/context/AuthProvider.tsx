@@ -27,6 +27,7 @@ export type AuthContextType = {
     password: string,
     onError: (error: Error) => void
   ) => void;
+  guestLogin: () => void;
   register: (
     data: TAuthData,
     onSuccess: () => void,
@@ -117,6 +118,14 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     );
   }
 
+  function guestLogin() {
+    login(
+      import.meta.env.VITE_GUEST_USER_EMAIL,
+      import.meta.env.VITE_GUEST_USER_PASSWORD,
+      (error) => console.log(error.message)
+    );
+  }
+
   function logout(): void {
     setAuth(null, false);
     window.localStorage.removeItem(authTokenKey);
@@ -131,6 +140,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
         setAuth,
         register,
         login,
+        guestLogin,
         logout,
         verifyToken,
       }}>

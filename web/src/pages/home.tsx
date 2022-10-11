@@ -9,7 +9,8 @@ const HomePage = () => {
   });
   const [error, setError] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { register, login, auth, redirectUrl } = useAuth() as AuthContextType;
+  const { register, login, guestLogin, auth, redirectUrl } =
+    useAuth() as AuthContextType;
 
   useEffect(() => {
     if (auth?.accessToken) {
@@ -76,50 +77,55 @@ const HomePage = () => {
             <Tab.Panel className="px-10 pb-10 pt-5">
               {({ selected }) => {
                 return (
-                  <form onSubmit={(e) => handleFormSubmit(e, "login")}>
-                    {selected && error ? (
-                      <div className="text-error mb-5">{error}</div>
-                    ) : null}
-                    <div className="flex flex-col gap-[5px]">
-                      <label className="block text-md font-medium text-grey-dark mb-1">
-                        Email
-                      </label>
+                  <>
+                    <form onSubmit={(e) => handleFormSubmit(e, "login")}>
+                      {selected && error ? (
+                        <div className="text-error mb-5">{error}</div>
+                      ) : null}
+                      <div className="flex flex-col gap-[5px]">
+                        <label className="block text-md font-medium text-grey-dark mb-1">
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          value={authData.email}
+                          onChange={(e) => handleFormDataChange(e)}
+                          className={`${formGroup} ${
+                            error ? "border-error" : null
+                          }`}
+                          placeholder="Enter your email"
+                          required
+                        />
+                      </div>
+                      <div className="flex flex-col gap-[5px]">
+                        <label className="block text-md font-medium text-grey-dark mb-1">
+                          Password
+                        </label>
+                        <input
+                          type="password"
+                          name="password"
+                          id="password"
+                          value={authData.password}
+                          onChange={(e) => handleFormDataChange(e)}
+                          className={`${formGroup} ${
+                            error ? "border-error" : null
+                          }`}
+                          placeholder="Enter password..."
+                          required
+                        />
+                      </div>
                       <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        value={authData.email}
-                        onChange={(e) => handleFormDataChange(e)}
-                        className={`${formGroup} ${
-                          error ? "border-error" : null
-                        }`}
-                        placeholder="Enter your email"
-                        required
+                        className="cursor-pointer py-3 rounded-md font-bold w-full bg-primary text-white hover:bg-indigo-600 transition"
+                        type="submit"
+                        value="Login"
                       />
+                    </form>
+                    <div className="text-center mt-5 text-gray-400 hover:underline cursor-pointer">
+                      <a onClick={guestLogin}>Login as guest</a>
                     </div>
-                    <div className="flex flex-col gap-[5px]">
-                      <label className="block text-md font-medium text-grey-dark mb-1">
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        value={authData.password}
-                        onChange={(e) => handleFormDataChange(e)}
-                        className={`${formGroup} ${
-                          error ? "border-error" : null
-                        }`}
-                        placeholder="Enter password..."
-                        required
-                      />
-                    </div>
-                    <input
-                      className="cursor-pointer py-3 rounded-md font-bold w-full bg-primary text-white hover:bg-indigo-600 transition"
-                      type="submit"
-                      value="Login"
-                    />
-                  </form>
+                  </>
                 );
               }}
             </Tab.Panel>

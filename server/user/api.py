@@ -77,6 +77,6 @@ def get_all_users(session: Session = Depends(get_db_session)):
     return users
 
 
-@user_router.get("/me", response_model=ProfileRead)
+@user_router.get("/me/", response_model=ProfileRead)
 def me(user: User = Depends(get_current_user)):
     return user.profile
