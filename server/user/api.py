@@ -36,7 +36,9 @@ def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session))
         raise HTTPException(status_code=400, detail="User with email already exists.")
 
     new_user = User(
-        name="User", email=user_in.email, password_hash=bcrypt.hash(user_in.password)
+        name=user_in.name or "User",
+        email=user_in.email,
+        password_hash=bcrypt.hash(user_in.password),
     )
     new_user_profile = Profile(user=new_user)
 

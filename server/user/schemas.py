@@ -11,6 +11,7 @@ class UserCreate(SQLModel):
 
 class UserRead(SQLModel):
     id: int
+    name: str
     email: EmailStr
 
 
