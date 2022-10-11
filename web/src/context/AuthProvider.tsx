@@ -1,12 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import client, { authTokenKey } from "../services/client";
-
-const encodeFormData = (data: { [key: string]: string }) => {
-  return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&");
-};
+import UserService from "../services/users";
 
 export type TAuth = {
   email?: string;
@@ -72,10 +67,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     onSuccess: () => void,
     onError: (error: Error) => void
   ) {
-    client("auth/register/", {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
+    UserService.register(data)
       .then(() => {
         toast.success("You have registered successfuly", {
           position: toast.POSITION.TOP_RIGHT,
@@ -95,23 +87,13 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     password: string,
     onError: (error: Error) => void
   ): void {
-    client<{
-      access_token: string;
-      token_type: string;
-    }>("auth/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: encodeFormData({ username: email, password: password }),
-    }).then(
+    UserService.login(email, password).then(
       (data) => {
-        window.localStorage.setItem(authTokenKey, data.access_token);
         setValue({
           email,
           accessToken: data.access_token,
         });
+        window.localStorage.setItem(authTokenKey, data.access_token);
         window.location.assign(redirectUrl);
       },
       (error) => onError(error)
@@ -119,10 +101,9 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   }
 
   function guestLogin() {
-    login(
+    UserService.login(
       import.meta.env.VITE_GUEST_USER_EMAIL,
-      import.meta.env.VITE_GUEST_USER_PASSWORD,
-      (error) => console.log(error.message)
+      import.meta.env.VITE_GUEST_USER_PASSWORD
     );
   }
 
