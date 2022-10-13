@@ -11,6 +11,14 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 2
     JWT_SECRET: str
     ALGORITHM: str = "HS256"
+    APPLICATION_URL: str
+    EMAIL_USERNAME: str = ""
+    EMAIL_PASSWORD: str = ""
+    EMAIL_FROM: str
+    EMAIL_PORT: int
+    EMAIL_SERVER: str
+    EMAIL_USE_TLS: bool = True
+    EMAIL_USE_SSL: bool = True
 
 
 @lru_cache

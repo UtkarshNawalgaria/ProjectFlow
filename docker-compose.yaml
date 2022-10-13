@@ -24,10 +24,12 @@ services:
       - PORT=${SERVER_PORT}
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+      - 1025:1025
     volumes:
       - ./server:/app:z
     depends_on:
       - postgres
+      - mailhog
 
   postgres:
     image: postgres:14.1-alpine
@@ -42,6 +44,11 @@ services:
       - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+     - 8025:8025
 
 volumes:
   db:
