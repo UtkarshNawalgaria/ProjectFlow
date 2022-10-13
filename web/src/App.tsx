@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 import ProtectedRoute from "./components/protectedRoute";
 
@@ -8,6 +8,7 @@ import ProjectsPage from "./pages/project-list";
 import SingleProjectPage from "./pages/single-project";
 
 import "react-toastify/dist/ReactToastify.min.css";
+import VerifyEmail from "./pages/verify-email";
 
 function App() {
   return (
@@ -18,9 +19,10 @@ function App() {
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="projects/:projectId" element={<SingleProjectPage />} />
         </Route>
+        <Route path="/verify_email/" element={<VerifyEmail />} />
         <Route path="*" element={<div>404</div>} />
       </Routes>
-      <ToastContainer autoClose={2000} />
+      <ToastContainer autoClose={2000} position={toast.POSITION.TOP_RIGHT} />
     </>
   );
 }

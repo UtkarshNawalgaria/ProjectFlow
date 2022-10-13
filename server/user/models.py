@@ -11,6 +11,7 @@ class User(BaseModel, table=True):
     name: str = Field(default=None, max_length=100)
     email: str = Field(max_length=100, index=True, unique=True)
     password_hash: str = Field(nullable=False, max_length=128)
+    hash: str = Field(nullable=True, max_length=128)
 
     # Datetime fields
     email_verified_at: datetime = Field(nullable=True)

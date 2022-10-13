@@ -10,6 +10,8 @@ from config import get_settings
 from db.config import get_db_session
 from logger import log
 
+from helpers.email import send_email
+
 from .models import User
 
 
@@ -92,3 +94,13 @@ def get_current_user(
         )
 
     return user
+
+
+async def send_verification_email(user: User, verification_url: str):
+    await send_email(
+        "email_verification.html", "Verify Email Address", recipients=[user.email], context={
+            "name": user.name,
+            "email": user.email,
+            "verification_url": verification_url
+        }
+    )
