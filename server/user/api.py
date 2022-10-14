@@ -68,7 +68,9 @@ async def user_signup(
 
     await send_verification_email(new_user, verification_url)
 
-    return {"message": "User Created"}
+    return {
+        "message": "A verification email has been sent to you. Please verify and then login"
+    }
 
 
 @auth_router.post("/login/", status_code=201)
@@ -88,7 +90,7 @@ def user_login(
     if not my_user.email_verified_at:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please verify your email first to login",
+            detail="Please verify your email first to login.",
         )
 
     token = create_access_token(subject=my_user.email)
