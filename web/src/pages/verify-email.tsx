@@ -19,6 +19,7 @@ const VerifyEmail = () => {
       })
         .then((data) => {
           toast.success(data.message);
+          window.location.assign("/");
         })
         .catch((error) => {
           toast.error(error.message, {

@@ -33,7 +33,7 @@ export default {
     });
   },
   register: (user: UserCreate) => {
-    return client("auth/register/", {
+    return client<{ message: string }>("auth/register/", {
       method: "POST",
       body: JSON.stringify(user),
     });

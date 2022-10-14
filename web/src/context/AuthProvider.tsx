@@ -25,7 +25,7 @@ export type AuthContextType = {
   guestLogin: () => void;
   register: (
     data: TAuthData,
-    onSuccess: () => void,
+    onSuccess: (msg: string) => void,
     onError: (error: Error) => void
   ) => void;
   verifyToken: () => void;
@@ -64,15 +64,15 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
 
   function register(
     data: TAuthData,
-    onSuccess: () => void,
+    onSuccess: (msg: string) => void,
     onError: (error: Error) => void
   ) {
     UserService.register(data)
-      .then(() => {
+      .then((resp) => {
         toast.success("You have registered successfuly", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        onSuccess();
+        onSuccess(resp.message);
       })
       .catch((error) => {
         onError(error);
