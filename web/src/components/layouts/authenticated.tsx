@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Navbar from "./navbar";
-import UserSettings from "./user-settings";
-import UserService, { UserProfile } from "../services/users";
+import Sidebar from "../sidebar";
+import UserSettings from "../user-settings";
+import UserService, { UserProfile } from "../../services/users";
 
-const Layout = ({ children }: { children: JSX.Element }) => {
+const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   const [user, setUser] = useState<UserProfile>();
   const [initials, setInitials] = useState<string>();
 
@@ -27,7 +27,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       </header>
       <div className="grid grid-cols-[260px_1fr] bg-gray-100">
         <aside className="w-[260px] shadow-xl bg-white my-4 rounded-md flex flex-col justify-between">
-          <Navbar />
+          <Sidebar />
           <UserSettings />
         </aside>
         <main className="h-full p-4">
@@ -40,4 +40,4 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   );
 };
 
-export default Layout;
+export default AuthenticatedLayout;

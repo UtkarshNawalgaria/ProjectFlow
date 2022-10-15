@@ -1,11 +1,13 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/button";
+import AnonymousLayout from "../components/layouts/anonymous";
 import client from "../services/client";
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
+  const [isVerified, setIsVerified] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const code = searchParams.get("code");
 
@@ -19,7 +21,7 @@ const VerifyEmail = () => {
       })
         .then((data) => {
           toast.success(data.message);
-          window.location.assign("/");
+          setIsVerified(true);
         })
         .catch((error) => {
           toast.error(error.message, {
@@ -30,20 +32,31 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="h-screen w-full flex items-center justify-center">
-      <form onSubmit={handleFormSubmit}>
-        <div className="mb-4">
-          <input
-            ref={emailRef}
-            type="email"
-            required
-            className="rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full"
-            placeholder="Enter email.."
-          />
-        </div>
-        <Button text="Verify Email" type="CONFIRM" extraStyles={"w-full"} />
-      </form>
-    </div>
+    <AnonymousLayout>
+      <div className="h-full w-full flex items-center justify-center">
+        {isVerified ? (
+          <div className="relative">
+            <img src="./images/email-verified.png" alt="Email Verified" />
+            <p className="absolute text-4xl font-semibold text-[#413f56] top-[60px] left-1/2 -translate-x-1/2 ">
+              You email has been verified
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleFormSubmit}>
+            <div className="mb-4">
+              <input
+                ref={emailRef}
+                type="email"
+                required
+                className="rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full"
+                placeholder="Email"
+              />
+            </div>
+            <Button text="Verify Email" type="CONFIRM" extraStyles={"w-full"} />
+          </form>
+        )}
+      </div>
+    </AnonymousLayout>
   );
 };
 

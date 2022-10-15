@@ -1,38 +1,23 @@
-import { Link, useLocation } from "react-router-dom";
-import navItems from "./data/nav.json";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const location = useLocation();
-
-  const isPathActive = (linkPath: string, isLink = true): string => {
-    const returnCss = isLink
-      ? "bg-grey-lightest border-r-8 border-primary"
-      : "text-primary";
-
-    return location.pathname.includes(linkPath) ? returnCss : "";
-  };
-
   return (
-    <nav className="mt-4">
-      <ul className="">
-        {navItems.map((item, index) => (
-          <li
-            key={index}
-            className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary ${isPathActive(
-              item.path
-            )}`}>
-            <Link
-              className={`block text-grey-dark font-bold hover:text-primary active:text-primary ${isPathActive(
-                item.path,
-                false
-              )}`}
-              to={item.path}>
-              {item.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <header className="h-[80px] shadow-md">
+      <div className="flex justify-between items-center h-full max-w-6xl mx-auto">
+        <div className="text-3xl font-semibold text-indigo-500">
+          <Link to="/">Tasks</Link>
+        </div>
+        <div>
+          <nav className="flex items-center gap-4">
+            <ul>
+              <li>
+                <Link to="/">Signup / Login</Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
   );
 };
 

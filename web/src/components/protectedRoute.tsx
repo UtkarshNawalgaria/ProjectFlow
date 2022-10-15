@@ -1,14 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth, { AuthContextType } from "../context/AuthProvider";
-import Layout from "./layout";
+import AuthenticatedLayout from "./layouts/authenticated";
 
 const ProtectedRoute = () => {
   const { auth } = useAuth() as AuthContextType;
 
   return auth?.accessToken ? (
-    <Layout>
+    <AuthenticatedLayout>
       <Outlet />
-    </Layout>
+    </AuthenticatedLayout>
   ) : (
     <Navigate to="/" />
   );
