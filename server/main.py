@@ -2,12 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
-from db.config import init_db
 
 from user.api import user_router, auth_router
 from projects.api import projects_router, tasks_router
 
-init_db()
+
 settings = get_settings()
 app = FastAPI()
 
