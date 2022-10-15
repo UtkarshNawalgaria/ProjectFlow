@@ -19,6 +19,7 @@ from .schemas import PasswordReset, ProfileRead, UserRead, UserCreate, VerifyEma
 from .services import (
     authenticate_user,
     create_access_token,
+    generate_verification_code_and_url,
     get_current_user,
     verify_access_token,
     send_verification_email,
@@ -36,7 +37,6 @@ settings = get_settings()
 async def user_signup(
     user_in: UserCreate, request: Request, session: Session = Depends(get_db_session)
 ):
-
     existing_user = session.exec(
         select(User).where(User.email == EmailStr(user_in.email))
     ).first()
@@ -47,13 +47,7 @@ async def user_signup(
             detail="User with email already exists.",
         )
 
-    token = randbytes(10)
-    hashedCode = hashlib.sha256()
-    hashedCode.update(token)
-    verification_code = hashedCode.hexdigest()
-    verification_url = (
-        f"{settings.APPLICATION_URL}/verify_email/?code={verification_code}"
-    )
+    verification_code, verification_url = generate_verification_code_and_url()
 
     new_user = User(
         name=user_in.name or "User",

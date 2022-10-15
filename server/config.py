@@ -17,7 +17,6 @@ class Settings(BaseSettings):
     EMAIL_FROM: str
     EMAIL_PORT: int
     EMAIL_SERVER: str
-    EMAIL_USE_TLS: bool = True
     EMAIL_USE_SSL: bool = True
 
 

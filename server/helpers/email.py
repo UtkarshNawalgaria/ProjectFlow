@@ -19,10 +19,10 @@ config = ConnectionConfig(
     MAIL_FROM=settings.EMAIL_FROM,
     MAIL_PORT=settings.EMAIL_PORT,
     MAIL_SERVER=settings.EMAIL_SERVER,
-    MAIL_FROM_NAME="Utkarsh",
+    MAIL_FROM_NAME="Tasks Manager",
     MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=False,
+    MAIL_SSL_TLS=True,
+    USE_CREDENTIALS=True,
     VALIDATE_CERTS=False,
 )
 

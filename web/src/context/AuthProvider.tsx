@@ -104,7 +104,9 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     login(
       import.meta.env.VITE_GUEST_USER_EMAIL,
       import.meta.env.VITE_GUEST_USER_PASSWORD,
-      (error) => console.error(error.message)
+      (error) => {
+        toast.error(error.message);
+      }
     );
   }
 

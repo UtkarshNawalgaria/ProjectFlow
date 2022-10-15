@@ -1,4 +1,6 @@
+import hashlib
 import jwt
+from random import randbytes
 from datetime import datetime, timedelta
 from typing import Any, Optional, Dict
 
@@ -98,9 +100,24 @@ def get_current_user(
 
 async def send_verification_email(user: User, verification_url: str):
     await send_email(
-        "email_verification.html", "Verify Email Address", recipients=[user.email], context={
+        "email_verification.html",
+        "Verify Email Address",
+        recipients=[user.email],
+        context={
             "name": user.name,
             "email": user.email,
-            "verification_url": verification_url
-        }
+            "verification_url": verification_url,
+        },
     )
+
+
+def generate_verification_code_and_url():
+    token = randbytes(10)
+    hashedCode = hashlib.sha256()
+    hashedCode.update(token)
+    verification_code = hashedCode.hexdigest()
+    verification_url = (
+        f"{settings.APPLICATION_URL}verify_email/?code={verification_code}"
+    )
+
+    return verification_code, verification_url
