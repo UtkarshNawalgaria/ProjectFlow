@@ -28,7 +28,7 @@ class PasswordReset(SQLModel):
 
     @validator("new_password_confirm", pre=True)
     def validate_new_passwords(cls, new_password_confirm, values):
-        if new_password_confirm != values['new_password']:
+        if new_password_confirm != values["new_password"]:
             raise ValueError("New password and confirm password don't match")
 
         return new_password_confirm
