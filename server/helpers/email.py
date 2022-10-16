@@ -22,7 +22,7 @@ config = ConnectionConfig(
     MAIL_FROM_NAME="Tasks Manager",
     MAIL_STARTTLS=False,
     MAIL_SSL_TLS=True,
-    USE_CREDENTIALS=True,
+    USE_CREDENTIALS=settings.EMAIL_USE_CREDENTIALS,
     VALIDATE_CERTS=False,
 )
 

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     EMAIL_PORT: int
     EMAIL_SERVER: str
     EMAIL_USE_SSL: bool = True
+    EMAIL_USE_CREDENTIALS: bool = True
 
 
 @lru_cache
