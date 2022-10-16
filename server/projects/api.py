@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
+from sqlalchemy.exc import IntegrityError
 
 from auth import oauth2_scheme
 from db.config import get_db_session
@@ -124,10 +125,16 @@ def create_task(
     task_create: TaskCreate,
     session: Session = Depends(get_db_session),
 ):
-    new_task = Task(**task_create.dict())
-    session.add(new_task)
-    session.commit()
-    session.refresh(new_task)
+    try:
+        new_task = Task(**task_create.dict())
+        session.add(new_task)
+        session.commit()
+        session.refresh(new_task)
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="There is no such project or task list"
+        )
 
     return new_task
 
