@@ -1,23 +1,40 @@
 import { useDroppable } from "@dnd-kit/core";
-import { useState } from "react";
-import { TaskList } from "../services/tasks";
+import { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { TaskCreate, TaskList } from "../services/tasks";
+import Button from "./button";
 
 const KanbanList = ({
   children,
   tasklist,
+  addNewTask,
 }: {
   children: JSX.Element[];
   tasklist: TaskList;
+  addNewTask: (task: TaskCreate) => void;
 }) => {
   const [containerId] = useState(tasklist.id);
+  const { projectId } = useParams();
+  const newTaskRef = useRef<HTMLInputElement>(null);
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const { setNodeRef, isOver, active } = useDroppable({
     id: tasklist.id,
     data: {
       tasklist: tasklist,
     },
   });
-
   const prevContainerId = active?.data?.current?.list.id;
+
+  const handleCreateNewTask = () => {
+    if (newTaskRef !== null) {
+      addNewTask({
+        title: newTaskRef.current?.value as string,
+        project_id: parseInt(projectId as string),
+        tasklist_id: containerId ? containerId : null,
+      });
+      setShowNewTaskForm(false);
+    }
+  };
 
   return (
     <div ref={setNodeRef} className="rounded-md mt-10 h-full bg-gray-50">
@@ -27,6 +44,35 @@ const KanbanList = ({
           Drop Here
         </div>
       ) : null}
+      <div>
+        {showNewTaskForm ? (
+          <div className="px-4">
+            <div>
+              <input
+                type="text"
+                name="newTask"
+                ref={newTaskRef}
+                className="rounded-md border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full"
+                placeholder="New task"
+              />
+            </div>
+            <div className="flex gap-2 mt-2 items-center">
+              <Button text="Add" type="CONFIRM" onClick={handleCreateNewTask} />
+              <Button
+                text="Cancel"
+                type="CANCEL"
+                onClick={() => setShowNewTaskForm(false)}
+              />
+            </div>
+          </div>
+        ) : (
+          <div
+            className="text-gray-700 cursor-pointer mx-4"
+            onClick={() => setShowNewTaskForm(true)}>
+            + New task...
+          </div>
+        )}
+      </div>
     </div>
   );
 };

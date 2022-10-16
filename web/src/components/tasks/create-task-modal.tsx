@@ -1,13 +1,7 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useParams } from "react-router-dom";
-import TaskService, {
-  TaskCreate,
-  emptyTask,
-  TaskList,
-  Task,
-} from "../../services/tasks";
+import { TaskCreate, emptyTask, TaskList } from "../../services/tasks";
 import { ProcessedFormErrorType } from "../../utils";
-import { toast } from "react-toastify";
 import Modal from "../modal";
 
 const NewTaskModal = ({
@@ -18,7 +12,7 @@ const NewTaskModal = ({
 }: {
   open: boolean;
   closeModal: () => void;
-  addNewTask: (x: Task) => void;
+  addNewTask: (task: TaskCreate) => void;
   lists: TaskList[];
 }) => {
   const { projectId } = useParams();
@@ -39,29 +33,6 @@ const NewTaskModal = ({
     });
   };
 
-  const handleFormSubmission = (e: FormEvent) => {
-    e.preventDefault();
-
-    TaskService.createTask(newTask)
-      .then((newTask) => {
-        addNewTask(newTask);
-        setNewTask({
-          ...emptyTask,
-          project_id: parseInt(projectId as string),
-        });
-        closeModal();
-        toast.success("New Task Created", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      })
-      .catch((e) => {
-        setError(e);
-        toast.error("Error creating Task", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
-  };
-
   const reset = () => {
     setError(null);
     setNewTask({
@@ -73,7 +44,12 @@ const NewTaskModal = ({
 
   return (
     <Modal title="Add new task" open={open} closeModal={closeModal}>
-      <form onSubmit={handleFormSubmission} className="w-full">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addNewTask(newTask);
+        }}
+        className="w-full">
         <div className="mb-4">
           <label
             htmlFor="title"

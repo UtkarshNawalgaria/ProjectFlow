@@ -22,6 +22,7 @@ import ProjectService, { Project } from "../services/projects";
 import TaskService, {
   DefaultTaskList,
   Task,
+  TaskCreate,
   TaskList,
   TaskListCreate,
 } from "../services/tasks";
@@ -40,6 +41,7 @@ type TaskViewProps = {
     taskId: number,
     data: { [key: string]: string | number | null }
   ) => void;
+  addNewTask: (task: TaskCreate) => void;
   toggleModal: any;
 };
 
@@ -72,6 +74,7 @@ const TasksKanbanView = ({
   setTasks,
   updateTask,
   toggleModal,
+  addNewTask,
 }: TaskViewProps) => {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -115,7 +118,7 @@ const TasksKanbanView = ({
           {groupedTasks.map((item) => {
             return (
               <div key={item.list.id} className="w-[300px]">
-                <KanbanList tasklist={item.list}>
+                <KanbanList tasklist={item.list} addNewTask={addNewTask}>
                   <header className="mb-4">
                     <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
                       <h3>
@@ -260,9 +263,7 @@ const SingleProjectPage = () => {
   const deleteTask = (taskId: number) => {
     TaskService.delete(taskId).then(() => {
       setTasks((prevData) => prevData.filter((task) => task.id !== taskId));
-      toast.success("Task Deleted successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Task Deleted successfully");
     });
   };
 
@@ -274,22 +275,28 @@ const SingleProjectPage = () => {
       setTasks((prevTasks) => {
         return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
       });
-      toast.success("Task Updated successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Task Updated successfully");
     });
   };
 
   const createTaskList = (list: TaskListCreate) => {
     TaskService.createTaskList(list).then((list) => {
       setLists((lists) => [...lists, list]);
-      toast.success("Task List Created Successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Task List Created Successfully");
     });
   };
 
+  const addNewTask = (task: TaskCreate) => {
+    TaskService.createTask(task)
+      .then((task) => {
+        setTasks((prevTasks) => [...prevTasks, task]);
+        toast.success("Task Created Successfully.");
+      })
+      .catch(() => toast.error("Error creating task"));
+  };
+
   const props = {
+    addNewTask,
     deleteTask,
     groupedTasks,
     setTasks,
@@ -359,9 +366,7 @@ const SingleProjectPage = () => {
         open={showCreateTask}
         closeModal={() => toggleCreateTaskModal(false)}
         lists={lists}
-        addNewTask={(newTask: Task) =>
-          setTasks((prevTasks) => [...prevTasks, newTask])
-        }
+        addNewTask={addNewTask}
       />
     </div>
   );
