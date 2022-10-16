@@ -330,22 +330,22 @@ const SingleProjectPage = () => {
             <span
               className={
                 "p-1 block cursor-pointer m-1" +
-                (view === TasksViewType.LIST
-                  ? " bg-white rounded-md text-grey-dark"
-                  : "")
-              }
-              onClick={() => setView(TasksViewType.LIST)}>
-              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
-            </span>
-            <span
-              className={
-                "p-1 block cursor-pointer m-1" +
                 (view === TasksViewType.KANBAN
                   ? " bg-white rounded-md text-grey-dark"
                   : "")
               }
               onClick={() => setView(TasksViewType.KANBAN)}>
               <BsKanban className="h-6 w-6 text-black" />
+            </span>
+            <span
+              className={
+                "p-1 block cursor-pointer m-1" +
+                (view === TasksViewType.LIST
+                  ? " bg-white rounded-md text-grey-dark"
+                  : "")
+              }
+              onClick={() => setView(TasksViewType.LIST)}>
+              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
             </span>
           </div>
         </div>
