@@ -6,9 +6,9 @@ import ProtectedRoute from "./components/protectedRoute";
 import HomePage from "./pages/home";
 import ProjectsPage from "./pages/project-list";
 import SingleProjectPage from "./pages/single-project";
+import VerifyEmail from "./pages/verify-email";
 
 import "react-toastify/dist/ReactToastify.min.css";
-import VerifyEmail from "./pages/verify-email";
 
 function App() {
   return (
