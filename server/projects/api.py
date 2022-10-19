@@ -30,7 +30,7 @@ tasks_router = APIRouter(
 
 @projects_router.get("/", response_model=List[ProjectRead])
 def get_all_projects(user: User = Depends(get_current_user)):
-    db_projects: List[Project] = user.projects
+    db_projects = user.projects
 
     if not db_projects:
         return []
