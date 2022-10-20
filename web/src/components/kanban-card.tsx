@@ -1,5 +1,4 @@
 import { useDraggable } from "@dnd-kit/core";
-import { useState } from "react";
 import { Task, TaskList } from "../services/tasks";
 
 function KanbanCard({ task, list }: { task: Task; list: TaskList }) {
@@ -17,7 +16,6 @@ function KanbanCard({ task, list }: { task: Task; list: TaskList }) {
     : undefined;
   const draggingContainerStyle =
     "bg-white border-dashed border-1 rounded-md shadow-inner";
-  const [taskStatus, setTaskStatus] = useState(false);
 
   return (
     <div className={`${isDragging ? draggingContainerStyle : ""}`}>
@@ -29,21 +27,10 @@ function KanbanCard({ task, list }: { task: Task; list: TaskList }) {
         className={`p-4 bg-white text-gray-900 mb-4 rounded-md shadow-md ${
           isDragging ? "opacity-90" : null
         }`}>
-        <div className="flex gap-2 items-start">
-          <div>
-            <input
-              type="checkbox"
-              name="change_status"
-              checked={taskStatus}
-              onChange={() => setTaskStatus((status) => !status)}
-              className="rounded border-gray-400 cursor-pointer"
-            />
-          </div>
-          <div>
-            <div className="mb-1">{task.title}</div>
-            <div className="text-sm text-gray-400 overflow-hidden break-all">
-              {task.description}
-            </div>
+        <div>
+          <div className="mb-1 hover:text-indigo-500">{task.title}</div>
+          <div className="text-sm text-gray-400 overflow-hidden break-all">
+            {task.description}
           </div>
         </div>
       </div>
