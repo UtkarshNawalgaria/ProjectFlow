@@ -1,21 +1,19 @@
 import { ChangeEvent, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TaskCreate, emptyTask, TaskList } from "../../services/tasks";
+import useTasks, { TasksProviderType } from "../../context/TasksProvider";
+import { TaskCreate, emptyTask } from "../../services/tasks";
 import { ProcessedFormErrorType } from "../../utils";
 import Modal from "../modal";
 
 const NewTaskModal = ({
   open,
   closeModal,
-  lists,
-  addNewTask,
 }: {
   open: boolean;
   closeModal: () => void;
-  addNewTask: (task: TaskCreate) => void;
-  lists: TaskList[];
 }) => {
   const { projectId } = useParams();
+  const { lists, addNewTask } = useTasks() as TasksProviderType;
   const [error, setError] = useState<ProcessedFormErrorType | null>(null);
   const [newTask, setNewTask] = useState<TaskCreate>({
     ...emptyTask,
@@ -48,6 +46,7 @@ const NewTaskModal = ({
         onSubmit={(e) => {
           e.preventDefault();
           addNewTask(newTask);
+          reset();
         }}
         className="w-full">
         <div className="mb-4">

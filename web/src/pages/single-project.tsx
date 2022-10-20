@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Link } from "react-router-dom";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
@@ -18,32 +18,9 @@ import KanbanList from "../components/kanban-column";
 import NewTaskListModal from "../components/tasks/create-task-list-modal";
 import NewTaskModal from "../components/tasks/create-task-modal";
 
-import ProjectService, { Project } from "../services/projects";
-import TaskService, {
-  DefaultTaskList,
-  Task,
-  TaskCreate,
-  TaskList,
-  TaskListCreate,
-} from "../services/tasks";
-import { ProcessedFormErrorType } from "../utils";
+import { Task } from "../services/tasks";
 
-type GroupedTasks = Array<{
-  list: TaskList;
-  tasks: Task[];
-}>;
-
-type TaskViewProps = {
-  groupedTasks: GroupedTasks;
-  setTasks: any;
-  deleteTask: (taskId: number) => void;
-  updateTask: (
-    taskId: number,
-    data: { [key: string]: string | number | null }
-  ) => void;
-  addNewTask: (task: TaskCreate) => void;
-  toggleModal: any;
-};
+import useTasks, { TasksProviderType } from "../context/TasksProvider";
 
 const TasksViewType = {
   LIST: 0,
@@ -70,12 +47,13 @@ const TaskActions = ({
 };
 
 const TasksKanbanView = ({
-  groupedTasks,
-  setTasks,
-  updateTask,
   toggleModal,
-  addNewTask,
-}: TaskViewProps) => {
+}: {
+  toggleModal: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const { groupedTasks, addNewTask, updateTask, setTasks } =
+    useTasks() as TasksProviderType;
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     const taskId = active.id;
@@ -152,7 +130,9 @@ const TasksKanbanView = ({
   );
 };
 
-const TasksListView = ({ groupedTasks, deleteTask }: TaskViewProps) => {
+const TasksListView = () => {
+  const { groupedTasks, deleteTask } = useTasks() as TasksProviderType;
+
   if (groupedTasks.length === 0) {
     return <div>No tasks in this project</div>;
   }
@@ -215,94 +195,10 @@ const TasksListView = ({ groupedTasks, deleteTask }: TaskViewProps) => {
 };
 
 const SingleProjectPage = () => {
-  const { projectId } = useParams();
+  const { project, createTaskList } = useTasks() as TasksProviderType;
   const [view, setView] = useState(TasksViewType.KANBAN);
-  const [, setError] = useState<ProcessedFormErrorType | null>(null);
-
-  // Data from API
-  const [project, setProject] = useState<Project | null>(null);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [lists, setLists] = useState<TaskList[]>([]);
-
   const [showCreateTask, toggleCreateTaskModal] = useState(false);
   const [showTaskListModal, toggleTaskListModal] = useState(false);
-
-  // Fetch project details, tasks and tasklists related to the project
-  useEffect(() => {
-    Promise.all([
-      ProjectService.getById(parseInt(projectId as string)),
-      TaskService.getAll(parseInt(projectId as string)),
-      TaskService.getAllTaskLists(parseInt(projectId as string)),
-    ])
-      .then((values) => {
-        setProject(values[0]);
-        setTasks(values[1]);
-        setLists(values[2]);
-      })
-      .catch((error) => setError(error));
-  }, []);
-
-  const groupedTasks = useMemo<GroupedTasks>(() => {
-    const outputData: GroupedTasks = [];
-
-    if (lists.length == 0) return [{ list: DefaultTaskList, tasks: tasks }];
-
-    outputData.push({
-      list: DefaultTaskList,
-      tasks: tasks.filter((task) => task.tasklist_id === null),
-    });
-
-    lists.forEach((list) => {
-      const listTasks = tasks.filter((task) => task.tasklist_id === list.id);
-      outputData.push({ list, tasks: listTasks });
-    });
-
-    return outputData;
-  }, [tasks, lists]);
-
-  const deleteTask = (taskId: number) => {
-    TaskService.delete(taskId).then(() => {
-      setTasks((prevData) => prevData.filter((task) => task.id !== taskId));
-      toast.success("Task Deleted successfully");
-    });
-  };
-
-  const updateTask = (
-    taskId: number,
-    data: { [key: string]: string | number | null }
-  ) => {
-    TaskService.updateTask(taskId, data).then((updatedTask) => {
-      setTasks((prevTasks) => {
-        return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
-      });
-      toast.success("Task Updated successfully");
-    });
-  };
-
-  const createTaskList = (list: TaskListCreate) => {
-    TaskService.createTaskList(list).then((list) => {
-      setLists((lists) => [...lists, list]);
-      toast.success("Task List Created Successfully");
-    });
-  };
-
-  const addNewTask = (task: TaskCreate) => {
-    TaskService.createTask(task)
-      .then((task) => {
-        setTasks((prevTasks) => [...prevTasks, task]);
-        toast.success("Task Created Successfully.");
-      })
-      .catch(() => toast.error("Error creating task"));
-  };
-
-  const props = {
-    addNewTask,
-    deleteTask,
-    groupedTasks,
-    setTasks,
-    updateTask,
-    toggleModal: toggleTaskListModal,
-  };
 
   return (
     <div className="flex flex-col">
@@ -352,9 +248,9 @@ const SingleProjectPage = () => {
       </PageHeader>
       <section className="px-4">
         {view === TasksViewType.LIST ? (
-          <TasksListView {...props} />
+          <TasksListView />
         ) : (
-          <TasksKanbanView {...props} />
+          <TasksKanbanView toggleModal={toggleTaskListModal} />
         )}
       </section>
       <NewTaskListModal
@@ -365,8 +261,6 @@ const SingleProjectPage = () => {
       <NewTaskModal
         open={showCreateTask}
         closeModal={() => toggleCreateTaskModal(false)}
-        lists={lists}
-        addNewTask={addNewTask}
       />
     </div>
   );

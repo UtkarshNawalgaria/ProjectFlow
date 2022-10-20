@@ -9,6 +9,7 @@ import SingleProjectPage from "./pages/single-project";
 import VerifyEmail from "./pages/verify-email";
 
 import "react-toastify/dist/ReactToastify.min.css";
+import { TasksProvider } from "./context/TasksProvider";
 
 function App() {
   return (
@@ -17,7 +18,14 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="" element={<ProtectedRoute />}>
           <Route path="projects" element={<ProjectsPage />} />
-          <Route path="projects/:projectId" element={<SingleProjectPage />} />
+          <Route
+            path="projects/:projectId"
+            element={
+              <TasksProvider>
+                <SingleProjectPage />
+              </TasksProvider>
+            }
+          />
         </Route>
         <Route path="/verify_email/" element={<VerifyEmail />} />
         <Route path="*" element={<div>404</div>} />
