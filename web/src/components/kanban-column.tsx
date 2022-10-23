@@ -37,14 +37,18 @@ const KanbanList = ({
   };
 
   return (
-    <div ref={setNodeRef} className="rounded-md mt-10 h-full bg-gray-50">
-      <div>{children}</div>
-      {isOver && prevContainerId !== containerId ? (
-        <div className="p-4 bg-white border-dashed border-1 rounded-md mx-4 text-center text-gray-500 shadow-inner">
-          Drop Here
-        </div>
-      ) : null}
+    <div
+      ref={setNodeRef}
+      className="rounded-md h-full bg-gray-50 flex flex-col justify-between">
       <div>
+        <div>{children}</div>
+        {isOver && prevContainerId !== containerId ? (
+          <div className="p-4 bg-white border-dashed border-1 rounded-md mx-4 text-center text-gray-500 shadow-inner">
+            Drop Here
+          </div>
+        ) : null}
+      </div>
+      <div className="mb-4">
         {showNewTaskForm ? (
           <div className="px-4">
             <div>

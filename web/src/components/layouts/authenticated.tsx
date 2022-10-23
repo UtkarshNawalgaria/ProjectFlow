@@ -17,7 +17,7 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   }, []);
 
   return (
-    <div className="dark grid grid-rows-[60px_1fr] w-full h-screen">
+    <div className="dark grid grid-rows-[60px_1fr] w-full h-screen overflow-hidden">
       <header className="logo p-3 shadow-md flex justify-between items-center">
         <div className="font-extrabold text-3xl">Tasks</div>
         <div className="mr-2 flex gap-2 items-center hover:bg-gray-100 px-2 py-1 cursor-pointer rounded-md">

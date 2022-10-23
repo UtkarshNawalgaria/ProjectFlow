@@ -90,7 +90,7 @@ const TasksKanbanView = ({
   }
 
   return (
-    <div>
+    <>
       <DndContext onDragEnd={handleDragEnd}>
         <div className="flex gap-4">
           {groupedTasks.map((item) => {
@@ -126,7 +126,7 @@ const TasksKanbanView = ({
           </button>
         </div>
       </DndContext>
-    </div>
+    </>
   );
 };
 
@@ -201,7 +201,7 @@ const SingleProjectPage = () => {
   const [showTaskListModal, toggleTaskListModal] = useState(false);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <PageHeader>
         <div className="flex gap-4">
           <Link to="/projects">
@@ -246,7 +246,7 @@ const SingleProjectPage = () => {
           </div>
         </div>
       </PageHeader>
-      <section className="px-4">
+      <section className="px-4 h-full">
         {view === TasksViewType.LIST ? (
           <TasksListView />
         ) : (

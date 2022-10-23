@@ -10,6 +10,7 @@ import VerifyEmail from "./pages/verify-email";
 
 import "react-toastify/dist/ReactToastify.min.css";
 import { TasksProvider } from "./context/TasksProvider";
+import Dashboard from "./pages/dashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="" element={<ProtectedRoute />}>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route
             path="projects/:projectId"

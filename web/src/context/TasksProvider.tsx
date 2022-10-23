@@ -28,6 +28,7 @@ export type TasksProviderType = {
   tasks: Task[];
   lists: TaskList[];
   groupedTasks: GroupedTasks;
+  currentSelectedTask: Task | null;
   addNewTask: (task: TaskCreate) => void;
   createTaskList: (list: TaskListCreate) => void;
   deleteTask: (id: number) => void;
@@ -36,6 +37,7 @@ export type TasksProviderType = {
     data: { [key: string]: string | number | null }
   ) => void;
   setTasks: Dispatch<SetStateAction<Task[]>>;
+  selectCurrentTask: (taskId: number) => void;
 };
 
 type Props = {
@@ -49,6 +51,9 @@ export const TasksProvider = ({ children }: Props) => {
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<TaskList[]>([]);
+  const [currentSelectedTask, setCurrentSelectedTask] = useState<Task | null>(
+    null
+  );
 
   // Fetch project details, tasks and tasklists related to the project
   useEffect(() => {
@@ -116,6 +121,12 @@ export const TasksProvider = ({ children }: Props) => {
     });
   };
 
+  const selectCurrentTask = (taskId: number) => {
+    const item = tasks.find((x) => x.id === taskId);
+    if (!item) return;
+    setCurrentSelectedTask(item);
+  };
+
   return (
     <TasksContext.Provider
       value={{
@@ -128,6 +139,8 @@ export const TasksProvider = ({ children }: Props) => {
         deleteTask,
         createTaskList,
         setTasks,
+        currentSelectedTask,
+        selectCurrentTask,
       }}>
       {children}
     </TasksContext.Provider>

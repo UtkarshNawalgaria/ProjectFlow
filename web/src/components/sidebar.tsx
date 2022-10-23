@@ -18,7 +18,7 @@ const Sidebar = () => {
         {navItems.map((item, index) => (
           <li
             key={index}
-            className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary ${isPathActive(
+            className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary mb-2 ${isPathActive(
               item.path
             )}`}>
             <Link

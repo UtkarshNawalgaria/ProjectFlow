@@ -9,7 +9,7 @@ import { AuthProvider } from "./context/AuthProvider";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider redirectUrl="/projects">
+      <AuthProvider redirectUrl="/dashboard">
         <App />
       </AuthProvider>
     </BrowserRouter>

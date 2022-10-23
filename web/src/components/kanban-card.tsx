@@ -19,12 +19,12 @@ function KanbanCard({ task, list }: { task: Task; list: TaskList }) {
 
   return (
     <div className={`${isDragging ? draggingContainerStyle : ""}`}>
-      <div
+      <button
         ref={setNodeRef}
         {...listeners}
         {...attributes}
         style={style}
-        className={`p-4 bg-white text-gray-900 mb-4 rounded-md shadow-md ${
+        className={`p-4 bg-white text-gray-900 mb-4 rounded-md shadow-md w-full text-left ${
           isDragging ? "opacity-90" : null
         }`}>
         <div>
@@ -33,7 +33,7 @@ function KanbanCard({ task, list }: { task: Task; list: TaskList }) {
             {task.description}
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 }
