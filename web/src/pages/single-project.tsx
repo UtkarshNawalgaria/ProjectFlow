@@ -120,7 +120,7 @@ const TasksKanbanView = ({
             );
           })}
           <button
-            className="w-[300px] h-[200px] bg-gray-50 border-2 border-dashed border-gray-200 hover:border-gray-400 hover:bg-gray-100 rounded-md mt-10 transition text-center"
+            className="w-[300px] h-[200px] bg-gray-50 border-2 border-dashed border-gray-200 hover:border-gray-400 hover:bg-gray-100 rounded-md transition text-center"
             onClick={() => toggleModal(true)}>
             <HiPlus className="inline-block text-gray-500 text-3xl" />
           </button>
