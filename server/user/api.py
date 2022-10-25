@@ -120,7 +120,7 @@ def verify_email(verify_data: VerifyEmail, session: Session = Depends(get_db_ses
     return {"message": "User verified successfully"}
 
 
-@user_router.get("/", response_model=List[UserRead])
+@user_router.get("/", response_model=List[UserRead], include_in_schema=False)
 def get_all_users(session: Session = Depends(get_db_session)):
     users = session.exec(select(User)).all()
     return users
