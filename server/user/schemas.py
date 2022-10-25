@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from sqlmodel import SQLModel
 from pydantic import EmailStr, validator
 
@@ -9,16 +9,16 @@ class UserCreate(SQLModel):
     password: str
 
 
+class OrganizationRead(SQLModel):
+    id: int
+    title: str
+
+
 class UserRead(SQLModel):
     id: int
     name: str
     email: EmailStr
-    hash: Optional[str]
-
-
-class ProfileRead(SQLModel):
-    id: int
-    user: UserRead
+    organizations: List[OrganizationRead]
 
 
 class PasswordReset(SQLModel):
