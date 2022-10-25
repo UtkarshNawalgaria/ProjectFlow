@@ -1,10 +1,26 @@
+from enum import Enum
 from passlib.hash import bcrypt
 from datetime import datetime
 from typing import List, Optional
 
-from sqlmodel import Field, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from db.base import BaseModel
+
+
+class OrganizationRole(Enum):
+    ADMIN = 0
+    MEMBER = 1
+
+
+class OrganizationUsers(SQLModel, table=True):
+    organization_id: Optional[int] = Field(
+        default=None, foreign_key="organization.id", primary_key=True
+    )
+    user_id: Optional[int] = Field(
+        default=None, foreign_key="user.id", primary_key=True
+    )
+    role: OrganizationRole = Field(default=OrganizationRole.ADMIN)
 
 
 class User(BaseModel, table=True):
@@ -14,10 +30,11 @@ class User(BaseModel, table=True):
     hash: str = Field(nullable=True, max_length=128)
 
     # Datetime fields
-    email_verified_at: datetime = Field(nullable=True)
+    email_verified_at: datetime = Field(default=None, nullable=True)
 
-    profile: Optional["Profile"] = Relationship(
-        back_populates="user", sa_relationship_kwargs={"uselist": False}
+    # Relationships
+    organizations: List["Organization"] = Relationship(
+        back_populates="users", link_model=OrganizationUsers
     )
     projects: Optional[List["Project"]] = Relationship(back_populates="owner")
 
@@ -25,6 +42,10 @@ class User(BaseModel, table=True):
         return bcrypt.verify(password, self.password_hash)
 
 
-class Profile(BaseModel, table=True):
-    user_id: int = Field(default=None, foreign_key="user.id")
-    user: User = Relationship(back_populates="profile")
+class Organization(BaseModel, table=True):
+    title: str = Field(nullable=False, max_length=100)
+
+    # Relationships
+    users: List[User] = Relationship(
+        back_populates="organizations", link_model=OrganizationUsers
+    )
