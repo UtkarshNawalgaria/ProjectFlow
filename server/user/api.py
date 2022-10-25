@@ -1,12 +1,9 @@
 from datetime import datetime
-import hashlib
 from typing import List
 from passlib.hash import bcrypt
-from random import randbytes
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import EmailStr
 from sqlmodel import Session, select
 
 from db.config import get_db_session
@@ -14,8 +11,8 @@ from auth import oauth2_scheme
 from logger import log
 from config import get_settings
 
-from .models import Profile, User
-from .schemas import PasswordReset, ProfileRead, UserRead, UserCreate, VerifyEmail
+from .models import Organization, User
+from .schemas import PasswordReset, UserRead, UserCreate, VerifyEmail
 from .services import (
     authenticate_user,
     create_access_token,
@@ -34,11 +31,9 @@ settings = get_settings()
 
 
 @auth_router.post("/register/", status_code=201)
-async def user_signup(
-    user_in: UserCreate, request: Request, session: Session = Depends(get_db_session)
-):
+async def user_signup(user_in: UserCreate, session: Session = Depends(get_db_session)):
     existing_user = session.exec(
-        select(User).where(User.email == EmailStr(user_in.email))
+        select(User).where(User.email == user_in.email)
     ).first()
 
     if existing_user:
@@ -49,16 +44,21 @@ async def user_signup(
 
     verification_code, verification_url = generate_verification_code_and_url()
 
+    # Create new user
     new_user = User(
         name=user_in.name or "User",
         email=user_in.email,
         password_hash=bcrypt.hash(user_in.password),
         hash=verification_code,
     )
-    new_user_profile = Profile(user=new_user)
 
-    session.add(new_user_profile)
+    # Create user organization
+    organization = Organization(title="My Organization", users=[new_user])
+
+    session.add(new_user)
+    session.add(organization)
     session.commit()
+    session.refresh(new_user)
 
     await send_verification_email(new_user, verification_url)
 
@@ -126,9 +126,9 @@ def get_all_users(session: Session = Depends(get_db_session)):
     return users
 
 
-@user_router.get("/me/", response_model=ProfileRead)
+@user_router.get("/me/", response_model=UserRead)
 def me(user: User = Depends(get_current_user)):
-    return user.profile
+    return user
 
 
 @user_router.post("/reset_password/")
