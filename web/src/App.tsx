@@ -11,6 +11,8 @@ import VerifyEmail from "./pages/verify-email";
 import "react-toastify/dist/ReactToastify.min.css";
 import { TasksProvider } from "./context/TasksProvider";
 import Dashboard from "./pages/dashboard";
+import OrganizationSettings from "./pages/organization/settings";
+import OrganizationMembers from "./pages/organization/members";
 
 function App() {
   return (
@@ -28,6 +30,10 @@ function App() {
               </TasksProvider>
             }
           />
+        </Route>
+        <Route path="organization/:orgId" element={<ProtectedRoute />}>
+          <Route path="settings" element={<OrganizationSettings />} />
+          <Route path="members" element={<OrganizationMembers />} />
         </Route>
         <Route path="/verify_email/" element={<VerifyEmail />} />
         <Route path="*" element={<div>404</div>} />
