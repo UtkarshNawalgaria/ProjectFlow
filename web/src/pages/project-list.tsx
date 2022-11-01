@@ -200,6 +200,7 @@ const ProjectsPage = () => {
         <div className="flex items-center gap-8" id="toolbar">
           <div>
             <Button
+              as="button"
               text="Create Project"
               type="CONFIRM"
               onClick={() => toggleNewProjectModal(true)}
@@ -333,8 +334,14 @@ const ProjectsPage = () => {
             delete the project along with the tasks.
           </p>
           <div className="mt-5 flex gap-4">
-            <Button text="Cancel" onClick={resetData} type={"CANCEL"} />
             <Button
+              as="button"
+              text="Cancel"
+              onClick={resetData}
+              type={"CANCEL"}
+            />
+            <Button
+              as="button"
               text="Delete"
               onClick={() => deleteProject(selectedProjectId as number, true)}
               type={"DANGER"}

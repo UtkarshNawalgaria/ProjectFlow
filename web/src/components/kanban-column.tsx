@@ -61,8 +61,14 @@ const KanbanList = ({
               />
             </div>
             <div className="flex gap-2 mt-2 items-center">
-              <Button text="Add" type="CONFIRM" onClick={handleCreateNewTask} />
               <Button
+                as="button"
+                text="Add"
+                type="CONFIRM"
+                onClick={handleCreateNewTask}
+              />
+              <Button
+                as="button"
                 text="Cancel"
                 type="CANCEL"
                 onClick={() => setShowNewTaskForm(false)}
