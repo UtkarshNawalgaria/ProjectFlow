@@ -52,7 +52,12 @@ const VerifyEmail = () => {
                 placeholder="Email"
               />
             </div>
-            <Button text="Verify Email" type="CONFIRM" extraStyles={"w-full"} />
+            <Button
+              as="button"
+              text="Verify Email"
+              type="CONFIRM"
+              extraStyles={"w-full"}
+            />
           </form>
         )}
       </div>
