@@ -14,7 +14,11 @@ const Organizations = () => {
         <Listbox value={selected} onChange={setSelected}>
           <div className="relative">
             <Listbox.Button className="w-full text-grey-dark py-2 px-2 border border-[#e7e7e7] rounded-md flex items-center justify-between">
-              <span>{selected?.title}</span>
+              {selected ? (
+                <span>{selected?.title}</span>
+              ) : (
+                <span>{currentOrganization?.title}</span>
+              )}
               <span>
                 <HiChevronDown className="text-grey-dark" aria-hidden="true" />
               </span>

@@ -21,10 +21,7 @@ const Sidebar = () => {
   const { currentOrganization } = useUser() as TUserContext;
 
   const isPathActive = (linkPath: string, isLink = true): string => {
-    const returnCss = isLink
-      ? "bg-grey-lightest border-r-8 border-primary"
-      : "text-primary";
-
+    const returnCss = isLink ? "bg-gray-100 rounded-md" : "text-primary";
     return location.pathname.includes(linkPath) ? returnCss : "";
   };
 
@@ -37,7 +34,7 @@ const Sidebar = () => {
             {navItems.map((item, index) => (
               <li
                 key={index}
-                className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary mb-2 ${isPathActive(
+                className={`py-2 pl-4 cursor-pointer hover:bg-gray-100 rounded-md mb-2 mx-2 ${isPathActive(
                   item.path
                 )}`}>
                 <Link
@@ -62,7 +59,7 @@ const Sidebar = () => {
           {organizationNavItems.map((item, index) => (
             <li
               key={index}
-              className={`py-2 pl-4 cursor-pointer hover:bg-grey-lightest hover:border-r-8 hover:border-primary mb-2 ${isPathActive(
+              className={`py-2 pl-4 cursor-pointer hover:bg-gray-100 rounded-md mb-2 mx-2 ${isPathActive(
                 item.path
               )}`}>
               <Link
