@@ -9,11 +9,11 @@ const Organizations = () => {
   const [selected, setSelected] = useState(() => currentOrganization);
 
   return (
-    <div className="mt-4 mx-4">
+    <div className="mt-4 mx-2">
       {user?.organizations ? (
         <Listbox value={selected} onChange={setSelected}>
           <div className="relative">
-            <Listbox.Button className="w-full text-grey-dark py-2 px-2 border border-[#e7e7e7] rounded-md flex items-center justify-between">
+            <Listbox.Button className="w-full text-grey-dark py-2 px-2 border border-[#e7e7e7] bg-white shadow-sm rounded-md flex items-center justify-between">
               {selected ? (
                 <span>{selected?.title}</span>
               ) : (
