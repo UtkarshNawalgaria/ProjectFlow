@@ -6,8 +6,8 @@ from sqlalchemy.exc import IntegrityError
 from auth import oauth2_scheme
 from db.config import get_db_session
 
-from user.models import User
-from user.services import get_current_user
+from apps.user.models import User
+from apps.user.services import get_current_user
 
 from .models import Project, Task, TaskList
 from .schemas import (
@@ -133,7 +133,7 @@ def create_task(
     except IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="There is no such project or task list"
+            detail="There is no such project or task list",
         )
 
     return new_task

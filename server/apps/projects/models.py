@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlmodel import Field, Relationship
 
 from db.base import BaseModel
-from user.models import User
+from apps.user.models import User
 
 
 class TaskStatus(Enum):

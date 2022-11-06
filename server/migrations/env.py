@@ -7,7 +7,12 @@ from sqlmodel import SQLModel
 
 from alembic import context
 
-from user.models import User, Profile
+from user.models import (
+    User,
+    Organization,
+    OrganizationUsers,
+    OrganizationRole,
+)
 from projects.models import Project, TaskList, TaskStatus, Task
 
 # this is the Alembic Config object, which provides

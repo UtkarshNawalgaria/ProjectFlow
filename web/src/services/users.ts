@@ -12,13 +12,14 @@ export type UserCreate = {
   password: string;
 };
 
-export type UserProfile = {
+export type TAuthenticatedUser = {
   id: number;
-  user: {
+  name: string;
+  email: string;
+  organizations: Array<{
     id: number;
-    name: string;
-    email: number;
-  };
+    title: string;
+  }>;
 };
 
 export default {
@@ -39,6 +40,22 @@ export default {
     });
   },
   me: () => {
-    return client<UserProfile>("user/me/");
+    return client<TAuthenticatedUser>("user/me/");
+  },
+  invite: (email: string, organization_id: number | undefined) => {
+    return client<{ message: string }>("user/send-invite/", {
+      method: "POST",
+      body: JSON.stringify({ email, organization_id }),
+    });
+  },
+  acceptInvite: (invitationCode: string) => {
+    return client<{
+      message: string;
+      email: string;
+      add_new_user: boolean;
+    }>("auth/accept-invite/", {
+      method: "POST",
+      body: JSON.stringify({ code: invitationCode }),
+    });
   },
 };

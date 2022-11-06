@@ -216,6 +216,7 @@ const SingleProjectPage = () => {
         <div className="flex items-center gap-8" id="toolbar">
           <div>
             <Button
+              as="button"
               text="Add Task"
               type="CONFIRM"
               onClick={() => toggleCreateTaskModal(true)}
