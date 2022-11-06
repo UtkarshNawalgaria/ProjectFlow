@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
 
-from user.api import user_router, auth_router
-from projects.api import projects_router, tasks_router
+from apps.user.api import user_router, auth_router
+from apps.projects.api import projects_router, tasks_router
 
 
 settings = get_settings()
