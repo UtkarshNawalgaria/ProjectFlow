@@ -7,13 +7,13 @@ from sqlmodel import SQLModel
 
 from alembic import context
 
-from user.models import (
+from apps.user.models import (
     User,
     Organization,
     OrganizationUsers,
     OrganizationRole,
 )
-from projects.models import Project, TaskList, TaskStatus, Task
+from apps.projects.models import Project, TaskList, TaskStatus, Task
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
