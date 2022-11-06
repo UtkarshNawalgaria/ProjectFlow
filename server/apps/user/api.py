@@ -175,7 +175,11 @@ async def accept_invite(
     )
 
 
+<<<<<<< HEAD
 @user_router.get("/", response_model=List[UserRead], include_in_schema=False)
+=======
+@user_router.get("/", response_model=List[UserRead])
+>>>>>>> 6aa30ffe3d322e5b149ae360f0b7877063de930f
 def get_all_users(session: Session = Depends(get_db_session)):
     users = session.exec(select(User)).all()
     return users
