@@ -1,4 +1,4 @@
-<div>Hi {{ name }},</div>
+<div>Hi {% if name %}{{ name }},{% else %}there,{% endif %}</div>
 <div>
   Please verify your email {{ email }} using this
   <a href="{{ verification_url }}">link</a>

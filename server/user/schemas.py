@@ -37,3 +37,21 @@ class PasswordReset(SQLModel):
 class VerifyEmail(SQLModel):
     email: EmailStr
     code: str
+
+
+class UserInvite(SQLModel):
+    email: EmailStr
+    organization_id: int
+
+
+class AcceptInvite(SQLModel):
+    code: str
+
+
+class Success(SQLModel):
+    message: str
+
+
+class AcceptInvitationSuccess(Success):
+    add_new_user: bool = False
+    email: EmailStr
