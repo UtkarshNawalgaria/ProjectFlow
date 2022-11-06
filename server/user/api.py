@@ -11,13 +11,24 @@ from auth import oauth2_scheme
 from logger import log
 from config import get_settings
 
-from .models import Organization, User
-from .schemas import PasswordReset, UserRead, UserCreate, VerifyEmail
+from .models import Organization, OrganizationRole, OrganizationUsers, User, InvitedUser
+from .schemas import (
+    AcceptInvitationSuccess,
+    AcceptInvite,
+    PasswordReset,
+    Success,
+    UserInvite,
+    UserRead,
+    UserCreate,
+    VerifyEmail,
+)
 from .services import (
     authenticate_user,
     create_access_token,
+    generate_user_invite_url,
     generate_verification_code_and_url,
     get_current_user,
+    send_user_invitation,
     verify_access_token,
     send_verification_email,
 )
@@ -48,9 +59,9 @@ async def user_signup(user_in: UserCreate, session: Session = Depends(get_db_ses
     new_user = User(
         name=user_in.name or "User",
         email=user_in.email,
-        password_hash=bcrypt.hash(user_in.password),
         hash=verification_code,
     )
+    new_user.set_password(user_in.password)
 
     # Create user organization
     organization = Organization(title="My Organization", users=[new_user])
@@ -62,9 +73,9 @@ async def user_signup(user_in: UserCreate, session: Session = Depends(get_db_ses
 
     await send_verification_email(new_user, verification_url)
 
-    return {
-        "message": "A verification email has been sent to you. Please verify and then login"
-    }
+    return Success(
+        message="A verification email has been sent to you. Please verify and then login"
+    )
 
 
 @auth_router.post("/login/", status_code=201)
@@ -117,7 +128,51 @@ def verify_email(verify_data: VerifyEmail, session: Session = Depends(get_db_ses
     session.add(user)
     session.commit()
 
-    return {"message": "User verified successfully"}
+    return Success(message="User verified successfully")
+
+
+@auth_router.post("/accept-invite/")
+async def accept_invite(
+    invite_details: AcceptInvite, session: Session = Depends(get_db_session)
+):
+    """
+    Mark the invitation to the user as accepted and perform the following
+    actions -
+        1. Create new user with email verified
+        2. Create the user's default Organization
+        3. Add user to invited Organization as a MEMBER
+    """
+
+    invitation = session.exec(
+        select(InvitedUser).where(InvitedUser.invite_code == invite_details.code)
+    ).one_or_none()
+
+    if not invitation:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You have not been invited to join any Organization",
+        )
+
+    invitation.accepted_at = datetime.now()
+
+    new_user = User(email=invitation.email, email_verified_at=datetime.now())
+    default_organization = Organization(title="My Organization", users=[new_user])
+    org_users = OrganizationUsers(
+        user=new_user,
+        organization_id=invitation.invited_to,
+        role=OrganizationRole.MEMBER,
+    )
+
+    session.add(invitation)
+    session.add(org_users)
+    session.add(default_organization)
+    session.commit()
+
+    return AcceptInvitationSuccess(
+        message="User has accepted the invitation",
+        add_new_user=True,
+        email=invitation.email,
+    )
 
 
 @user_router.get("/", response_model=List[UserRead])
@@ -148,4 +203,65 @@ def reset_user_password(
     session.add(user)
     session.commit()
 
-    return {"message": "Password reset successfully"}
+    return Success(message="Password reset successfully")
+
+
+@user_router.post("/send-invite/", status_code=status.HTTP_200_OK)
+async def send_user_invite(
+    obj: UserInvite,
+    session: Session = Depends(get_db_session),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Send an invitation email to the invited user's email id.
+    """
+
+    user_is_registered = False
+    organization = session.exec(
+        select(Organization).where(Organization.id == obj.organization_id)
+    ).one_or_none()
+
+    # If the invited user email is the same as that of the auth user
+    if obj.email == current_user.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot invite yourself",
+        )
+
+    invitation = session.exec(
+        select(InvitedUser).where(
+            InvitedUser.email == obj.email, InvitedUser.invited_to == organization.id
+        )
+    ).one_or_none()
+
+    # Check if user has already been invited to the organization
+    if invitation:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"{obj.email} has already been invited to {organization.title}",
+        )
+
+    existing_user = session.exec(
+        select(User).where(User.email == obj.email)
+    ).one_or_none()
+
+    if existing_user:
+        user_is_registered = True
+
+    invite_code, invitation_url = generate_user_invite_url()
+    invited_user = InvitedUser(
+        email=obj.email,
+        invite_code=invite_code,
+        is_registered=user_is_registered,
+        invited_by=current_user.id,
+        invited_to=obj.organization_id,
+        invited_at=datetime.now(),
+    )
+
+    session.add(invited_user)
+    session.commit()
+
+    await send_user_invitation(
+        current_user.name, obj.email, organization.title, invitation_url
+    )
+    return Success(message=f"User {obj.email} has been sent an invitation link")

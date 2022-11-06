@@ -25,7 +25,7 @@ const Button = ({
     onClick: as === "button" ? onClick : undefined,
     className: `rounded-md font-semibold cursor-pointer py-2 px-6 outline outline-1 transition ${
       typetoColor[type]
-    } ${icon ? btnStyleWithIcon : null} ${extraStyles}`,
+    } ${icon ? btnStyleWithIcon : ""} ${extraStyles ? extraStyles : ""}`,
   };
 
   if (as === "button") {

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from typing import Any, Optional, Dict
 
 from fastapi import HTTPException, status, Depends
+from pydantic import EmailStr, HttpUrl
 from sqlmodel import Session, select
 
 from auth import oauth2_scheme
@@ -98,7 +99,30 @@ def get_current_user(
     return user
 
 
-async def send_verification_email(user: User, verification_url: str):
+def generate_hex_code():
+    token = randbytes(10)
+    hashedCode = hashlib.sha256()
+    hashedCode.update(token)
+    return hashedCode.hexdigest()
+
+
+def generate_verification_code_and_url():
+    verification_code = generate_hex_code()
+    verification_url = (
+        f"{settings.APPLICATION_URL}verify_email/?code={verification_code}"
+    )
+
+    return verification_code, verification_url
+
+
+def generate_user_invite_url():
+    invite_code = generate_hex_code()
+    invitation_url = f"{settings.APPLICATION_URL}user/join/{invite_code}"
+
+    return invite_code, invitation_url
+
+
+async def send_verification_email(user: User, verification_url: HttpUrl):
     await send_email(
         "email_verification.html",
         "Verify Email Address",
@@ -111,13 +135,19 @@ async def send_verification_email(user: User, verification_url: str):
     )
 
 
-def generate_verification_code_and_url():
-    token = randbytes(10)
-    hashedCode = hashlib.sha256()
-    hashedCode.update(token)
-    verification_code = hashedCode.hexdigest()
-    verification_url = (
-        f"{settings.APPLICATION_URL}verify_email/?code={verification_code}"
+async def send_user_invitation(
+    from_user_name: str,
+    recipient: EmailStr,
+    organization_name: str,
+    invitation_url: HttpUrl,
+):
+    await send_email(
+        "user_invitation.html",
+        f"You are invited to {organization_name}",
+        recipients=[recipient],
+        context={
+            "organization": organization_name,
+            "invitation_url": invitation_url,
+            "from_user_name": from_user_name,
+        },
     )
-
-    return verification_code, verification_url

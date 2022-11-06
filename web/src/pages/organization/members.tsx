@@ -4,10 +4,12 @@ import { MdOutlinePersonAddAlt } from "react-icons/md";
 import { toast } from "react-toastify";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
+import useUser, { TUserContext } from "../../context/UserProvider";
 
 import UserService from "../../services/users";
 
 const OrganizationMembers = () => {
+  const { currentOrganization } = useUser() as TUserContext;
   const inviteEmailRef = useRef<HTMLInputElement>(null);
 
   const sendUserInvite = (close: {
@@ -21,10 +23,12 @@ const OrganizationMembers = () => {
   }) => {
     if (inviteEmailRef.current !== null) {
       const email = inviteEmailRef.current?.value;
-      UserService.invite(email).then((res) => {
-        close();
-        toast.success(res.message);
-      });
+      UserService.invite(email, currentOrganization?.id as number)
+        .then((res) => {
+          close();
+          toast.success(res.message);
+        })
+        .catch((error) => toast.error(error.message));
     }
   };
 

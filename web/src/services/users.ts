@@ -42,4 +42,20 @@ export default {
   me: () => {
     return client<TAuthenticatedUser>("user/me/");
   },
+  invite: (email: string, organization_id: number | undefined) => {
+    return client<{ message: string }>("user/send-invite/", {
+      method: "POST",
+      body: JSON.stringify({ email, organization_id }),
+    });
+  },
+  acceptInvite: (invitationCode: string) => {
+    return client<{
+      message: string;
+      email: string;
+      add_new_user: boolean;
+    }>("auth/accept-invite/", {
+      method: "POST",
+      body: JSON.stringify({ code: invitationCode }),
+    });
+  },
 };

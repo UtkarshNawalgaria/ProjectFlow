@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Dict, List
 from pydantic import EmailStr, BaseModel
 
@@ -32,7 +33,7 @@ env = Environment(
 
 
 async def send_email(
-    template_file: str,
+    template_file: Path,
     subject: str,
     recipients: List[EmailStr],
     cc: List[EmailStr] = [],
