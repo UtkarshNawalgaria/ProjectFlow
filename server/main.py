@@ -5,6 +5,7 @@ from config import get_settings
 
 from apps.user.api import user_router, auth_router
 from apps.projects.api import projects_router, tasks_router
+from apps.organization.api import organization_router
 
 
 settings = get_settings()
@@ -28,6 +29,7 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(tasks_router)
+app.include_router(organization_router)
 
 
 @app.get("/")

@@ -13,4 +13,4 @@ COPY . /app
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD npm run build && npm run preview
+CMD npm run dev
