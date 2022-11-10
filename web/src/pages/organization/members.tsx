@@ -1,16 +1,27 @@
 import { Popover, Transition } from "@headlessui/react";
-import { Fragment, MutableRefObject, useRef } from "react";
+import { Fragment, MutableRefObject, useEffect, useRef, useState } from "react";
 import { MdOutlinePersonAddAlt } from "react-icons/md";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 import useUser, { TUserContext } from "../../context/UserProvider";
+import client from "../../services/client";
 
 import UserService from "../../services/users";
 
+type TMember = {
+  name: string;
+  email: string | undefined;
+  role: "ADMIN" | "MEMBER";
+  invitation_status: "ACCEPTED" | "PENDING";
+};
+
 const OrganizationMembers = () => {
-  const { currentOrganization } = useUser() as TUserContext;
+  const { orgId } = useParams();
+  const { user } = useUser() as TUserContext;
   const inviteEmailRef = useRef<HTMLInputElement>(null);
+  const [members, setMembers] = useState<TMember[]>([]);
 
   const sendUserInvite = (close: {
     (
@@ -21,9 +32,9 @@ const OrganizationMembers = () => {
     ): void;
     (): void;
   }) => {
-    if (inviteEmailRef.current !== null) {
+    if (inviteEmailRef.current !== null && orgId) {
       const email = inviteEmailRef.current?.value;
-      UserService.invite(email, currentOrganization?.id as number)
+      UserService.invite(email, parseInt(orgId) as number)
         .then((res) => {
           close();
           toast.success(res.message);
@@ -31,6 +42,20 @@ const OrganizationMembers = () => {
         .catch((error) => toast.error(error.message));
     }
   };
+
+  useEffect(() => {
+    client<TMember[]>(`organization/${orgId}/members`).then((members) =>
+      setMembers([
+        {
+          email: user?.email,
+          invitation_status: "PENDING",
+          role: "ADMIN",
+          name: "",
+        },
+        ...members,
+      ])
+    );
+  }, []);
 
   return (
     <div>
@@ -86,7 +111,30 @@ const OrganizationMembers = () => {
           </Popover>
         </div>
       </PageHeader>
-      <section className="mx-4">Members list</section>
+      <section className="mx-4">
+        {members.map((member) => (
+          <div
+            key={member.email}
+            className="flex justify-between mb-4 bg-gray-50 p-4 rounded-md cursor-pointer hover:bg-gray-100">
+            <div className="w-3/4">{member.email}</div>
+            <div className="flex gap-4 w-1/4 justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className={
+                    "w-2 h-2 rounded-lg" +
+                    `${
+                      member.invitation_status === "PENDING"
+                        ? " bg-red-500"
+                        : " bg-green-600"
+                    }`
+                  }></span>
+                <span>{member.invitation_status}</span>
+              </div>
+              <div>{member.role}</div>
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
   );
 };
