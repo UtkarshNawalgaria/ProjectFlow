@@ -48,7 +48,7 @@ const OrganizationMembers = () => {
       setMembers([
         {
           email: user?.email,
-          invitation_status: "PENDING",
+          invitation_status: "ACCEPTED",
           role: "ADMIN",
           name: "",
         },

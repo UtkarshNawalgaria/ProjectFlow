@@ -38,12 +38,19 @@ class User(BaseModel, table=True):
 
     # Relationships
     organizations: List["Organization"] = Relationship(
-        back_populates="users", link_model=OrganizationUsers
+        back_populates="users",
+        link_model=OrganizationUsers,
+        sa_relationship_kwargs={"cascade": "all, delete"},
     )
     org_users: List[OrganizationUsers] = Relationship(back_populates="user")
-    projects: Optional[List["Project"]] = Relationship(back_populates="owner")
+    projects: Optional[List["Project"]] = Relationship(
+        back_populates="owner", sa_relationship_kwargs={"cascade": "delete"}
+    )
 
     def verify_password(self, password: str) -> bool:
+        if not self.password_hash:
+            return False
+
         return bcrypt.verify(password, self.password_hash)
 
     def set_password(self, password: str) -> None:
@@ -57,6 +64,7 @@ class Organization(BaseModel, table=True):
     users: List[User] = Relationship(
         back_populates="organizations", link_model=OrganizationUsers
     )
+    projects: List["Project"] = Relationship(back_populates="organization")
     org_users: List[OrganizationUsers] = Relationship(back_populates="organization")
 
 
@@ -69,4 +77,3 @@ class InvitedUser(BaseModel, table=True):
 
     invited_by: int = Field(nullable=False, foreign_key="user.id")
     invited_to: int = Field(nullable=False, foreign_key="organization.id")
-

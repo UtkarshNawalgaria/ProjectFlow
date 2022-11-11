@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlmodel import Field, Relationship
 
 from db.base import BaseModel
-from apps.user.models import User
+from apps.user.models import Organization, User
 
 
 class TaskStatus(Enum):
@@ -17,9 +17,13 @@ class Project(BaseModel, table=True):
     title: str = Field(nullable=False, max_length=100)
     description: str = Field(nullable=True, max_length=500)
     owner_id: int = Field(default=None, foreign_key="user.id", nullable=False)
+    organization_id: int = Field(
+        default=None, foreign_key="organization.id", nullable=True
+    )
 
     # Relationships
     owner: User = Relationship(back_populates="projects")
+    organization: Organization = Relationship(back_populates="projects")
     lists: List["TaskList"] = Relationship(back_populates="project")
     tasks: List["Task"] = Relationship(back_populates="project")
 

@@ -155,7 +155,7 @@ async def accept_invite(
 
     invitation.accepted_at = datetime.now()
 
-    new_user = User(email=invitation.email, email_verified_at=datetime.now())
+    new_user = User(name="User", email=invitation.email, email_verified_at=datetime.now())
     default_organization = Organization(title="My Organization", users=[new_user])
     org_users = OrganizationUsers(
         user=new_user,

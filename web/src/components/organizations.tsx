@@ -33,7 +33,11 @@ const Organizations = () => {
                   <Listbox.Option
                     key={org.id}
                     value={org}
-                    className="px-2 mx-2 rounded-sm hover:bg-gray-100 cursor-pointer py-1"
+                    className={`px-2 m-2 rounded-sm hover:bg-gray-100 cursor-pointer py-2 ${
+                      org.id === currentOrganization?.id
+                        ? "bg-gray-100 rounded-md"
+                        : ""
+                    }`}
                     onClick={() => changeOrganization(org.id)}>
                     {org.title}
                   </Listbox.Option>

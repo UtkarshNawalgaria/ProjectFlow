@@ -16,7 +16,7 @@ class OrganizationRead(SQLModel):
 
 class UserRead(SQLModel):
     id: int
-    name: str
+    name: str = ""
     email: EmailStr
     organizations: List[OrganizationRead]
 

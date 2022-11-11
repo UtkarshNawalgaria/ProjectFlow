@@ -36,6 +36,7 @@ class TaskCreate(TaskBase):
 class ProjectBase(SQLModel):
     title: str = Field(min_length=3, max_length=50)
     description: Optional[str]
+    organization_id: Optional[int]
 
 
 class ProjectCreate(ProjectBase):
