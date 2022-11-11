@@ -11,6 +11,7 @@ import PageHeader from "../components/page-header";
 
 import ProjectService, { Project, ProjectCreate } from "../services/projects";
 import { ProcessedFormErrorType } from "../utils";
+import useUser, { TUserContext } from "../context/UserProvider";
 
 const ProjectsViewType = {
   LIST: 0,
@@ -126,9 +127,11 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
 };
 
 const ProjectsPage = () => {
+  const { currentOrganization } = useUser() as TUserContext;
   const [view, setView] = useState(ProjectsViewType.LIST);
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<ProjectCreate>({
+    organization_id: currentOrganization?.id,
     title: "",
     description: "",
   });
@@ -176,7 +179,11 @@ const ProjectsPage = () => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
         toggleNewProjectModal(false);
         setError(null);
-        setNewProject({ title: "", description: "" });
+        setNewProject({
+          title: "",
+          description: "",
+          organization_id: currentOrganization?.id,
+        });
         toast.success("Project Created Successfuly", {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -258,7 +265,11 @@ const ProjectsPage = () => {
           open={showNewProjectModal}
           closeModal={() => {
             setError(null);
-            setNewProject({ title: "", description: "" });
+            setNewProject({
+              title: "",
+              description: "",
+              organization_id: currentOrganization?.id,
+            });
             toggleNewProjectModal(false);
           }}>
           <form className="w-full" onSubmit={createNewProject}>
@@ -314,7 +325,11 @@ const ProjectsPage = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   setError(null);
-                  setNewProject({ title: "", description: "" });
+                  setNewProject({
+                    title: "",
+                    description: "",
+                    organization_id: currentOrganization?.id,
+                  });
                   toggleNewProjectModal(false);
                 }}>
                 Cancel

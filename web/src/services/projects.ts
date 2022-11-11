@@ -12,6 +12,7 @@ export type Project = {
 };
 
 export type ProjectCreate = {
+  organization_id: number | undefined;
   title: string;
   description?: string;
 };

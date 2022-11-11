@@ -40,7 +40,7 @@ class ProjectBase(SQLModel):
 
 
 class ProjectCreate(ProjectBase):
-    pass
+    organization_id: int
 
 
 class ProjectRead(ProjectBase):
