@@ -58,4 +58,10 @@ export default {
       body: JSON.stringify({ code: invitationCode }),
     });
   },
+  verifyEmail: (email: string, code: string) => {
+    return client<{ message: string }>("auth/verify_email/", {
+      method: "POST",
+      body: JSON.stringify({ email, code }),
+    });
+  },
 };

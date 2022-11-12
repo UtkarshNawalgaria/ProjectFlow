@@ -2,7 +2,7 @@ import { FormEvent, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/button";
-import client from "../services/client";
+import UserService from "../services/users";
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -14,10 +14,7 @@ const VerifyEmail = () => {
     event.preventDefault();
 
     if (emailRef.current !== null) {
-      client<{ message: string }>("auth/verify_email/", {
-        method: "POST",
-        body: JSON.stringify({ email: emailRef?.current.value, code: code }),
-      })
+      UserService.verifyEmail(emailRef?.current.value, code as string)
         .then((data) => {
           toast.success(data.message);
           setIsVerified(true);
