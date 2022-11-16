@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
       <Outlet />
     </AuthenticatedLayout>
   ) : (
-    <Navigate to="/" />
+    <Navigate replace to="/" />
   );
 };
 

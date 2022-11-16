@@ -3,12 +3,12 @@ import client from "./client";
 export type Project = {
   id: number;
   title: string;
+  owner_id: number;
+  task_count: number;
   description?: string;
   image_url?: string;
   created_at: string;
   updated_at?: string;
-  owner_id?: number;
-  task_count: number;
 };
 
 export type ProjectCreate = {
@@ -18,8 +18,9 @@ export type ProjectCreate = {
 };
 
 export default {
-  getAll: () => {
-    return client<Project[]>("project/");
+  getAll: (organizatioId: number | undefined) => {
+    if (!organizatioId) return Promise.reject("No Organization Id");
+    return client<Project[]>(`project/?organization_id=${organizatioId}`);
   },
   getById: (projectId: number) => {
     return client<Project>(`project/${projectId}/`);
