@@ -34,7 +34,7 @@ export type TasksProviderType = {
   deleteTask: (id: number) => void;
   updateTask: (
     taskId: number,
-    data: { [key: string]: string | number | null }
+    data: Record<string, string | number | null>
   ) => void;
   setTasks: Dispatch<SetStateAction<Task[]>>;
   selectCurrentTask: (taskId: number) => void;
@@ -97,7 +97,7 @@ export const TasksProvider = ({ children }: Props) => {
 
   const updateTask = (
     taskId: number,
-    data: { [key: string]: string | number | null }
+    data: Record<string, string | number | null>
   ) => {
     TaskService.updateTask(taskId, data).then((updatedTask) => {
       setTasks((prevTasks) => {
@@ -115,7 +115,7 @@ export const TasksProvider = ({ children }: Props) => {
   };
 
   const createTaskList = (list: TaskListCreate) => {
-    TaskService.createTaskList(list).then((list) => {
+    TaskService.createTaskList(list.title, list.project).then((list) => {
       setLists((lists) => [...lists, list]);
       toast.success("Task List Created Successfully");
     });

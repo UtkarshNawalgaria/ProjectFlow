@@ -29,7 +29,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     useState<Organization | null>(null);
 
   const initials = useMemo(() => {
-    if (!user) return "";
+    if (!user || (user && user.name.length == 0)) return "";
 
     const name = user.name.split(" ");
     const init = name.length > 1 ? name[0][0] + name[1][0] : name[0][0];

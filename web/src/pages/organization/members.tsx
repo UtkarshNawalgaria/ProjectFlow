@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import client from "../../services/client";
+import useClient from "../../services/client";
 
 import UserService from "../../services/users";
 
@@ -44,7 +44,7 @@ const OrganizationMembers = () => {
   };
 
   useEffect(() => {
-    client<TMember[]>(`organization/${orgId}/members`).then((members) =>
+    useClient<TMember[]>(`organization/${orgId}/members`).then((members) =>
       setMembers([
         {
           email: user?.email,

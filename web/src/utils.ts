@@ -1,15 +1,11 @@
 export type ValidationErrorResponseType = {
   msg: string;
   type: string;
-  ctx: {
-    [key: string]: string;
-  };
+  ctx: Record<string, string>;
   loc: string[];
 };
 
-export type ProcessedFormErrorType = {
-  [field: string]: string;
-};
+export type ProcessedFormErrorType = Record<string, string>;
 
 export function parseValidationErrorResponse(
   detail: ValidationErrorResponseType[]

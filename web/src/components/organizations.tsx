@@ -38,7 +38,7 @@ const Organizations = () => {
                         ? "bg-gray-100 rounded-md"
                         : ""
                     }`}
-                    onClick={() => changeOrganization(org.id)}>
+                    onClick={() => changeOrganization(org?.id as number)}>
                     {org.title}
                   </Listbox.Option>
                 ))}

@@ -1,15 +1,15 @@
 import {
-  AiOutlineFundProjectionScreen,
   AiOutlineHome,
   AiOutlineSetting,
   AiOutlineUsergroupAdd,
+  AiOutlineFundProjectionScreen,
 } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import useUser, { TUserContext } from "../context/UserProvider";
 import navItems, { organizationNavItems } from "./data/nav";
 import Organizations from "./organizations";
 
-const IconMap: { [key: string]: JSX.Element } = {
+const IconMap: Record<string, JSX.Element> = {
   dashboard: <AiOutlineHome className="h-5 w-5" />,
   projects: <AiOutlineFundProjectionScreen className="h-5 w-5" />,
   settings: <AiOutlineSetting className="h-5 w-5" />,

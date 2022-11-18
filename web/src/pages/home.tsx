@@ -7,7 +7,7 @@ const HomePage = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string | { [key: string]: string }>("");
+  const [error, setError] = useState<string | Record<string, string>>("");
   const [success, setSuccess] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { register, login, guestLogin, auth, redirectUrl } =
