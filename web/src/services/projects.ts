@@ -1,38 +1,43 @@
-import client from "./client";
+import useClient from "./client";
+import { Task, TaskList } from "./tasks";
 
-export type Project = {
-  id: number;
+export type ProjectData = {
   title: string;
-  owner_id: number;
-  task_count: number;
   description?: string;
-  image_url?: string;
-  created_at: string;
-  updated_at?: string;
+  organization: number;
+  owner: number;
 };
 
-export type ProjectCreate = {
-  organization_id: number | undefined;
+export type ProjectWithTasks = {
+  id: number;
+  slug: string;
   title: string;
-  description?: string;
+  description: string | null;
+  task_count: number;
+  tasks: Task[];
+  tasklists: TaskList[];
+};
+
+export type Project = Omit<ProjectWithTasks, "tasks" | "tasklists"> & {
+  image_url?: string;
 };
 
 export default {
   getAll: (organizatioId: number | undefined) => {
     if (!organizatioId) return Promise.reject("No Organization Id");
-    return client<Project[]>(`project/?organization_id=${organizatioId}`);
+    return useClient<Project[]>(`project/?organization_id=${organizatioId}`);
   },
   getById: (projectId: number) => {
-    return client<Project>(`project/${projectId}/`);
+    return useClient<ProjectWithTasks>(`project/${projectId}/`);
   },
-  createProject: (project: ProjectCreate) => {
-    return client<Project>("project/", {
+  createProject: (project: ProjectData) => {
+    return useClient<Project>("project/", {
       method: "POST",
       body: JSON.stringify(project),
     });
   },
   delete: (projectId: number) => {
-    return client(`project/${projectId}/`, {
+    return useClient(`project/${projectId}/`, {
       method: "DELETE",
     });
   },

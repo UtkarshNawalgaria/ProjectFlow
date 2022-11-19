@@ -1,88 +1,87 @@
-import client from "./client";
-
-enum TaskStatus {
-  OPEN = 0,
-  COMPLETE = 1,
-}
+import useClient from "./client";
 
 export type Task = {
   id: number;
+  url: string;
   title: string;
-  status: TaskStatus;
-  description?: string;
-  project_id?: number;
-  tasklist_id: number | null;
-  start_date?: string;
-  due_date?: string;
+  owner: number;
+  project: number;
+  description: string | null;
+  tasklist: number | null;
+  start_date: string | null;
+  due_date: string | null;
 };
 
 export type TaskCreate = {
   title: string;
-  project_id: number;
+  project: number;
+  owner: number | null;
   description?: string;
-  tasklist_id?: number | null;
+  tasklist: number | null;
   start_date?: string | null;
   due_date?: string | null;
 };
 
 export type TaskListCreate = {
   title: string;
-  project_id: number;
+  project: number;
 };
 
 export type TaskList = {
   id: number;
-} & TaskListCreate;
+  title: string;
+};
 
 export const emptyTask: TaskCreate = {
   title: "",
-  project_id: 0,
+  project: 0,
   description: "",
-  tasklist_id: null,
+  tasklist: null,
   start_date: null,
   due_date: null,
+  owner: null,
 };
 
 export const DefaultTaskList = {
   id: 0,
   title: "Todo",
-  project_id: 0,
+  project: 0,
 };
 
 export default {
   getAll: (projectId: number) => {
-    return client<Task[]>(`task/?project_id=${projectId}`);
+    return useClient<Task[]>(`task/?project_id=${projectId}`);
   },
   getById: (taskId: number) => {
-    return client<Task>(`task/${taskId}/`);
+    return useClient<Task>(`task/${taskId}/`);
   },
   createTask: (task: TaskCreate) => {
-    return client<Task>("task/", {
+    return useClient<Task>("task/", {
       method: "POST",
       body: JSON.stringify(task),
     });
   },
   updateTask: (
     taskId: number,
-    update_data: { [key: string]: string | number | null }
+    update_data: Record<string, string | number | null>
   ) => {
-    return client<Task>(`task/${taskId}/`, {
+    return useClient<Task>(`task/${taskId}/`, {
       method: "PATCH",
       body: JSON.stringify(update_data),
     });
   },
   delete: (taskId: number) => {
-    return client(`task/${taskId}/`, {
+    return useClient(`task/${taskId}/`, {
       method: "DELETE",
     });
   },
   getAllTaskLists: (projectId: number) => {
-    return client<TaskList[]>(`task/get_list?project_id=${projectId}`);
+    return useClient<TaskList[]>(`tasklist/?project_id=${projectId}`);
   },
-  createTaskList: (data: TaskListCreate) => {
-    return client<TaskList>("task/create_list/", {
+  createTaskList: (title: string, projectId: number) => {
+    return useClient<TaskList>(`tasklist/?project_id=${projectId}`, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({ title: title }),
     });
   },
 };

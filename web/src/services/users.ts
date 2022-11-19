@@ -1,6 +1,7 @@
-import client from "./client";
+import useClient from "./client";
+import { Organization } from "./organization";
 
-const encodeFormData = (data: { [key: string]: string }) => {
+const encodeFormData = (data: Record<string, string>) => {
   return Object.keys(data)
     .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
     .join("&");
@@ -16,50 +17,47 @@ export type TAuthenticatedUser = {
   id: number;
   name: string;
   email: string;
-  organizations: Array<{
-    id: number;
-    title: string;
-  }>;
+  organizations: Organization[];
 };
 
 export default {
   login: (email: string, password: string) => {
-    return client<{ access_token: string; token_type: string }>("auth/login/", {
+    return useClient<{ access_token: string }>("users/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
-      body: encodeFormData({ username: email, password: password }),
+      body: encodeFormData({ email, password: password }),
     });
   },
   register: (user: UserCreate) => {
-    return client<{ message: string }>("auth/register/", {
+    return useClient<{ message: string }>("users/signup/", {
       method: "POST",
       body: JSON.stringify(user),
     });
   },
   me: () => {
-    return client<TAuthenticatedUser>("user/me/");
+    return useClient<TAuthenticatedUser>("users/me");
   },
   invite: (email: string, organization_id: number | undefined) => {
-    return client<{ message: string }>("user/send-invite/", {
+    return useClient<{ message: string }>("users/send-invite/", {
       method: "POST",
       body: JSON.stringify({ email, organization_id }),
     });
   },
   acceptInvite: (invitationCode: string) => {
-    return client<{
+    return useClient<{
       message: string;
       email: string;
       add_new_user: boolean;
-    }>("auth/accept-invite/", {
+    }>("users/accept-invite/", {
       method: "POST",
       body: JSON.stringify({ code: invitationCode }),
     });
   },
   verifyEmail: (email: string, code: string) => {
-    return client<{ message: string }>("auth/verify_email/", {
+    return useClient<{ message: string }>("users/verify_email/", {
       method: "POST",
       body: JSON.stringify({ email, code }),
     });
