@@ -5,13 +5,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import OrganizationService, { Organization } from "../services/organization";
 import UserService, { TAuthenticatedUser } from "../services/users";
 import useAuth, { AuthContextType } from "./AuthProvider";
-
-type Organization = {
-  id: number;
-  title: string;
-};
 
 export type TUserContext = {
   user: TAuthenticatedUser | null;
@@ -36,13 +32,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     return init.toUpperCase();
   }, [user?.name]);
 
-  const getCurrentUser = () => {
-    UserService.me().then((user) => {
-      setUser(user);
-      setCurrentOrganization(user.organizations ? user.organizations[0] : null);
-    });
-  };
-
   const changeOrganization = (orgId: number) => {
     if (orgId === currentOrganization?.id) return;
 
@@ -51,7 +40,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (auth) getCurrentUser();
+    if (auth) {
+      Promise.all([
+        UserService.me(),
+        OrganizationService.getOrganizationList(),
+      ]).then((values) => {
+        const userData = values[0] as Omit<TAuthenticatedUser, "organizations">;
+        const orgData = values[1];
+        setUser({
+          ...userData,
+          organizations: orgData,
+        });
+        setCurrentOrganization(values[1][0]);
+      });
+    }
   }, []);
 
   return (
