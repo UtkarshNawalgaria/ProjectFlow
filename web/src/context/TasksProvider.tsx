@@ -57,14 +57,10 @@ export const TasksProvider = ({ children }: Props) => {
 
   // Fetch project details, tasks and tasklists related to the project
   useEffect(() => {
-    Promise.all([
-      ProjectService.getById(parseInt(projectId as string)),
-      TaskService.getAll(parseInt(projectId as string)),
-      TaskService.getAllTaskLists(parseInt(projectId as string)),
-    ]).then((values) => {
-      setProject(values[0]);
-      setTasks(values[1]);
-      setLists(values[2]);
+    ProjectService.getById(parseInt(projectId as string)).then((response) => {
+      setTasks(response.tasks);
+      setLists(response.tasklists);
+      setProject(response);
     });
   }, []);
 
@@ -75,11 +71,11 @@ export const TasksProvider = ({ children }: Props) => {
 
     outputData.push({
       list: DefaultTaskList,
-      tasks: tasks.filter((task) => task.tasklist_id === null),
+      tasks: tasks.filter((task) => task.tasklist === null),
     });
 
     lists.forEach((list) => {
-      const listTasks = tasks.filter((task) => task.tasklist_id === list.id);
+      const listTasks = tasks.filter((task) => task.tasklist === list.id);
       outputData.push({ list, tasks: listTasks });
     });
 
