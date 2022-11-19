@@ -15,7 +15,7 @@ const NewTaskListModal = ({
   const { projectId } = useParams();
   const [list, setList] = useState<TaskListCreate>({
     title: "",
-    project_id: parseInt(projectId as string),
+    project: parseInt(projectId as string),
   });
 
   const handleFormSubmission = (e: FormEvent) => {
@@ -27,7 +27,7 @@ const NewTaskListModal = ({
   const reset = () => {
     setList({
       title: "",
-      project_id: parseInt(projectId as string),
+      project: parseInt(projectId as string),
     });
     closeModal();
   };

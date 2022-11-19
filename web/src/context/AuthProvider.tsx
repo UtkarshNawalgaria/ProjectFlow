@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
-import client, { authTokenKey } from "../services/client";
+import useClient, { authTokenKey } from "../services/client";
 import UserService from "../services/users";
 
 export type TAuth = {
@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   }
 
   function verifyToken() {
-    client<{ access_token: string } | null>("auth/verify_access_token/", {
+    useClient<{ access_token: string } | null>("auth/verify_access_token/", {
       method: "POST",
     });
   }

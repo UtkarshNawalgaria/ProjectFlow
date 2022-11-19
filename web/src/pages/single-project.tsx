@@ -73,7 +73,7 @@ const TasksKanbanView = ({
         const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
 
         if (currTask) {
-          currTask.tasklist_id = newTaskListId != 0 ? newTaskListId : null;
+          currTask.tasklist = newTaskListId != 0 ? newTaskListId : null;
           remainingTasks.push(currTask);
         }
 
@@ -81,7 +81,7 @@ const TasksKanbanView = ({
       });
 
       updateTask(taskId as number, {
-        tasklist_id: newTaskListId === 0 ? null : newTaskListId,
+        tasklist: newTaskListId === 0 ? null : newTaskListId,
       });
       toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
         position: toast.POSITION.TOP_RIGHT,
@@ -167,9 +167,7 @@ const TasksListView = () => {
                         }`}>
                         <div className="flex items-center">
                           <div className="w-full pl-8 py-2">{task.title}</div>
-                          <div className="w-full pl-2 py-2">
-                            {task.status === 0 ? "Open" : "Completed"}
-                          </div>
+                          <div className="w-full pl-2 py-2">Open</div>
                           <div className="w-full pl-4 py-2">
                             {task?.start_date}
                           </div>

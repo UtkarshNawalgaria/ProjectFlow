@@ -1,6 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import useUser, { TUserContext } from "../context/UserProvider";
 import { TaskCreate, TaskList } from "../services/tasks";
 import Button from "./button";
 
@@ -13,8 +14,9 @@ const KanbanList = ({
   tasklist: TaskList;
   addNewTask: (task: TaskCreate) => void;
 }) => {
-  const [containerId] = useState(tasklist.id);
   const { projectId } = useParams();
+  const { user } = useUser() as TUserContext;
+  const [containerId] = useState(tasklist.id);
   const newTaskRef = useRef<HTMLInputElement>(null);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const { setNodeRef, isOver, active } = useDroppable({
@@ -29,8 +31,9 @@ const KanbanList = ({
     if (newTaskRef !== null) {
       addNewTask({
         title: newTaskRef.current?.value as string,
-        project_id: parseInt(projectId as string),
-        tasklist_id: containerId ? containerId : null,
+        project: parseInt(projectId as string),
+        tasklist: containerId,
+        owner: user?.id as number,
       });
       setShowNewTaskForm(false);
     }

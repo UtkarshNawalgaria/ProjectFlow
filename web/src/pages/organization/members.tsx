@@ -12,8 +12,8 @@ import UserService from "../../services/users";
 
 type TMember = {
   name: string;
-  email: string | undefined;
-  role: "ADMIN" | "MEMBER";
+  email: string;
+  role: "admin" | "member";
   invitation_status: "ACCEPTED" | "PENDING";
 };
 
@@ -47,9 +47,9 @@ const OrganizationMembers = () => {
     useClient<TMember[]>(`organization/${orgId}/members`).then((members) =>
       setMembers([
         {
-          email: user?.email,
+          email: user?.email as string,
           invitation_status: "ACCEPTED",
-          role: "ADMIN",
+          role: "admin",
           name: "",
         },
         ...members,

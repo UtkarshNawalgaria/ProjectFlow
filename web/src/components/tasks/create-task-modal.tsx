@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
+import useUser, { TUserContext } from "../../context/UserProvider";
 import { TaskCreate, emptyTask } from "../../services/tasks";
 import { ProcessedFormErrorType } from "../../utils";
 import Modal from "../modal";
@@ -13,11 +14,12 @@ const NewTaskModal = ({
   closeModal: () => void;
 }) => {
   const { projectId } = useParams();
+  const { user } = useUser() as TUserContext;
   const { lists, addNewTask } = useTasks() as TasksProviderType;
   const [error, setError] = useState<ProcessedFormErrorType | null>(null);
   const [newTask, setNewTask] = useState<TaskCreate>({
     ...emptyTask,
-    project_id: parseInt(projectId as string),
+    project: parseInt(projectId as string),
   });
 
   const setNewTaskFormData = (
@@ -35,7 +37,7 @@ const NewTaskModal = ({
     setError(null);
     setNewTask({
       ...emptyTask,
-      project_id: parseInt(projectId as string),
+      project: parseInt(projectId as string),
     });
     closeModal();
   };
@@ -45,7 +47,7 @@ const NewTaskModal = ({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          addNewTask(newTask);
+          addNewTask({ ...newTask, owner: user?.id as number });
           reset();
         }}
         className="w-full">
@@ -102,7 +104,7 @@ const NewTaskModal = ({
           <select
             onChange={(e) => setNewTaskFormData(e)}
             className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2"
-            name="tasklist_id"
+            name="tasklist"
             defaultValue={undefined}>
             <option value="0">Todo</option>
             {lists.map((item) => (
