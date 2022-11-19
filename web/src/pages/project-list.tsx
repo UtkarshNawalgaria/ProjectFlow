@@ -9,7 +9,7 @@ import Modal from "../components/modal";
 import Button from "../components/button";
 import PageHeader from "../components/page-header";
 
-import ProjectService, { Project, ProjectCreate } from "../services/projects";
+import ProjectService, { Project } from "../services/projects";
 import { ProcessedFormErrorType } from "../utils";
 import useUser, { TUserContext } from "../context/UserProvider";
 import { TAuthenticatedUser } from "../services/users";
@@ -22,14 +22,13 @@ const ProjectsViewType = {
 type ProjectViewProps = {
   projects: Project[];
   user: TAuthenticatedUser | null;
-  setSelectedProjectId?: any;
+  setSelectedProjectId: React.Dispatch<number>;
   deleteProject: (projectId: number, confirmDelete?: boolean) => void;
   showProjectSettings?: (projectId: number) => void;
   openModal: () => void;
 };
 
 const ProjectsListView: FC<ProjectViewProps> = ({
-  user,
   projects,
   deleteProject,
   setSelectedProjectId,
@@ -40,42 +39,30 @@ const ProjectsListView: FC<ProjectViewProps> = ({
         {projects.map((project) => (
           <li
             key={project.id}
-            className={`flex gap-4 items-center justify-between px-4 py-2 mb-4 rounded-md ${
-              project.owner_id === user?.id
-                ? "bg-grey-lightest cursor-pointer hover:bg-gray-100"
-                : "cursor-not-allowed bg-gray-100"
-            }`}>
+            className={`flex gap-4 items-center justify-between px-4 py-2 mb-4 rounded-md bg-grey-lightest cursor-pointer hover:bg-gray-100`}>
             <div className="w-full">
-              {project.owner_id === user?.id ? (
-                <Link
-                  to={project.id.toString()}
-                  className="block font-bold text-grey-dark hover:text-primary">
-                  <h3>
-                    {project.title} ({project.task_count})
-                  </h3>
-                </Link>
-              ) : (
-                <h3 className="font-bold text-grey-dark">
+              <Link
+                to={project.id.toString()}
+                className="block font-bold text-grey-dark hover:text-primary">
+                <h3>
                   {project.title} ({project.task_count})
                 </h3>
-              )}
+              </Link>
             </div>
-            {project.owner_id === user?.id ? (
-              <div className="w-full text-right">
-                <span className="inline-block p-2 rounded-full hover:bg-red-300">
-                  <HiTrash
-                    onClick={() => {
-                      setSelectedProjectId(project.id);
-                      deleteProject(project.id);
-                    }}
-                    className="cursor-pointer text-red-700"
-                  />
-                </span>
-                <span className="inline-block p-2 rounded-full hover:bg-indigo-300">
-                  <AiOutlineSetting className="cursor-pointer font-bold text-indigo-700" />
-                </span>
-              </div>
-            ) : null}
+            <div className="w-full text-right">
+              <span className="inline-block p-2 rounded-full hover:bg-red-300">
+                <HiTrash
+                  onClick={() => {
+                    setSelectedProjectId(project.id);
+                    deleteProject(project.id);
+                  }}
+                  className="cursor-pointer text-red-700"
+                />
+              </span>
+              <span className="inline-block p-2 rounded-full hover:bg-indigo-300">
+                <AiOutlineSetting className="cursor-pointer font-bold text-indigo-700" />
+              </span>
+            </div>
           </li>
         ))}
       </ul>
@@ -145,8 +132,7 @@ const ProjectsPage = () => {
   const { currentOrganization, user } = useUser() as TUserContext;
   const [view, setView] = useState(ProjectsViewType.LIST);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [newProject, setNewProject] = useState<ProjectCreate>({
-    organization_id: currentOrganization?.id,
+  const [newProject, setNewProject] = useState({
     title: "",
     description: "",
   });
@@ -158,10 +144,12 @@ const ProjectsPage = () => {
   const [showDeleteConfirmModal, toggleDeleteConfirmModal] = useState(false);
 
   useEffect(() => {
-    ProjectService.getAll(currentOrganization?.id).then((data) =>
-      setProjects(data)
-    );
-  }, [currentOrganization]);
+    if (currentOrganization?.id) {
+      ProjectService.getAll(currentOrganization.id).then((data) =>
+        setProjects(data)
+      );
+    }
+  }, [currentOrganization?.id]);
 
   const deleteProject = (projectId: number, confirmDelete = false) => {
     if (!confirmDelete) {
@@ -191,7 +179,13 @@ const ProjectsPage = () => {
   const createNewProject = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    ProjectService.createProject(newProject)
+    if (!currentOrganization?.id || !user?.id) return;
+
+    ProjectService.createProject({
+      ...newProject,
+      organization: currentOrganization.id,
+      owner: user.id,
+    })
       .then((newProject) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
         toggleNewProjectModal(false);
@@ -199,7 +193,6 @@ const ProjectsPage = () => {
         setNewProject({
           title: "",
           description: "",
-          organization_id: currentOrganization?.id,
         });
         toast.success("Project Created Successfuly", {
           position: toast.POSITION.TOP_RIGHT,
@@ -287,7 +280,6 @@ const ProjectsPage = () => {
             setNewProject({
               title: "",
               description: "",
-              organization_id: currentOrganization?.id,
             });
             toggleNewProjectModal(false);
           }}>
@@ -347,7 +339,6 @@ const ProjectsPage = () => {
                   setNewProject({
                     title: "",
                     description: "",
-                    organization_id: currentOrganization?.id,
                   });
                   toggleNewProjectModal(false);
                 }}>
