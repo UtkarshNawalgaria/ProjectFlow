@@ -20,13 +20,12 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=${SERVER_PORT}
+      - PORT=8000
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+      - 8000:8000
       - 1025:1025
     volumes:
-      - ./server:/app:z
+      - ./server:/opt/app:z
     depends_on:
       - postgres
       - mailhog
