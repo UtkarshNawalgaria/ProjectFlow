@@ -27,7 +27,7 @@ export default function useClient<T>(
     headers.Authorization = `Token ${token}`;
   }
 
-  const config: FetchConfigType = {
+  const config = {
     method: customConfig.method ?? "GET",
     ...customConfig,
     headers: {
