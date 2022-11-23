@@ -256,7 +256,7 @@ class ChangeTaskTaskListSerializer(serializers.Serializer):
 
     def validate_tasklist_id(self, tasklist_id):
         obj = TaskList.objects.filter(id=tasklist_id).first()
-        print(self.data)
+
         if not obj:
             raise serializers.ValidationError(
                 {"tasklist_id": "TaskList does not exist"}

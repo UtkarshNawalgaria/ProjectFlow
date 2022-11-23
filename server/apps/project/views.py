@@ -143,7 +143,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         If `project_id` is sent in the query parameter, then return all
         tasks that are part of that particular project.
         """
-        print(self.request.data, self.request.auth)
+
         project_id = self.request.query_params.get("project_id")
         queryset = self.request.user.projects.all()
 
