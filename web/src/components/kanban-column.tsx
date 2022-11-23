@@ -1,5 +1,5 @@
-import { useDroppable } from "@dnd-kit/core";
 import { useRef, useState } from "react";
+import { Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
 import useUser, { TUserContext } from "../context/UserProvider";
 import { TaskCreate, TaskList } from "../services/tasks";
@@ -16,23 +16,15 @@ const KanbanList = ({
 }) => {
   const { projectId } = useParams();
   const { user } = useUser() as TUserContext;
-  const [containerId] = useState(tasklist.id);
   const newTaskRef = useRef<HTMLInputElement>(null);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
-  const { setNodeRef, isOver, active } = useDroppable({
-    id: tasklist.id,
-    data: {
-      tasklist: tasklist,
-    },
-  });
-  const prevContainerId = active?.data?.current?.list.id;
 
   const handleCreateNewTask = () => {
     if (newTaskRef !== null) {
       addNewTask({
         title: newTaskRef.current?.value as string,
         project: parseInt(projectId as string),
-        tasklist: containerId,
+        tasklist: tasklist.id,
         owner: user?.id as number,
       });
       setShowNewTaskForm(false);
@@ -40,17 +32,18 @@ const KanbanList = ({
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      className="rounded-md h-full bg-gray-50 flex flex-col justify-between">
-      <div>
-        <div>{children}</div>
-        {isOver && prevContainerId !== containerId ? (
-          <div className="p-4 bg-white border-dashed border-1 rounded-md mx-4 text-center text-gray-500 shadow-inner">
-            Drop Here
+    <div className="bg-gray-50 rounded-md h-full flex flex-col justify-between">
+      <Droppable droppableId={tasklist.id.toString()}>
+        {(provided) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className="flex flex-col justify-between h-full">
+            <div>{children}</div>
+            {provided.placeholder}
           </div>
-        ) : null}
-      </div>
+        )}
+      </Droppable>
       <div className="mb-4">
         {showNewTaskForm ? (
           <div className="px-4">

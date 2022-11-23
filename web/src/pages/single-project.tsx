@@ -4,8 +4,6 @@ import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
-import { toast } from "react-toastify";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 import Collapsable, {
   CollapsableBody,
@@ -18,9 +16,9 @@ import KanbanList from "../components/kanban-column";
 import NewTaskListModal from "../components/tasks/create-task-list-modal";
 import NewTaskModal from "../components/tasks/create-task-modal";
 
-import { Task } from "../services/tasks";
-
 import useTasks, { TasksProviderType } from "../context/TasksProvider";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { Task } from "../services/tasks";
 
 const TasksViewType = {
   LIST: 0,
@@ -54,45 +52,36 @@ const TasksKanbanView = ({
   const { groupedTasks, addNewTask, updateTask, setTasks } =
     useTasks() as TasksProviderType;
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    const taskId = active.id;
-    const newTaskListId = over?.id as number;
+  function handleDragEnd(result: DropResult) {
+    const { destination, source, draggableId } = result;
 
-    if (newTaskListId == null) return;
+    if (!destination || source.droppableId === destination.droppableId) return;
 
-    const prevList = active?.data?.current?.list;
-    const currList = over?.data?.current?.tasklist;
+    const taskId = parseInt(draggableId);
+    const destinationId = parseInt(destination.droppableId as string);
 
-    if (prevList.id !== currList.id) {
-      // Change the moved task's `tasklist_id` value in the frontend
-      // before updating on the backend to avoid lag in changing the
-      // tasks list in kanban mode
-      setTasks((prevTasks: Task[]) => {
-        const currTask = prevTasks.find((task) => task.id === taskId);
-        const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
+    // Change the moved task's `tasklist_id` value in the frontend
+    // before updating on the backend to avoid lag in changing the
+    // tasks list in kanban mode
+    setTasks((prevTasks: Task[]) => {
+      const currTask = prevTasks.find((task) => task.id === taskId);
+      const remainingTasks = prevTasks.filter((task) => task.id !== taskId);
+      if (currTask) {
+        currTask.tasklist = destinationId != 0 ? destinationId : null;
+        remainingTasks.push(currTask);
+      }
+      return remainingTasks;
+    });
 
-        if (currTask) {
-          currTask.tasklist = newTaskListId != 0 ? newTaskListId : null;
-          remainingTasks.push(currTask);
-        }
-
-        return remainingTasks;
-      });
-
-      updateTask(taskId as number, {
-        tasklist: newTaskListId === 0 ? null : newTaskListId,
-      });
-      toast.success(`Task moved from ${prevList.title} to ${currList.title}`, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    }
+    updateTask(taskId as number, {
+      tasklist: destinationId === 0 ? null : destinationId,
+    });
   }
 
   return (
     <>
-      <DndContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4">
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="flex gap-4 h-full">
           {groupedTasks.map((item) => {
             return (
               <div key={item.list.id} className="w-[300px]">
@@ -105,13 +94,9 @@ const TasksKanbanView = ({
                     </div>
                   </header>
                   <div className="px-4">
-                    {item.tasks.map((task) => {
+                    {item.tasks.map((task, index) => {
                       return (
-                        <KanbanCard
-                          task={task}
-                          list={item.list}
-                          key={task.id}
-                        />
+                        <KanbanCard task={task} key={task.id} index={index} />
                       );
                     })}
                   </div>
@@ -125,7 +110,7 @@ const TasksKanbanView = ({
             <HiPlus className="inline-block text-gray-500 text-3xl" />
           </button>
         </div>
-      </DndContext>
+      </DragDropContext>
     </>
   );
 };
@@ -182,6 +167,9 @@ const TasksListView = () => {
                       </div>
                     );
                   })}
+                  {item.tasks.length === 0 ? (
+                    <div className="text-center py-2 bg-gray-50">No Tasks</div>
+                  ) : null}
                 </div>
               </CollapsableBody>
             </Collapsable>
