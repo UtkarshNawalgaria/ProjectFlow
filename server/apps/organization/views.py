@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 
 
@@ -9,7 +9,6 @@ from .serializers import OrganizationListSerializer
 class OrganizationListView(generics.ListAPIView):
     model = Organization
     serializer_class = OrganizationListSerializer
-    permission_classes = [permissions.IsAuthenticated,]
 
     def get_serializer_context(self):
         return {"request": self.request, "user": self.request.user}
@@ -21,4 +20,3 @@ class OrganizationListView(generics.ListAPIView):
         user_organizations = self.get_queryset()
         serializer = OrganizationListSerializer(user_organizations, many=True)
         return Response(serializer.data)
-
