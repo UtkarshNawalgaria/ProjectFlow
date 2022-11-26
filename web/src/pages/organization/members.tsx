@@ -6,16 +6,9 @@ import { toast } from "react-toastify";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import useClient from "../../services/client";
 
+import OrganizationService, { TMember } from "../../services/organization";
 import UserService from "../../services/users";
-
-type TMember = {
-  name: string;
-  email: string;
-  role: "admin" | "member";
-  invitation_status: "ACCEPTED" | "PENDING";
-};
 
 const OrganizationMembers = () => {
   const { orgId } = useParams();
@@ -34,7 +27,7 @@ const OrganizationMembers = () => {
   }) => {
     if (inviteEmailRef.current !== null && orgId) {
       const email = inviteEmailRef.current?.value;
-      UserService.invite(email, parseInt(orgId) as number)
+      UserService.invite(email, parseInt(orgId) as number, user?.id as number)
         .then((res) => {
           close();
           toast.success(res.message);
@@ -44,17 +37,26 @@ const OrganizationMembers = () => {
   };
 
   useEffect(() => {
-    useClient<TMember[]>(`organization/${orgId}/members`).then((members) =>
-      setMembers([
-        {
-          email: user?.email as string,
-          invitation_status: "ACCEPTED",
-          role: "admin",
-          name: "",
-        },
-        ...members,
-      ])
-    );
+    const fetchMembers = async () => {
+      if (!orgId) return;
+
+      try {
+        const memberList = await OrganizationService.getMembers(orgId);
+        setMembers([
+          {
+            email: user?.email as string,
+            invitation_status: "ACCEPTED",
+            role: "admin",
+            name: "",
+          },
+          ...memberList,
+        ]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMembers();
   }, []);
 
   return (

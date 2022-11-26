@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (auth) {
       Promise.all([
         UserService.me(),
-        OrganizationService.getOrganizationList(),
+        OrganizationService.getUserOrganizations(),
       ]).then((values) => {
         const userData = values[0] as Omit<TAuthenticatedUser, "organizations">;
         const orgData = values[1];

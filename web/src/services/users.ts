@@ -40,10 +40,10 @@ export default {
   me: () => {
     return useClient<TAuthenticatedUser>("users/me");
   },
-  invite: (email: string, organization_id: number | undefined) => {
+  invite: (email: string, organizationId: number, invited_by: number) => {
     return useClient<{ message: string }>("users/send-invite/", {
       method: "POST",
-      body: JSON.stringify({ email, organization_id }),
+      body: JSON.stringify({ email, organization: organizationId, invited_by }),
     });
   },
   acceptInvite: (invitationCode: string) => {
