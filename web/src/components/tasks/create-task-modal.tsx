@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
@@ -42,15 +42,15 @@ const NewTaskModal = ({
     closeModal();
   };
 
+  const handleFormSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    addNewTask({ ...newTask, owner: user?.id as number });
+    reset();
+  };
+
   return (
     <Modal title="Add new task" open={open} closeModal={closeModal}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          addNewTask({ ...newTask, owner: user?.id as number });
-          reset();
-        }}
-        className="w-full">
+      <form onSubmit={handleFormSubmit} className="w-full">
         <div className="mb-4">
           <label
             htmlFor="title"
