@@ -1,20 +1,11 @@
-export type ValidationErrorResponseType = {
-  msg: string;
-  type: string;
-  ctx: Record<string, string>;
-  loc: string[];
-};
+export type ProcessedFormErrorType = Record<string, string[] | string>;
 
-export type ProcessedFormErrorType = Record<string, string>;
-
-export function parseValidationErrorResponse(
-  detail: ValidationErrorResponseType[]
-) {
+export function parseValidationErrorResponse(detail: ProcessedFormErrorType) {
   const formErrors: ProcessedFormErrorType | null = {};
 
-  detail.forEach((errorIn) => {
-    const field = errorIn.loc[1];
-    formErrors[field] = errorIn.msg;
+  Object.keys(detail).forEach((key) => {
+    const errors = detail[key];
+    formErrors[key] = errors.length == 1 ? errors[0] : errors;
   });
 
   return formErrors;

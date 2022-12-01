@@ -41,16 +41,14 @@ export default function useClient<T>(
       window.localStorage.removeItem(authTokenKey);
       window.location.assign("/");
       return Promise.reject(response);
-    } else if (response.status === 422) {
-      const { detail } = await response.json();
-      return Promise.reject(parseValidationErrorResponse(detail));
     }
 
     if (response.ok) {
       return await response.json();
     } else {
       const errorMessage = await response.json();
-      return Promise.reject(new Error(errorMessage.detail));
+      const parsedError = parseValidationErrorResponse(errorMessage);
+      return Promise.reject(parsedError);
     }
   });
 }
