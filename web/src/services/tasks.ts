@@ -78,10 +78,10 @@ export default {
   getAllTaskLists: (projectId: number) => {
     return useClient<TaskList[]>(`tasklist/?project_id=${projectId}`);
   },
-  createTaskList: (title: string, projectId: number) => {
-    return useClient<TaskList>(`tasklist/?project_id=${projectId}`, {
+  createTaskList: (listCreate: TaskListCreate) => {
+    return useClient<TaskList>(`tasklist/`, {
       method: "POST",
-      body: JSON.stringify({ title: title }),
+      body: JSON.stringify({ ...listCreate }),
     });
   },
 };

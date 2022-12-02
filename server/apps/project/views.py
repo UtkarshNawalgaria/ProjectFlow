@@ -186,8 +186,3 @@ class TaskListViewSet(viewsets.ModelViewSet):
             raise ValidationError("No project with ID exists")
 
         return queryset
-
-    def perform_create(self, serializer):
-        context = self.get_context_data()
-        project_id = context.get("project_id")
-        serializer.save(project_id=project_id)

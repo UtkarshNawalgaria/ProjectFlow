@@ -111,7 +111,7 @@ export const TasksProvider = ({ children }: Props) => {
   };
 
   const createTaskList = (list: TaskListCreate) => {
-    TaskService.createTaskList(list.title, list.project).then((list) => {
+    TaskService.createTaskList(list).then((list) => {
       setLists((lists) => [...lists, list]);
       toast.success("Task List Created Successfully");
     });
