@@ -83,7 +83,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
 
 class TasksViewSet(viewsets.ModelViewSet):
     model = Task
-    permission_classes = (CanRetreiveUpdateDeleteTask)
+    permission_classes = [CanRetreiveUpdateDeleteTask,]
 
     @action(detail=True, methods=["POST", "PATCH"])
     def assign_to_user(self, request, pk=None):
