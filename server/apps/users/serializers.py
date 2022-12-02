@@ -1,9 +1,13 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.utils import timezone
 
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 from apps.organization.serializers import OrganizationListSerializer
+from apps.organization.models import Organization, OrganizationUsers
+
+from .models import OrganizationInvitation
 
 User = get_user_model()
 
@@ -77,12 +81,62 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
     organizations = OrganizationListSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
         fields = ("id", "name", "email", "organizations")
 
-    def get_name(self, obj):
-        return obj.get_full_name()
+
+class OrganizationSendInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizationInvitation
+        fields = ("id", "email", "invited_by", "organization")
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=OrganizationInvitation.objects.all(),
+                fields=("email", "invited_by", "organization"),
+                message="This user has already been invited to the organization.",
+            )
+        ]
+
+    def save(self, **kwargs):
+        obj = super().save(**kwargs)
+        obj.send_invitation_email()
+        return obj
+
+
+class AcceptUserInvitationSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    organization_name = serializers.CharField()
+
+    class Meta:
+        fields = ("name", "email", "password", "organization_name")
+
+    def save(self, **kwargs):
+        invitation_code: str = kwargs.get("code")
+        name: str = self.validated_data.get("name")
+        organization_name = self.validated_data.get("organization_name")
+        invitation = OrganizationInvitation.objects.get(invitation_code=invitation_code)
+
+        # Create user and verify their email
+        user_data = {
+            "email": self.validated_data.get("email"),
+            "password": self.validated_data.get("password"),
+            "name": name.strip(),
+            "email_verified_at": timezone.now(),
+        }
+        user = User.objects.create_user(**user_data)
+        user._organization_name = organization_name
+        user.save()
+
+        # Add user to the invitation organizer
+        organization = invitation.organization
+        organization.title = organization_name
+        organization.save()
+        
+        org_users = OrganizationUsers.objects.create(
+            organization=organization, user=user, role=OrganizationUsers.MEMBER
+        )

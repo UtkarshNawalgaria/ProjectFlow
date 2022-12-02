@@ -83,9 +83,9 @@ class ProjectsViewSet(viewsets.ModelViewSet):
 
 class TasksViewSet(viewsets.ModelViewSet):
     model = Task
-    permission_classes = (IsAuthenticated, CanRetreiveUpdateDeleteTask)
+    permission_classes = (CanRetreiveUpdateDeleteTask)
 
-    @action(detail=True, methods=["post", "patch"])
+    @action(detail=True, methods=["POST", "PATCH"])
     def assign_to_user(self, request, pk=None):
         """
         Assign a task to another user. User must have access to the project.

@@ -8,7 +8,13 @@ User = get_user_model()
 
 @receiver(post_save, sender=User)
 def send_account_activation_email(sender, instance, created, *args, **kwargs):
-    if not created:
+    """
+    Send account activation email to the newly registered user.
+    If the user's account has already been verified, don't send the email.
+    """
+
+    if (not created or
+        (created and instance.email_verified_at)):
         return
 
     send_mail(

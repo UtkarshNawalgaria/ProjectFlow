@@ -7,14 +7,14 @@ import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 import useUser, { TUserContext } from "../../context/UserProvider";
 
-import OrganizationService, { TMember } from "../../services/organization";
+import OrganizationService, { MemberList } from "../../services/organization";
 import UserService from "../../services/users";
 
 const OrganizationMembers = () => {
   const { orgId } = useParams();
   const { user } = useUser() as TUserContext;
   const inviteEmailRef = useRef<HTMLInputElement>(null);
-  const [members, setMembers] = useState<TMember[]>([]);
+  const [members, setMembers] = useState<MemberList>();
 
   const sendUserInvite = (close: {
     (
@@ -42,15 +42,7 @@ const OrganizationMembers = () => {
 
       try {
         const memberList = await OrganizationService.getMembers(orgId);
-        setMembers([
-          {
-            email: user?.email as string,
-            invitation_status: "ACCEPTED",
-            role: "admin",
-            name: "",
-          },
-          ...memberList,
-        ]);
+        setMembers(memberList);
       } catch (error) {
         console.error(error);
       }
@@ -114,26 +106,35 @@ const OrganizationMembers = () => {
         </div>
       </PageHeader>
       <section className="mx-4">
-        {members.map((member) => (
+        {members?.members.map((member) => (
           <div
             key={member.email}
-            className="flex justify-between mb-4 bg-gray-50 p-4 rounded-md cursor-pointer hover:bg-gray-100">
-            <div className="w-3/4">{member.email}</div>
-            <div className="flex gap-4 w-1/4 justify-between">
-              <div className="flex items-center gap-2">
-                <span
-                  className={
-                    "w-2 h-2 rounded-lg" +
-                    `${
-                      member.invitation_status === "PENDING"
-                        ? " bg-red-500"
-                        : " bg-green-600"
-                    }`
-                  }></span>
-                <span>{member.invitation_status}</span>
+            className="flex justify-between items-center mb-4 bg-gray-50 px-4 py-2 rounded-sm cursor-pointer hover:bg-gray-100">
+            <div className="flex items-center">
+              <div className="flex flex-col">
+                <h4 className="font-bold text-gray-700">{member?.name}</h4>
+                <span className="text-sm">{member.email}</span>
               </div>
-              <div>{member.role}</div>
             </div>
+            <div className="flex justify-between">{member.role}</div>
+          </div>
+        ))}
+        {members?.invitations && members?.invitations?.length > 0 ? (
+          <h3 className="text-xl font-semibold text-grey-dark mt-8 ml-4">
+            Pending Invitations
+          </h3>
+        ) : null}
+        {members?.invitations.map((invite) => (
+          <div
+            key={invite.email}
+            className="flex justify-between items-center mb-4 bg-gray-50 px-4 py-2 rounded-sm cursor-pointer hover:bg-gray-100">
+            <div className="flex items-center">
+              <div className="flex flex-col">
+                <h4 className="font-bold text-gray-700">{invite?.name}</h4>
+                <span className="text-sm">{invite.email}</span>
+              </div>
+            </div>
+            <div className="flex justify-between">{invite.role}</div>
           </div>
         ))}
       </section>

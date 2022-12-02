@@ -12,10 +12,12 @@ def create_organization_on_user_signup(sender, instance, created, *args, **kwarg
     """
     Create a new `Organization` object for a newly created user.
     """
-    
+
     if not created:
         return
 
-    name = instance.email.split("@")[0]
-    organization = Organization.objects.create(title=f"Organization {name}")
+    title = instance.email.split("@")[0]
+    organization_name = f"Organization {title}"
+
+    organization = Organization.objects.create(title=organization_name)
     OrganizationUsers.objects.create(organization=organization, user=instance)

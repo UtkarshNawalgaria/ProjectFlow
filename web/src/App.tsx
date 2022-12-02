@@ -23,8 +23,8 @@ function App() {
       <Routes>
         <Route path="" element={<AnonymousLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/verify_email/" element={<VerifyEmail />} />
-          <Route path="/user/join/:code" element={<Invitation />} />
+          <Route path="verify_email" element={<VerifyEmail />} />
+          <Route path="accept-invite/:code" element={<Invitation />} />
           <Route path="*" element={<ErrorPage />} />
         </Route>
         <Route path="" element={<ProtectedRoute />}>

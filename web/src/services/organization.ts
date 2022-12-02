@@ -6,10 +6,15 @@ export type Organization = {
 };
 
 export type TMember = {
-  name: string;
+  name?: string;
   email: string;
   role: "admin" | "member";
-  invitation_status: "ACCEPTED" | "PENDING";
+  invited_at?: string;
+};
+
+export type MemberList = {
+  members: TMember[];
+  invitations: TMember[];
 };
 
 export default {
@@ -17,6 +22,6 @@ export default {
     return useClient<Organization[]>("organization/");
   },
   getMembers: (organizationId: string) => {
-    return useClient<TMember[]>(`organization/${organizationId}/members`);
+    return useClient<MemberList>(`organization/${organizationId}/members`);
   },
 };

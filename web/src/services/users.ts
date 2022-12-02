@@ -20,15 +20,13 @@ export type TAuthenticatedUser = {
   organizations: Organization[];
 };
 
+export type InvitedUser = Required<UserCreate & { organization_name: string }>;
+
 export default {
   login: (email: string, password: string) => {
     return useClient<{ access_token: string }>("users/login/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: encodeFormData({ email, password: password }),
+      body: JSON.stringify({ email, password: password }),
     });
   },
   register: (user: UserCreate) => {
@@ -48,18 +46,20 @@ export default {
   },
   acceptInvite: (invitationCode: string) => {
     return useClient<{
-      message: string;
       email: string;
-      add_new_user: boolean;
-    }>("users/accept-invite/", {
-      method: "POST",
-      body: JSON.stringify({ code: invitationCode }),
-    });
+      user_exists: boolean;
+    }>(`users/accept-invite/${invitationCode}/`);
   },
   verifyEmail: (email: string, code: string) => {
     return useClient<{ message: string }>("users/verify_email/", {
       method: "POST",
       body: JSON.stringify({ email, code }),
+    });
+  },
+  addInvitedUser: (invitationCode: string, data: InvitedUser) => {
+    return useClient<{ message: string }>(`users/join/${invitationCode}/`, {
+      method: "POST",
+      body: JSON.stringify({ ...data }),
     });
   },
 };

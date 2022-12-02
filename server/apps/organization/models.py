@@ -35,11 +35,22 @@ class Organization(TimeStampedModel):
     def members(self) -> list[User]:
         return self.users.all()
 
-    def is_member(self, user: User) -> bool:
-        return user in self.users.all()
+    @staticmethod
+    def is_member(organization_id: int, user: User) -> bool:
+        org = Organization.objects.filter(id=organization_id)
+
+        if not org:
+            raise ValueError("Organization does not exist")
+
+        return user in org.users.all()
 
     def get_role(self, user: User) -> str:
-        return ""
+        org_user = OrganizationUsers.objects.filter(organization=self, user=user)
+
+        if not org_user.exists():
+            raise ValueError("User is not part of the organization")
+
+        return org_user.first().role
 
 
 class OrganizationUsers(models.Model):
@@ -54,3 +65,6 @@ class OrganizationUsers(models.Model):
 
     class Meta:
         unique_together = ("organization", "user")
+
+    def __str__(self):
+        return f"{self.organization.title} - {self.user.email} - {self.role}"

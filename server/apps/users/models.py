@@ -1,9 +1,12 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.models import TimeStampedModel
+
+from services.email import send_email
 
 
 class UserManager(BaseUserManager):
@@ -55,8 +58,7 @@ class UserManager(BaseUserManager):
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     email = models.EmailField(_("email address"), max_length=254, unique=True)
-    first_name = models.CharField(_("first name"), max_length=30, blank=True)
-    last_name = models.CharField(_("last name"), max_length=30, blank=True)
+    name = models.CharField(_("name"), max_length=100, blank=True)
     verification_code = models.CharField(
         _("account verification code"), max_length=256, blank=True
     )
@@ -75,5 +77,34 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     def __str__(self):
         return f"User(email={self.email})"
 
-    def get_full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}".strip()
+
+class OrganizationInvitation(models.Model):
+    email = models.EmailField(_("email address"), max_length=254)
+    invitation_code = models.CharField(max_length=256, unique=True)
+    sent_at = models.DateTimeField()
+    accepted_at = models.DateTimeField(null=True)
+    invited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    organization = models.ForeignKey(
+        "organization.Organization", on_delete=models.CASCADE,
+        related_name="invitations"
+    )
+
+    def __str__(self):
+        return f"InvitedUser(email={self.email})"
+
+    class Meta:
+        unique_together = ("email", "invited_by", "organization")
+
+    def send_invitation_email(self):
+        context = {
+            "email": self.email,
+            "organization_name": self.organization.title,
+            "invitation_link": f"{settings.APPLICATION_URL}accept-invite/{self.invitation_code}",
+        }
+
+        send_email(
+            to=[self.email],
+            subject=f"Invitation to {self.organization.title}",
+            template="email/organization/user-invitation.html",
+            context=context,
+        )

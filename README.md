@@ -3,6 +3,8 @@ This is a basic project and task management web application which allows users t
 
 
 ## Table of Contents
+- [Task Management](#task-management)
+  - [Table of Contents](#table-of-contents)
   - [Tech Stack](#tech-stack)
   - [Deployment](#deployment)
   - [Database Design](#database-design)
@@ -11,8 +13,7 @@ This is a basic project and task management web application which allows users t
   - [Upcoming Features](#upcoming-features)
 
 ## Tech Stack
-* [FastAPI](https://fastapi.tiangolo.com/)
-* SQLModel
+* Django
 * Reactjs
 * Vite
 * Tailwindcss
@@ -26,11 +27,11 @@ The api server has been deployed on [railway.app](https://railway.app/) and the 
 ## App Features
 What can users do in this application
 
-1. User can create new projects
-2. User can create many tasks in a project
-3. Organize their tasks into different lists
-4. View their task lists in a **List view** or **Kanban View**
-5. User authentication and authorization
+1. User can create multiple tasks and organize them into projects for easy user.
+2. Users can view their tasks in a project using **Kanban View**
+3. Every user is part of an organization, of which they are the owners.
+4. Users can collaborate with other users by inviting them to their Organization and working on projects together.
+5. Implemented user authentication, reset password, email verification of account, external user invitation flow.
 
 ## Dashboard Layout
 ![Layout](images/dashboard-layout.png)
