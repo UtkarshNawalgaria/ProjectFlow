@@ -33,7 +33,11 @@ const NewTaskListModal = ({
   };
 
   return (
-    <Modal title="Create Task List" closeModal={reset} open={open}>
+    <Modal
+      title="Create Task List"
+      closeModal={reset}
+      open={open}
+      setWidth={"w-[500px]"}>
       <form onSubmit={handleFormSubmission}>
         <div className="mb-4">
           <label
