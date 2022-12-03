@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["utkarshnawalgaria.com", "localhost"]
+ALLOWED_HOSTS = ["utkarshnawalgaria.com"]
 
 DATABASES["default"] = {
     "ENGINE": "django.db.backends.postgresql",
@@ -16,9 +16,9 @@ DATABASES["default"] = {
 # Email Backend
 DEFAULT_FROM_EMAIL = "mail@utkarshnawalgaria.com"
 
-CORS_ALLOWED_ORIGINS = ["https://tasks.utkarshnawalgaria.com", "http://localhost:4173"]
+CORS_ALLOWED_ORIGINS = ["https://tasks.utkarshnawalgaria.com"]
 
 # Production checks
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
