@@ -2,10 +2,10 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "utkarshnawalgaria.com",
-    "api-tasks.utkarshnawalgaria.com",
-    "tasks.utkarshnawalgaria.com"
+ALLOWED_HOSTS = ["utkarshnawalgaria.com"]
+CORS_ALLOWED_ORIGINS = [
+    "https://api-tasks.utkarshnawalgaria.com",
+    "https://tasks.utkarshnawalgaria.com"
 ]
 
 DATABASES["default"] = {
@@ -20,10 +20,6 @@ DATABASES["default"] = {
 # Email Backend
 DEFAULT_FROM_EMAIL = "mail@utkarshnawalgaria.com"
 
-CORS_ALLOWED_ORIGINS = [
-    "https://api-tasks.utkarshnawalgaria.com",
-    "https://tasks.utkarshnawalgaria.com"
-]
 
 # AWS Settings
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
