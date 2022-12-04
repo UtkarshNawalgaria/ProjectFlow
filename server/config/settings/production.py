@@ -20,8 +20,8 @@ DATABASES["default"] = {
 DEFAULT_FROM_EMAIL = "mail@utkarshnawalgaria.com"
 
 CORS_ALLOWED_ORIGINS = [
-    "https://api-tasks.utkarshnawalgaria.com",
-    "https://tasks.utkarshnawalgaria.com"
+    "https://api-tasks.utkarshnawalgaria.com/",
+    "https://tasks.utkarshnawalgaria.com/"
 ]
 
 # AWS Settings
