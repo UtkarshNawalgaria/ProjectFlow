@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["tasks.utkarshnawalgaria.com"]
+ALLOWED_HOSTS = ["api-tasks.utkarshnawalgaria.com"]
 
 DATABASES["default"] = {
     "ENGINE": "django.db.backends.postgresql",
@@ -16,7 +16,7 @@ DATABASES["default"] = {
 # Email Backend
 DEFAULT_FROM_EMAIL = "mail@utkarshnawalgaria.com"
 
-CORS_ALLOWED_ORIGINS = ["https://tasks.utkarshnawalgaria.com"]
+CORS_ALLOWED_ORIGINS = ["https://api-tasks.utkarshnawalgaria.com"]
 
 # AWS Settings
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
