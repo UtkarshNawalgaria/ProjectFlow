@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["utkarshnawalgaria.com"]
+ALLOWED_HOSTS = [".utkarshnawalgaria.com"]
 CORS_ALLOWED_ORIGINS = [
     "https://api-tasks.utkarshnawalgaria.com",
     "https://tasks.utkarshnawalgaria.com"
