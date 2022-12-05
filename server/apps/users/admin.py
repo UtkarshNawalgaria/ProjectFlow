@@ -1,11 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 from .forms import CustomUserCreationform, CustomUserChangeform
-
-User = get_user_model()
+from .models import OrganizationInvitation, User
 
 
 class CustomUserAdmin(UserAdmin):
@@ -42,4 +40,18 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("email",)
 
 
+class OrganizationInvitationAdmin(admin.ModelAdmin):
+    model = OrganizationInvitation
+    list_display = ("email", "invited_by", "organization", "sent_at", "accepted_at")
+    readonly_fields = (
+        "email",
+        "invited_by",
+        "organization",
+        "invitation_code",
+        "accepted_at",
+        "sent_at",
+    )
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(OrganizationInvitation, OrganizationInvitationAdmin)

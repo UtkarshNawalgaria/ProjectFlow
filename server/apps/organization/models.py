@@ -65,6 +65,7 @@ class OrganizationUsers(models.Model):
 
     class Meta:
         unique_together = ("organization", "user")
+        verbose_name_plural = "Organization Users"
 
     def __str__(self):
         return f"{self.organization.title} - {self.user.email} - {self.role}"

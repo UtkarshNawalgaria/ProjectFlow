@@ -34,6 +34,10 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
     def admins(self) -> list[User]:
         return self.get_users_by_role(ProjectUsers.ADMIN)
 
+    @property
+    def task_count(self):
+        return self.tasks.count()
+
     @cached_property
     def tasklists(self):
         return self.tasklists.all()
@@ -63,6 +67,9 @@ class TaskList(TimeStampedModel):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="tasklists"
     )
+
+    class Meta:
+        verbose_name_plural = "Task Lists"
 
     def __str__(self):
         return f"TaskList(title={self.title}, project={self.project.title})"
@@ -100,3 +107,4 @@ class ProjectUsers(models.Model):
 
     class Meta:
         unique_together = ("project", "user")
+        verbose_name_plural = "Project Users"
