@@ -7,7 +7,7 @@ CORS_ALLOWED_ORIGINS = (
     "https://tasks.utkarshnawalgaria.com",
     "https://api-tasks.utkarshnawalgaria.com",
 )
-CSRF_TRUSTED_ORIGINS = ["https://tasks.utkarshnawalgaria.com"]
+CSRF_TRUSTED_ORIGINS = ["https://api-tasks.utkarshnawalgaria.com"]
 
 DATABASES["default"] = {
     "ENGINE": "django.db.backends.postgresql",
