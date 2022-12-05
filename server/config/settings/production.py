@@ -41,6 +41,5 @@ DEFAULT_FILE_STORAGE = "libs.storage_backends.MediaStorage"
 
 
 # Production checks
-SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
