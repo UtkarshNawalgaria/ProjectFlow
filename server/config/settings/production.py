@@ -2,11 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["api-tasks.utkarshnawalgaria.com"]
-CORS_ALLOWED_ORIGINS = [
-    "https://tasks.utkarshnawalgaria.com",
-    "https://api-tasks.utkarshnawalgaria.com"
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 DATABASES["default"] = {
     "ENGINE": "django.db.backends.postgresql",
