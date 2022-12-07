@@ -9,7 +9,7 @@ export type TAuth = {
 };
 
 export type TAuthData = {
-  name?: string;
+  name: string;
   email: string;
   password: string;
 };
@@ -68,11 +68,13 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
     onError: (error: Error) => void
   ) {
     UserService.register(data)
-      .then((resp) => {
+      .then(() => {
         toast.success("You have registered successfuly", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        onSuccess(resp.message);
+        onSuccess(
+          "User registered successully. Account verification email has been sent to you"
+        );
       })
       .catch((error) => {
         onError(error);

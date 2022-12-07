@@ -4,6 +4,7 @@ import useAuth, { AuthContextType, TAuthData } from "../context/AuthProvider";
 
 const HomePage = () => {
   const [authData, setAuthData] = useState<TAuthData>({
+    name: "",
     email: "",
     password: "",
   });
@@ -143,7 +144,7 @@ const HomePage = () => {
                       type="text"
                       name="name"
                       id="name"
-                      value={authData?.name}
+                      value={authData.name}
                       onChange={(e) => handleFormDataChange(e)}
                       className={`${formGroup} ${
                         error ? "border-error" : null

@@ -2,7 +2,7 @@ import useClient from "./client";
 import { Organization } from "./organization";
 
 export type UserCreate = {
-  name?: string;
+  name: string;
   email: string;
   password: string;
 };
@@ -24,7 +24,7 @@ export default {
     });
   },
   register: (user: UserCreate) => {
-    return useClient("users/signup/", {
+    return useClient<Omit<UserCreate, "password">>("users/signup/", {
       method: "POST",
       body: JSON.stringify(user),
     });

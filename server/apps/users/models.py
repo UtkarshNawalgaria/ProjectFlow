@@ -80,7 +80,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     def send_account_activation_email(self):
         context = {
             "name": self.name,
-            "verification_link": f"{settings.APPLICATION_URL}verify/?code={self.verification_code}",
+            "verification_link": f"{settings.APPLICATION_URL}verify/{self.verification_code}/",
         }
 
         send_email(
