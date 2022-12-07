@@ -5,14 +5,14 @@ import { HiFolderAdd, HiPlus, HiTrash } from "react-icons/hi";
 import { AiOutlineSetting, AiOutlineUnorderedList } from "react-icons/ai";
 import { toast } from "react-toastify";
 
-import Modal from "../components/modal";
-import Button from "../components/button";
-import PageHeader from "../components/page-header";
+import Modal from "../../components/modal";
+import Button from "../../components/button";
+import PageHeader from "../../components/page-header";
 
-import ProjectService, { Project } from "../services/projects";
-import { ProcessedFormErrorType } from "../utils";
-import useUser, { TUserContext } from "../context/UserProvider";
-import { TAuthenticatedUser } from "../services/users";
+import ProjectService, { Project } from "../../services/projects";
+import { ProcessedFormErrorType } from "../../utils";
+import useUser, { TUserContext } from "../../context/UserProvider";
+import { TAuthenticatedUser } from "../../services/users";
 
 const ProjectsViewType = {
   LIST: 0,

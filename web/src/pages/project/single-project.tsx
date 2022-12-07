@@ -8,17 +8,17 @@ import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
 import Collapsable, {
   CollapsableBody,
   CollapsableHead,
-} from "../components/collapsable";
-import PageHeader from "../components/page-header";
-import Button from "../components/button";
-import KanbanCard from "../components/kanban-card";
-import KanbanList from "../components/kanban-column";
-import NewTaskListModal from "../components/tasks/create-task-list-modal";
-import NewTaskModal from "../components/tasks/create-task-modal";
+} from "../../components/collapsable";
+import PageHeader from "../../components/page-header";
+import Button from "../../components/button";
+import KanbanCard from "../../components/kanban-card";
+import KanbanList from "../../components/kanban-column";
+import NewTaskListModal from "../../components/tasks/create-task-list-modal";
+import NewTaskModal from "../../components/tasks/create-task-modal";
 
-import useTasks, { TasksProviderType } from "../context/TasksProvider";
+import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { Task } from "../services/tasks";
+import { Task } from "../../services/tasks";
 
 const TasksViewType = {
   LIST: 0,
