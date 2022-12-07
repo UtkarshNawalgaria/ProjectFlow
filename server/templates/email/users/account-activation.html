@@ -1,0 +1,8 @@
+{% extends 'email/base.html' %}
+
+{% block content %}
+    <p>Hi, {{ name }}</p>
+    <p>Congratulations!! You have taken the first step of creating your account.</p>
+    <p>Now, Click on this link to activate your account</p>
+    <a href="{{ verification_link }}">Verify Account</a>
+{% endblock content %}

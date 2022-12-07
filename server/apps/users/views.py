@@ -11,14 +11,14 @@ from rest_framework.decorators import (
 )
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
+from rest_framework.exceptions import ValidationError
+
+from libs.response import TextJSONResponse
 
 from .models import OrganizationInvitation, User
 from .serializers import (
     OrganizationSendInvitationSerializer,
     AcceptUserInvitationSerializer,
-)
-
-from .serializers import (
     UserRegistrationSerializer,
     LoginSerializer,
     TokenSerializer,
@@ -85,7 +85,7 @@ def accept_user_invitation(request, code: str):
         existing_user = User.objects.filter(email=invitation.email).last()
 
         if invitation.accepted_at and existing_user:
-            return Response("Invitation has already been accepted.")
+            return TextJSONResponse("Invitation has already been accepted.")
     except OrganizationInvitation.DoesNotExist:
         raise ValueError({"message": "Invalid Invitation"})
 
@@ -118,7 +118,9 @@ def invited_user_join(request, code):
     user = User.objects.filter(email=invitation.email)
 
     if user.exists():
-        return Response("User has accepted invitation and is already registered.")
+        return TextJSONResponse(
+            "User has accepted invitation and is already registered."
+        )
 
     serializer = AcceptUserInvitationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -128,4 +130,26 @@ def invited_user_join(request, code):
     invitation.accepted_at = timezone.now()
     invitation.save(update_fields=["accepted_at"])
 
-    return Response("")
+    return TextJSONResponse()
+
+
+@api_view(["GET"])
+@permission_classes([permissions.AllowAny])
+def verify_account(request, code: str = None):
+    """
+    Verify users account when they click on the account verification
+    email.
+    """
+
+    try:
+        user = User.objects.get(verification_code=code)
+    except User.DoesNotExist:
+        raise ValidationError("Activation Token is Invalid")
+
+    if user.email_verified_at:
+        return TextJSONResponse("Account has already been activated")
+
+    user.email_verified_at = timezone.now()
+    user.save(update_fields=["email_verified_at"])
+
+    return TextJSONResponse("Your account has been activated")

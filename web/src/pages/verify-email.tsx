@@ -16,7 +16,8 @@ const VerifyEmail = () => {
         <div className="relative">
           <img src="/images/email-verified.png" alt="Email Verified" />
           <p className="absolute text-4xl font-semibold text-[#413f56] top-[60px] left-1/2 -translate-x-1/2 ">
-            Congratulations!! You account has been verified. Enjoy Working.
+            Congratulations!! You account has been verified. <br />
+            <span className="block mt-2 text-center">Enjoy Working.</span>
           </p>
         </div>
       ) : (

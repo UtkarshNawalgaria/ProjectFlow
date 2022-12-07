@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+
+from libs.response import TextJSONResponse
 
 from .models import Project, Task, TaskList
 from .permissions import (
@@ -52,7 +53,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save(project_id=pk)
 
-        return Response(data={"message": f"{user.email} has been added to the project"})
+        return TextJSONResponse(f"{user.email} has been added to the project")
 
     def get_serializer_context(self):
         context = {"request": self.request, "user": self.request.user}
@@ -106,7 +107,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         Project.objects.filter(id=project_id).update(owner_id=user_id)
         Task.objects.filter(id=task_id).update(owner_id=user_id)
 
-        return Response(data={"message": f"Assigned task to user"})
+        return TextJSONResponse(f"Assigned task to user")
 
     @action(detail=True, methods=["PUT"])
     def update_task_list(self, request, pk=None):

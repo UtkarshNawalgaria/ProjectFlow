@@ -44,11 +44,8 @@ export default {
       user_exists: boolean;
     }>(`users/accept-invite/${invitationCode}/`);
   },
-  verifyEmail: (email: string, code: string) => {
-    return useClient<{ message: string }>("users/verify_email/", {
-      method: "POST",
-      body: JSON.stringify({ email, code }),
-    });
+  verifyAccount: (code: string) => {
+    return useClient(`users/verify/${code}`);
   },
   addInvitedUser: (invitationCode: string, data: InvitedUser) => {
     return useClient(`users/join/${invitationCode}/`, {

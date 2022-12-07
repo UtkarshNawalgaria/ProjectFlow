@@ -77,6 +77,19 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     def __str__(self):
         return f"User(email={self.email})"
 
+    def send_account_activation_email(self):
+        context = {
+            "name": self.name,
+            "verification_link": f"{settings.APPLICATION_URL}verify/?code={self.verification_code}",
+        }
+
+        send_email(
+            to=[self.email],
+            template="email/users/account-activation.html",
+            subject="Activate Your Account!!",
+            context=context,
+        )
+
 
 class OrganizationInvitation(models.Model):
     email = models.EmailField(_("email address"), max_length=254)
@@ -85,8 +98,9 @@ class OrganizationInvitation(models.Model):
     accepted_at = models.DateTimeField(null=True)
     invited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     organization = models.ForeignKey(
-        "organization.Organization", on_delete=models.CASCADE,
-        related_name="invitations"
+        "organization.Organization",
+        on_delete=models.CASCADE,
+        related_name="invitations",
     )
 
     def __str__(self):
