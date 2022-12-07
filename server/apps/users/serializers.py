@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 from apps.organization.serializers import OrganizationListSerializer
-from apps.organization.models import Organization, OrganizationUsers
+from apps.organization.models import OrganizationUsers
 
 from .models import OrganizationInvitation
 
@@ -13,7 +13,7 @@ User = get_user_model()
 
 
 class UserRegistrationSerializer(serializers.Serializer):
-    name = serializers.CharField(required=False)
+    name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
 
@@ -136,7 +136,7 @@ class AcceptUserInvitationSerializer(serializers.Serializer):
         organization = invitation.organization
         organization.title = organization_name
         organization.save()
-        
-        org_users = OrganizationUsers.objects.create(
+
+        OrganizationUsers.objects.create(
             organization=organization, user=user, role=OrganizationUsers.MEMBER
         )
