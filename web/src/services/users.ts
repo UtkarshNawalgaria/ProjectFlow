@@ -1,12 +1,6 @@
 import useClient from "./client";
 import { Organization } from "./organization";
 
-const encodeFormData = (data: Record<string, string>) => {
-  return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&");
-};
-
 export type UserCreate = {
   name?: string;
   email: string;
@@ -30,7 +24,7 @@ export default {
     });
   },
   register: (user: UserCreate) => {
-    return useClient<{ message: string }>("users/signup/", {
+    return useClient("users/signup/", {
       method: "POST",
       body: JSON.stringify(user),
     });
@@ -39,7 +33,7 @@ export default {
     return useClient<TAuthenticatedUser>("users/me");
   },
   invite: (email: string, organizationId: number, invited_by: number) => {
-    return useClient<{ message: string }>("users/send-invite/", {
+    return useClient("users/send-invite/", {
       method: "POST",
       body: JSON.stringify({ email, organization: organizationId, invited_by }),
     });
@@ -57,7 +51,7 @@ export default {
     });
   },
   addInvitedUser: (invitationCode: string, data: InvitedUser) => {
-    return useClient<{ message: string }>(`users/join/${invitationCode}/`, {
+    return useClient(`users/join/${invitationCode}/`, {
       method: "POST",
       body: JSON.stringify({ ...data }),
     });

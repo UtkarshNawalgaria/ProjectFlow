@@ -71,7 +71,7 @@ export default {
     });
   },
   delete: (taskId: number) => {
-    return useClient(`task/${taskId}/`, {
+    return useClient<null>(`task/${taskId}/`, {
       method: "DELETE",
     });
   },

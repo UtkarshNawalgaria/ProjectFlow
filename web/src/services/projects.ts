@@ -37,7 +37,7 @@ export default {
     });
   },
   delete: (projectId: number) => {
-    return useClient(`project/${projectId}/`, {
+    return useClient<null>(`project/${projectId}/`, {
       method: "DELETE",
     });
   },

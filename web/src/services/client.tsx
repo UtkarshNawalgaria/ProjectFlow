@@ -9,6 +9,8 @@ export type FetchConfigType = {
   headers?: Record<string, string> | null;
 };
 
+type Default<TObj> = TObj extends unknown ? { message: string } : TObj;
+
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return String(error);
@@ -17,7 +19,7 @@ export function getErrorMessage(error: unknown) {
 export default function useClient<T>(
   url: string,
   customConfig: FetchConfigType = {}
-): Promise<T> {
+): Promise<Default<T>> {
   const token = window.localStorage.getItem(authTokenKey);
   const headers: FetchConfigType["headers"] = {
     "Content-Type": "application/json",
