@@ -9,7 +9,9 @@ export type FetchConfigType = {
   headers?: Record<string, string> | null;
 };
 
-type Default<TObj> = TObj extends unknown ? { message: string } : TObj;
+type Default<TObj> = TObj extends { [key: string]: any }
+  ? TObj
+  : { message: string };
 
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
