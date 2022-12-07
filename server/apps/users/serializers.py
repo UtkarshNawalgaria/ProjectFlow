@@ -30,10 +30,7 @@ class UserRegistrationSerializer(serializers.Serializer):
         return data
 
     def save(self, **kwargs):
-        email = self.validated_data["email"]
-        password = self.validated_data["password"]
-
-        new_user = User.objects.create_user(email, password, **kwargs)
+        new_user = User.objects.create_user(**self.validated_data, **kwargs)
         new_user.is_active = True
         new_user.save()
 
