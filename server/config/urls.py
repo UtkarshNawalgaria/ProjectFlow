@@ -9,7 +9,6 @@ from apps.project.router import router as project_router
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(project_router.urls)),
-    path("api-auth/", include("rest_framework.urls")),
     path("api/users/", include("apps.users.urls", namespace="user")),
     path(
         "api/organization/", include("apps.organization.urls", namespace="organization")
@@ -19,6 +18,8 @@ urlpatterns = [
 
 if settings.ENV_MODE == "local":
     import debug_toolbar
+
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
+        path("api-auth/", include("rest_framework.urls")),
     ]

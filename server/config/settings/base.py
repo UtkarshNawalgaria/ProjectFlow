@@ -151,7 +151,7 @@ DEFAULT_FROM_EMAIL = env("FROM_EMAIL", default="nawalgaria.utkarsh8@gmail.com")
 APPLICATION_URL = env("APPLICATION_URL", default="")
 
 
-if not DEBUG:
+if ENV_MODE == "production":
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
         "rest_framework.renderers.JSONRenderer",
     )
