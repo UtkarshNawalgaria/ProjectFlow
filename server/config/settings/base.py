@@ -1,6 +1,8 @@
 import os
 import environ
+import sentry_sdk
 from pathlib import Path
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,7 +36,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    'storages',
+    "storages",
 ]
 
 CUSTOM_APPS = [
@@ -121,8 +123,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -146,5 +148,23 @@ EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=False)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = env("FROM_EMAIL", default="nawalgaria.utkarsh8@gmail.com")
 
 APPLICATION_URL = env("APPLICATION_URL", default="")
+
+if env("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=env("SENTRY_DSN"),
+        integrations=[
+            DjangoIntegration(),
+        ],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=0.5,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )

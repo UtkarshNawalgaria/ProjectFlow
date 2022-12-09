@@ -18,10 +18,6 @@ DATABASES["default"] = {
     "PORT": env("POSTGRES_PORT"),
 }
 
-# Email Backend
-DEFAULT_FROM_EMAIL = "utkarsh.n@olivecloud.in"
-
-
 # AWS Settings
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
