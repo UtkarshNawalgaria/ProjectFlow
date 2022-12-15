@@ -5,7 +5,10 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = [".utkarshnawalgaria.com"]
+ALLOWED_HOSTS = [
+    ".utkarshnawalgaria.com",
+    "task-management-production.up.railway.app"
+]
 CORS_ALLOWED_ORIGINS = (
     "https://tasks.utkarshnawalgaria.com",
     "https://api-tasks.utkarshnawalgaria.com",
