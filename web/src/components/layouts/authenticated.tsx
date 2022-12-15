@@ -17,7 +17,7 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
               <span className="bg-red-100 p-2 rounded-full">{initials}</span>
               <span>{user?.name}</span>
             </Menu.Button>
-            <Menu.Items className="absolute right-[20px] top-[70px] p-2 bg-white shadow-lg w-[250px] rounded-md border-1 flex flex-col gap-2">
+            <Menu.Items className="absolute right-[20px] top-[70px] p-2 bg-white shadow-lg w-[250px] rounded-md border-1 flex flex-col gap-2 z-40">
               <Menu.Item>
                 {() => (
                   <a
