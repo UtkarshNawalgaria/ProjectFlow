@@ -146,7 +146,9 @@ EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=False)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-DEFAULT_FROM_EMAIL = env("FROM_EMAIL", default="nawalgaria.utkarsh8@gmail.com")
+DEFAULT_FROM_EMAIL = env(
+    "FROM_EMAIL", default="Tasks Manager <tasksmanager77@gmail.com>"
+)
 
 APPLICATION_URL = env("APPLICATION_URL", default="")
 
