@@ -30,7 +30,7 @@ export default {
     });
   },
   me: () => {
-    return useClient<TAuthenticatedUser>("users/me");
+    return useClient<TAuthenticatedUser>("users/me/");
   },
   invite: (email: string, organizationId: number, invited_by: number) => {
     return useClient("users/send-invite/", {
@@ -45,7 +45,7 @@ export default {
     }>(`users/accept-invite/${invitationCode}/`);
   },
   verifyAccount: (code: string) => {
-    return useClient(`users/verify/${code}`);
+    return useClient(`users/verify/${code}/`);
   },
   addInvitedUser: (invitationCode: string, data: InvitedUser) => {
     return useClient(`users/join/${invitationCode}/`, {

@@ -22,6 +22,6 @@ export default {
     return useClient<Organization[]>("organization/");
   },
   getMembers: (organizationId: string) => {
-    return useClient<MemberList>(`organization/${organizationId}/members`);
+    return useClient<MemberList>(`organization/${organizationId}/members/`);
   },
 };
