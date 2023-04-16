@@ -11,12 +11,12 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeform
     model = User
 
-    list_display = ("email", "email_verified_at", "is_superuser")
+    list_display = ("name", "email", "email_verified_at", "is_superuser")
     fieldsets = (
         (
             None,
             {
-                "fields": ("email", "password"),
+                "fields": ("name", "email", "password"),
             },
         ),
         (

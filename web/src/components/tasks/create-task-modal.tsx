@@ -2,8 +2,8 @@ import { ChangeEvent, useState, FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import { TaskCreate, emptyTask } from "../../services/tasks";
-import { ProcessedFormErrorType } from "../../utils";
+import { TaskCreate, emptyTask, PriorityOptions } from "../../services/tasks";
+import { capitalize, ProcessedFormErrorType } from "../../utils";
 import Modal from "../modal";
 
 const NewTaskModal = ({
@@ -110,6 +110,22 @@ const NewTaskModal = ({
             {lists.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-md font-medium text-grey-dark mb-1">
+            Priority
+          </label>
+          <select
+            onChange={(e) => setNewTaskFormData(e)}
+            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2"
+            name="tasklist"
+            defaultValue={undefined}>
+            {Object.keys(PriorityOptions).map((priority) => (
+              <option key={priority} value={priority}>
+                {capitalize(priority)}
               </option>
             ))}
           </select>

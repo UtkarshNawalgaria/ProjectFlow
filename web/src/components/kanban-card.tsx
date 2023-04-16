@@ -1,5 +1,6 @@
 import { Draggable } from "react-beautiful-dnd";
 import { Task } from "../services/tasks";
+import { capitalize } from "../utils";
 
 function KanbanCard({ task, index }: { task: Task; index: number }) {
   return (
@@ -14,6 +15,9 @@ function KanbanCard({ task, index }: { task: Task; index: number }) {
             <div className="mb-1 hover:text-indigo-500">{task.title}</div>
             <div className="text-sm text-gray-400 overflow-hidden break-all">
               {task.description}
+            </div>
+            <div>
+              {task.priority ? <span>{capitalize(task.priority)}</span> : null}
             </div>
           </div>
         </div>

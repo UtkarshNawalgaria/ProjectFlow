@@ -1,11 +1,20 @@
 import useClient from "./client";
 
+export const PriorityOptions = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+};
+
+export type TaskPriority = keyof typeof PriorityOptions;
+
 export type Task = {
   id: number;
   url: string;
   title: string;
   owner: number;
   project: number;
+  priority: TaskPriority;
   description: string | null;
   tasklist: number | null;
   start_date: string | null;
@@ -16,6 +25,7 @@ export type TaskCreate = {
   title: string;
   project: number;
   owner: number | null;
+  priority: TaskPriority;
   description?: string;
   tasklist: number | null;
   start_date?: string | null;
@@ -40,6 +50,7 @@ export const emptyTask: TaskCreate = {
   start_date: null,
   due_date: null,
   owner: null,
+  priority: "low",
 };
 
 export const DefaultTaskList = {

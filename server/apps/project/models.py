@@ -76,6 +76,14 @@ class TaskList(TimeStampedModel):
 
 
 class Task(TimeStampedModel, TitleSlugDescriptionModel):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    PRIORITY_CHOICES = ((LOW, "Low"), (MEDIUM, "Medium"), (HIGH, "High"))
+
+    priority = models.CharField(
+        "Task Priority", choices=PRIORITY_CHOICES, max_length=10, null=True, default=LOW
+    )
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
 

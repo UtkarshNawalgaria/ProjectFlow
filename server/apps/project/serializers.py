@@ -86,6 +86,7 @@ class AbstractTasksSerializer(serializers.ModelSerializer):
             "url",
             "title",
             "description",
+            "priority",
             "start_date",
             "end_date",
             "project",
