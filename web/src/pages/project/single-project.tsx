@@ -5,20 +5,14 @@ import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
 
-import Collapsable, {
-  CollapsableBody,
-  CollapsableHead,
-} from "../../components/collapsable";
 import PageHeader from "../../components/page-header";
-import Button from "../../components/button";
-import KanbanCard from "../../components/kanban-card";
 import KanbanList from "../../components/kanban-column";
 import NewTaskListModal from "../../components/tasks/create-task-list-modal";
-import NewTaskModal from "../../components/tasks/create-task-modal";
 
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Task } from "../../services/tasks";
+import { Disclosure } from "@headlessui/react";
 
 const TasksViewType = {
   LIST: 0,
@@ -49,7 +43,7 @@ const TasksKanbanView = ({
 }: {
   toggleModal: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { groupedTasks, addNewTask, updateTask, setTasks } =
+  const { groupedTasks, updateTask, setTasks } =
     useTasks() as TasksProviderType;
 
   function handleDragEnd(result: DropResult) {
@@ -82,30 +76,15 @@ const TasksKanbanView = ({
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-4 h-full">
-          {groupedTasks.map((item) => {
+          {groupedTasks.map((tasksObj) => {
             return (
-              <div key={item.list.id} className="w-[300px]">
-                <KanbanList tasklist={item.list} addNewTask={addNewTask}>
-                  <header className="mb-4">
-                    <div className="p-4 font-semibold text-lg flex items-center justify-between text-gray-700">
-                      <h3>
-                        {item.list.title} ({item.tasks.length})
-                      </h3>
-                    </div>
-                  </header>
-                  <div className="px-4">
-                    {item.tasks.map((task, index) => {
-                      return (
-                        <KanbanCard task={task} key={task.id} index={index} />
-                      );
-                    })}
-                  </div>
-                </KanbanList>
+              <div key={tasksObj.list.id} className="w-[300px]">
+                <KanbanList tasklist={tasksObj.list} tasks={tasksObj.tasks} />
               </div>
             );
           })}
           <button
-            className="w-[300px] h-[200px] bg-gray-50 border-2 border-dashed border-gray-200 hover:border-gray-400 hover:bg-gray-100 rounded-md transition text-center"
+            className="w-[300px] h-[200px] bg-slate-800 border-2 border-dashed border-slate-900 hover:border-slate-800 hover:bg-slate-900 rounded-md transition text-center"
             onClick={() => toggleModal(true)}>
             <HiPlus className="inline-block text-gray-500 text-3xl" />
           </button>
@@ -124,26 +103,65 @@ const TasksListView = () => {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex dark:text-grey-lightest">
         <div className="w-full pl-8 py-2">Task</div>
         <div className="w-full pl-4 py-2">Status</div>
         <div className="w-full pl-4 py-2">Start Date</div>
         <div className="w-full pl-4 py-2">Due Date</div>
         <div className="w-full pl-4 py-2">Actions</div>
       </div>
-      {groupedTasks.map((item) => {
+      {groupedTasks.map((group) => {
         return (
-          <div key={item.list.id}>
-            <Collapsable>
+          <div key={group.list.id}>
+            <Disclosure>
+              <Disclosure.Button className="py-2 my-2 dark:bg-slate-800 dark:text-grey-lightest w-full flex items-center justify-between px-4 rounded-sm">
+                <span>{group.list.title}</span>
+                <span>
+                  <HiChevronDown className="inline-block" />
+                </span>
+              </Disclosure.Button>
+              <Disclosure.Panel>
+                <div className="">
+                  {group.tasks.map((task) => {
+                    return (
+                      <div
+                        key={task.id}
+                        className="bg-gray-50 dark:bg-slate-700 mb-1 rounded-md dark:text-grey-lightest">
+                        <div className="flex items-center">
+                          <div className="w-full pl-8 py-2">{task.title}</div>
+                          <div className="w-full pl-2 py-2">Open</div>
+                          <div className="w-full pl-4 py-2">
+                            {task?.start_date}
+                          </div>
+                          <div className="w-full pl-4 py-2">
+                            {task.due_date}
+                          </div>
+                          <TaskActions
+                            deleteTask={deleteTask}
+                            taskId={task.id}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {group.tasks.length === 0 ? (
+                    <div className="text-center py-2 bg-gray-50 dark:bg-slate-700">
+                      No Tasks
+                    </div>
+                  ) : null}
+                </div>
+              </Disclosure.Panel>
+            </Disclosure>
+            {/* <Collapsable>
               <CollapsableHead styles="py-2 px-3 border-x border-t flex w-full cursor-pointer font-bold">
                 <div>
                   <HiChevronDown className="inline-block" />
-                  <span className="pl-4">{item.list.title}</span>
+                  <span className="pl-4">{group.list.title}</span>
                 </div>
               </CollapsableHead>
               <CollapsableBody>
                 <div className="px-4">
-                  {item.tasks.map((task, index) => {
+                  {group.tasks.map((task, index) => {
                     return (
                       <div
                         key={task.id}
@@ -167,12 +185,12 @@ const TasksListView = () => {
                       </div>
                     );
                   })}
-                  {item.tasks.length === 0 ? (
+                  {group.tasks.length === 0 ? (
                     <div className="text-center py-2 bg-gray-50">No Tasks</div>
                   ) : null}
                 </div>
               </CollapsableBody>
-            </Collapsable>
+            </Collapsable> */}
           </div>
         );
       })}
@@ -183,52 +201,42 @@ const TasksListView = () => {
 const SingleProjectPage = () => {
   const { project, createTaskList } = useTasks() as TasksProviderType;
   const [view, setView] = useState(TasksViewType.KANBAN);
-  const [showCreateTask, toggleCreateTaskModal] = useState(false);
   const [showTaskListModal, toggleTaskListModal] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
       <PageHeader>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <Link to="/projects">
-            <span className="p-3 font-bold inline-flex text-grey-dark ring-1 ring-slate-900/10 rounded-lg hover:text-primary hover:bg-grey-lightest hover:ring-primary">
+            <span className="p-2 font-bold inline-flex text-gray-100 border rounded-md">
               <HiArrowLeft />
             </span>
           </Link>
-          <h1 className="font-bold text-3xl text-grey-dark ml-4">
+          <h1 className="font-bold text-lg text-grey-dark dark:text-grey-lightest ml-4">
             {project?.title}
           </h1>
         </div>
         <div className="flex items-center gap-8" id="toolbar">
-          <div>
-            <Button
-              as="button"
-              text="Add Task"
-              type="CONFIRM"
-              onClick={() => toggleCreateTaskModal(true)}
-              icon={<HiPlus className="font-semibold text-lg" />}
-            />
-          </div>
-          <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
+          <div className="rounded-md shadow-md shadow-gray-200 dark:shadow-none bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-700 flex">
             <span
               className={
                 "p-1 block cursor-pointer m-1" +
                 (view === TasksViewType.KANBAN
-                  ? " bg-white rounded-md text-grey-dark"
+                  ? " bg-white dark:bg-slate-800 rounded-md text-grey-dark"
                   : "")
               }
               onClick={() => setView(TasksViewType.KANBAN)}>
-              <BsKanban className="h-6 w-6 text-black" />
+              <BsKanban className="h-6 w-6 text-black dark:text-grey-lightest" />
             </span>
             <span
               className={
                 "p-1 block cursor-pointer m-1" +
                 (view === TasksViewType.LIST
-                  ? " bg-white rounded-md text-grey-dark"
+                  ? " bg-white dark:bg-slate-800 rounded-md text-grey-dark"
                   : "")
               }
               onClick={() => setView(TasksViewType.LIST)}>
-              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
+              <AiOutlineUnorderedList className="h-6 w-6 text-black dark:text-grey-lightest" />
             </span>
           </div>
         </div>
@@ -244,10 +252,6 @@ const SingleProjectPage = () => {
         open={showTaskListModal}
         closeModal={() => toggleTaskListModal(false)}
         onFormSubmit={createTaskList}
-      />
-      <NewTaskModal
-        open={showCreateTask}
-        closeModal={() => toggleCreateTaskModal(false)}
       />
     </div>
   );

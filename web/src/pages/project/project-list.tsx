@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { BsCardHeading } from "react-icons/bs";
 import { HiFolderAdd, HiPlus, HiTrash } from "react-icons/hi";
 import { AiOutlineSetting, AiOutlineUnorderedList } from "react-icons/ai";
+import { BiInfoCircle } from "react-icons/bi";
 import { toast } from "react-toastify";
 
 import Modal from "../../components/modal";
@@ -39,17 +40,20 @@ const ProjectsListView: FC<ProjectViewProps> = ({
         {projects.map((project) => (
           <li
             key={project.id}
-            className={`flex gap-4 items-center justify-between px-4 py-2 mb-4 rounded-md bg-grey-lightest cursor-pointer hover:bg-gray-100`}>
+            className={`flex gap-4 items-center justify-between px-4 py-2 mb-4 rounded-md bg-grey-lightest dark:bg-slate-800 cursor-pointer hover:bg-gray-100`}>
             <div className="w-full">
               <Link
                 to={project.id.toString()}
-                className="block font-bold text-grey-dark hover:text-primary">
+                className="block font-medium text-grey-dark dark:text-grey-lightest hover:text-primary">
                 <h3>
                   {project.title} ({project.task_count})
                 </h3>
               </Link>
             </div>
-            <div className="w-full text-right">
+            <div className="w-full flex items-center justify-end">
+              <span className="inline-block p-2 rounded-full hover:bg-slate-700">
+                <BiInfoCircle className="cursor-pointer dark:text-grey-lightest" />
+              </span>
               <span className="inline-block p-2 rounded-full hover:bg-red-300">
                 <HiTrash
                   onClick={() => {
@@ -211,7 +215,7 @@ const ProjectsPage = () => {
   return (
     <div>
       <PageHeader>
-        <div className="font-bold text-2xl text-grey-dark">
+        <div className="font-bold text-lg text-grey-dark dark:text-grey-lightest">
           Projects ({projects.length})
         </div>
         <div className="flex items-center gap-8" id="toolbar">
@@ -221,29 +225,29 @@ const ProjectsPage = () => {
               text="Create Project"
               type="CONFIRM"
               onClick={() => toggleNewProjectModal(true)}
-              icon={<HiPlus className="font-semibold text-lg" />}
+              icon={<HiPlus className="font-medium text-md" />}
             />
           </div>
-          <div className="rounded-md shadow-md shadow-gray-200 bg-gray-100 flex">
+          <div className="rounded-sm shadow-md shadow-gray-200 dark:shadow-none bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-700 flex">
             <span
               className={
                 "p-1 block cursor-pointer m-1" +
                 (view === ProjectsViewType.LIST
-                  ? " bg-white rounded-md text-grey-dark"
+                  ? " bg-white dark:bg-slate-800 rounded-md text-grey-dark"
                   : "")
               }
               onClick={() => setView(ProjectsViewType.LIST)}>
-              <AiOutlineUnorderedList className="h-6 w-6 text-black" />
+              <AiOutlineUnorderedList className="h-6 w-6 text-black dark:text-grey-lightest" />
             </span>
             <span
               className={
                 "p-1 block cursor-pointer m-1" +
                 (view === ProjectsViewType.CARD
-                  ? " bg-white rounded-md text-grey-dark"
+                  ? " bg-white dark:bg-slate-800 rounded-md text-grey-dark"
                   : "")
               }
               onClick={() => setView(ProjectsViewType.CARD)}>
-              <BsCardHeading className="h-6 w-6 text-black" />
+              <BsCardHeading className="h-6 w-6 text-black dark:text-grey-lightest" />
             </span>
           </div>
         </div>

@@ -16,14 +16,15 @@ const Button = ({
   extraStyles,
 }: ButtonProps) => {
   const typetoColor = {
-    CONFIRM: "bg-primary text-white hover:bg-indigo-600",
+    CONFIRM:
+      "dark:bg-slate-900 dark:text-grey-lightest bg-primary text-white dark:text-grey-lightest hover:bg-indigo-600",
     CANCEL: "text-primary",
     DANGER: "bg-error text-white",
   };
   const btnStyleWithIcon = "flex items-center gap-2";
   const buttonProps = {
     onClick: as === "button" ? onClick : undefined,
-    className: `rounded-md font-semibold cursor-pointer py-2 px-6 outline outline-1 transition ${
+    className: `rounded-md font-medium text-sm cursor-pointer py-2 px-2 border border-2 border-slate-700 transition ${
       typetoColor[type]
     } ${icon ? btnStyleWithIcon : ""} ${extraStyles ? extraStyles : ""}`,
   };

@@ -21,7 +21,9 @@ const Sidebar = () => {
   const { currentOrganization } = useUser() as TUserContext;
 
   const isPathActive = (linkPath: string, isLink = true): string => {
-    const returnCss = isLink ? "bg-gray-200 rounded-md" : "text-primary";
+    const returnCss = isLink
+      ? "bg-slate-200 dark:bg-slate-700 rounded-md"
+      : "text-white";
     return location.pathname.includes(linkPath) ? returnCss : "";
   };
 
@@ -30,15 +32,15 @@ const Sidebar = () => {
       <Organizations />
       <nav className="mt-4">
         <div>
-          <ul className="border-b pb-2">
+          <ul className="border-b dark:border-b-gray-500 pb-2">
             {navItems.map((item, index) => (
               <li
                 key={index}
-                className={`py-2 pl-4 cursor-pointer hover:bg-gray-200 rounded-md mb-2 mx-2 ${isPathActive(
+                className={`py-2 pl-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md mb-2 mx-2 text-sm ${isPathActive(
                   item.path
                 )}`}>
                 <Link
-                  className={`flex items-center gap-4 text-grey-dark font-bold hover:text-primary active:text-primary ${isPathActive(
+                  className={`flex items-center gap-4 text-slate-900 dark:text-grey-lightest font-medium ${isPathActive(
                     item.path,
                     false
                   )}`}
@@ -51,19 +53,19 @@ const Sidebar = () => {
           </ul>
         </div>
         <div>
-          <span className="block pl-4 mt-4 text-lg">
+          <span className="block pl-4 mt-4 text-md text-slate-900 dark:text-grey-lightest font-medium">
             {currentOrganization?.title}
           </span>
         </div>
-        <ul className="border-b pb-2 mt-4">
+        <ul className="border-b dark:border-b-gray-500 pb-2 mt-4">
           {organizationNavItems.map((item, index) => (
             <li
               key={index}
-              className={`py-2 pl-4 cursor-pointer hover:bg-gray-200 rounded-md mb-2 mx-2 ${isPathActive(
+              className={`py-2 pl-2 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md mb-2 mx-2 text-sm ${isPathActive(
                 item.path
               )}`}>
               <Link
-                className={`flex items-center gap-4 text-grey-dark font-bold hover:text-primary active:text-primary ${isPathActive(
+                className={`flex items-center gap-4 text-slate-900 dark:text-grey-lightest font-medium ${isPathActive(
                   item.path,
                   false
                 )}`}

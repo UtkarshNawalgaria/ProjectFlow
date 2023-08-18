@@ -22,9 +22,9 @@ const Modal = ({
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center">
         <Dialog.Panel
-          className={`mx-auto ${setWidth} bg-white text-black p-0 rounded-md`}>
+          className={`mx-auto ${setWidth} bg-white dark:bg-slate-900 text-black dark:text-grey-lightest p-0 rounded-md`}>
           <div className="flex justify-between items-center px-6 py-4 border-b">
-            <Dialog.Title className="text-xl font-medium text-gray-800">
+            <Dialog.Title className="text-xl font-medium text-gray-800 dark:text-grey-lightest">
               {title}
             </Dialog.Title>
             <span className="mt-1 cursor-pointer" onClick={closeModal}>

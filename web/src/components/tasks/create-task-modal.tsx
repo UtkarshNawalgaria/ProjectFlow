@@ -54,7 +54,7 @@ const NewTaskModal = ({
         <div className="mb-4">
           <label
             htmlFor="title"
-            className="block text-md font-medium text-grey-dark mb-1">
+            className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
             Title
           </label>
           <input
@@ -62,9 +62,10 @@ const NewTaskModal = ({
             id="title"
             name="title"
             value={newTask?.title}
+            required
             onChange={(e) => setNewTaskFormData(e)}
             className={
-              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
               (error !== null && error.title
                 ? " border-error"
                 : " border-gray-300")
@@ -77,7 +78,7 @@ const NewTaskModal = ({
         <div className="mb-4">
           <label
             htmlFor="description"
-            className="block text-md font-medium text-grey-dark mb-1">
+            className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
             Description
           </label>
           <textarea
@@ -87,7 +88,7 @@ const NewTaskModal = ({
             value={newTask.description}
             onChange={(e) => setNewTaskFormData(e)}
             className={
-              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
               (error !== null && error.description
                 ? " border-error"
                 : " border-gray-300")
@@ -98,12 +99,12 @@ const NewTaskModal = ({
           ) : null}
         </div>
         <div className="mb-4">
-          <label className="block text-md font-medium text-grey-dark mb-1">
+          <label className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
             Choose List
           </label>
           <select
             onChange={(e) => setNewTaskFormData(e)}
-            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2"
+            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-slate-900"
             name="tasklist"
             defaultValue={undefined}>
             <option value="0">Todo</option>
@@ -115,12 +116,12 @@ const NewTaskModal = ({
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-md font-medium text-grey-dark mb-1">
+          <label className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
             Priority
           </label>
           <select
             onChange={(e) => setNewTaskFormData(e)}
-            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2"
+            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-slate-900"
             name="tasklist"
             defaultValue={undefined}>
             {Object.keys(PriorityOptions).map((priority) => (

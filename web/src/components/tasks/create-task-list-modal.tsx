@@ -42,7 +42,7 @@ const NewTaskListModal = ({
         <div className="mb-4">
           <label
             htmlFor="title"
-            className="block text-md font-medium text-grey-dark mb-1">
+            className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
             Title
           </label>
           <input
@@ -56,7 +56,7 @@ const NewTaskListModal = ({
                 return { ...prevData, title: e.target.value };
               })
             }
-            className="rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full"
+            className="rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900"
           />
         </div>
         <div className="flex gap-4 mt-10">

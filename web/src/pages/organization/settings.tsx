@@ -5,7 +5,7 @@ const OrganizationSettings = () => {
 
   return (
     <div className="px-4 mb-8">
-      <h1 className="text-2xl text-grey-dark font-bold">
+      <h1 className="text-2xl text-grey-dark dark:text-grey-lightest font-bold">
         {currentOrganization?.title}
       </h1>
     </div>

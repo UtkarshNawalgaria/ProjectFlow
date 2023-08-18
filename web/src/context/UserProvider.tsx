@@ -1,17 +1,10 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import OrganizationService, { Organization } from "../services/organization";
 import UserService, { TAuthenticatedUser } from "../services/users";
 import useAuth, { AuthContextType } from "./AuthProvider";
 
 export type TUserContext = {
   user: TAuthenticatedUser | null;
-  initials: string;
   currentOrganization: Organization | null;
   changeOrganization: (orgId: number) => void;
 };
@@ -23,14 +16,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<TAuthenticatedUser | null>(null);
   const [currentOrganization, setCurrentOrganization] =
     useState<Organization | null>(null);
-
-  const initials = useMemo(() => {
-    if (!user || (user && user.name.length == 0)) return "";
-
-    const name = user.name.split(" ");
-    const init = name.length > 1 ? name[0][0] + name[1][0] : name[0][0];
-    return init.toUpperCase();
-  }, [user?.name]);
 
   const changeOrganization = (orgId: number) => {
     if (orgId === currentOrganization?.id) return;
@@ -58,7 +43,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, initials, currentOrganization, changeOrganization }}>
+      value={{ user, currentOrganization, changeOrganization }}>
       {children}
     </UserContext.Provider>
   );

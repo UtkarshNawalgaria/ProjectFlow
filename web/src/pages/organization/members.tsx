@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 import useUser, { TUserContext } from "../../context/UserProvider";
+import Avatar from "react-avatar";
 
 import OrganizationService, { MemberList } from "../../services/organization";
 import UserService from "../../services/users";
@@ -55,11 +56,13 @@ const OrganizationMembers = () => {
     <div>
       <PageHeader>
         <div>
-          <h2 className="text-2xl font-bold text-grey-dark">Members</h2>
+          <h2 className="text-2xl font-bold text-grey-dark dark:text-grey-lightest">
+            Members
+          </h2>
         </div>
         <div>
           <Popover className="relative">
-            <Popover.Button className="flex gap-2 items-center bg-primary text-white hover:bg-indigo-600 rounded-md font-semibold cursor-pointer py-2 px-6 outline outline-1 transition">
+            <Popover.Button className="flex gap-2 items-center bg-primary dark:bg-slate-900 dark:hover:bg-slate-800 text-white hover:bg-indigo-600 rounded-md font-semibold cursor-pointer py-2 px-6 outline outline-1 transition">
               <span>
                 <MdOutlinePersonAddAlt className="h-5 w-5" />
               </span>
@@ -73,10 +76,10 @@ const OrganizationMembers = () => {
               leave="transition ease-in duration-150"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1">
-              <Popover.Panel className="absolute right-0 mt-2 p-4 rounded-md bg-white shadow-2xl w-[300px]">
+              <Popover.Panel className="absolute right-0 mt-2 p-4 rounded-md bg-white dark:bg-slate-800 shadow-2xl w-[300px]">
                 {({ close }) => (
                   <div>
-                    <p className="text-center mb-4 font-bold text-lg text-grey-dark">
+                    <p className="text-center mb-4 font-bold text-lg text-grey-dark dark:text-grey-lightest">
                       Invite People
                     </p>
                     <form
@@ -109,11 +112,18 @@ const OrganizationMembers = () => {
         {members?.members.map((member) => (
           <div
             key={member.email}
-            className="flex justify-between items-center mb-4 bg-gray-50 px-4 py-2 rounded-sm cursor-pointer hover:bg-gray-100">
-            <div className="flex items-center">
-              <div className="flex flex-col">
-                <h4 className="font-bold text-gray-700">{member?.name}</h4>
-                <span className="text-sm">{member.email}</span>
+            className="flex justify-between items-center mb-4 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100">
+            <div className="flex items-center gap-4">
+              <div>
+                <Avatar name={member.name} round size="30" />
+              </div>
+              <div className="flex items-center">
+                <div className="flex flex-col">
+                  <h4 className="font-bold text-gray-700 dark:text-grey-lightest">
+                    {member?.name}
+                  </h4>
+                  <span className="text-sm">{member.email}</span>
+                </div>
               </div>
             </div>
             <div className="flex justify-between">{member.role}</div>
