@@ -1,4 +1,4 @@
-# Task Management
+# ProjectFlow
 This is a basic project and task management web application which allows users to create their projects, create task lists and create and manage tasks. Each project's task lists can be seen in 2 ways, in a list view or in a Kanban view.
 
 
