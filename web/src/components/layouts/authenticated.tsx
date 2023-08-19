@@ -3,6 +3,7 @@ import useUser, { TUserContext } from "../../context/UserProvider";
 import { Menu } from "@headlessui/react";
 import useAuth, { AuthContextType } from "../../context/AuthProvider";
 import Avatar from "react-avatar";
+import { Link } from "react-router-dom";
 
 const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   const { user } = useUser() as TUserContext;
@@ -11,8 +12,14 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   return (
     <div className="grid grid-rows-[60px_1fr] w-full h-screen overflow-hidden bg-white dark:bg-slate-900">
       <header className="logo grid grid-cols-[260px_1fr] border-b border-slate-200 dark:border-b-gray-500">
-        <div className="font-extrabold text-3xl border-r border-r-slate-200 dark:border-r-gray-500 w-[260px] h-full flex items-center pl-5 dark:text-white">
-          Tasks
+        <div className="font-extrabold text-2xl border-r border-r-slate-200 dark:border-r-gray-500 w-[260px] h-full flex items-center pl-5 dark:text-white">
+          <Link to="/dashboard">
+            <img
+              src="/images/logo-white.png"
+              alt="Projectflow - Project Management made easier"
+              width={150}
+            />
+          </Link>
         </div>
         <div className="relative flex items-center justify-end px-10">
           <Menu>
