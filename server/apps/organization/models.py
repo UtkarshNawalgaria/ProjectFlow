@@ -29,6 +29,9 @@ class Organization(TimeStampedModel):
             organization=self, role=OrganizationUsers.ADMIN
         )
 
+        if not objs:
+            return None
+
         return objs[0].user
 
     @property

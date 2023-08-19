@@ -10,9 +10,13 @@ class OrganizationAdmin(admin.ModelAdmin):
         "id",
         "title",
         "slug",
+        "owner",
     )
     fields = ("title",)
     readonly_fields = ("slug",)
+
+    def owner(self, organization):
+        return organization.owner
 
 
 class OrganizationUsersAdmin(admin.ModelAdmin):
