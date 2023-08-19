@@ -303,7 +303,7 @@ const ProjectsPage = () => {
                 value={newProject.title}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest bg-slate-800" +
                   (error !== null && error.title
                     ? " border-error"
                     : " border-gray-300")
@@ -326,7 +326,7 @@ const ProjectsPage = () => {
                 value={newProject.description}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest bg-slate-800" +
                   (error !== null && error.description
                     ? " border-error"
                     : " border-gray-300")
