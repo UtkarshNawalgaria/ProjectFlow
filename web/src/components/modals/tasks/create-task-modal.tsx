@@ -1,9 +1,13 @@
 import { ChangeEvent, useState, FormEvent } from "react";
 import { useParams } from "react-router-dom";
-import useTasks, { TasksProviderType } from "../../context/TasksProvider";
-import useUser, { TUserContext } from "../../context/UserProvider";
-import { TaskCreate, emptyTask, PriorityOptions } from "../../services/tasks";
-import { capitalize, ProcessedFormErrorType } from "../../utils";
+import useTasks, { TasksProviderType } from "../../../context/TasksProvider";
+import useUser, { TUserContext } from "../../../context/UserProvider";
+import {
+  TaskCreate,
+  emptyTask,
+  PriorityOptions,
+} from "../../../services/tasks";
+import { capitalize, ProcessedFormErrorType } from "../../../utils";
 import Modal from "../modal";
 
 const NewTaskModal = ({

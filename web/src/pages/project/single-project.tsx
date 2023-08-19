@@ -7,7 +7,7 @@ import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
 
 import PageHeader from "../../components/page-header";
 import KanbanList from "../../components/kanban-column";
-import NewTaskListModal from "../../components/tasks/create-task-list-modal";
+import NewTaskListModal from "../../components/modals/tasks/create-task-list-modal";
 
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
@@ -52,7 +52,7 @@ const TasksKanbanView = ({
     if (!destination || source.droppableId === destination.droppableId) return;
 
     const taskId = parseInt(draggableId);
-    const destinationId = parseInt(destination.droppableId as string);
+    const destinationId = parseInt(destination.droppableId.split("-")[1]);
 
     // Change the moved task's `tasklist_id` value in the frontend
     // before updating on the backend to avoid lag in changing the
@@ -75,11 +75,11 @@ const TasksKanbanView = ({
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 h-full">
+        <div className="flex gap-4 h-full overflow-x-scroll">
           {groupedTasks.map((tasksObj) => {
             return (
-              <div key={tasksObj.list.id} className="w-[300px]">
-                <KanbanList tasklist={tasksObj.list} tasks={tasksObj.tasks} />
+              <div key={tasksObj.id} className="w-[300px]">
+                <KanbanList tasklist={tasksObj} />
               </div>
             );
           })}
@@ -112,10 +112,10 @@ const TasksListView = () => {
       </div>
       {groupedTasks.map((group) => {
         return (
-          <div key={group.list.id}>
+          <div key={group.id}>
             <Disclosure>
               <Disclosure.Button className="py-2 my-2 dark:bg-slate-800 dark:text-grey-lightest w-full flex items-center justify-between px-4 rounded-sm">
-                <span>{group.list.title}</span>
+                <span>{group.title}</span>
                 <span>
                   <HiChevronDown className="inline-block" />
                 </span>
@@ -204,7 +204,7 @@ const SingleProjectPage = () => {
   const [showTaskListModal, toggleTaskListModal] = useState(false);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-x-scroll">
       <PageHeader>
         <div className="flex gap-4 items-center">
           <Link to="/projects">

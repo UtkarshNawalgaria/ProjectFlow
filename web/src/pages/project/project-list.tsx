@@ -6,7 +6,7 @@ import { AiOutlineSetting, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiInfoCircle } from "react-icons/bi";
 import { toast } from "react-toastify";
 
-import Modal from "../../components/modal";
+import Modal from "../../components/modals/modal";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
 
@@ -94,10 +94,12 @@ const ProjectsCardView: FC<ProjectViewProps> = ({
             <div className="flex flex-col gap-4 items-center">
               <Link to={`/projects/${project.id}`}>
                 <div className="p-4 pt-2">
-                  <h3 className="text-lg font-semibold text-center text-grey-dark hover:text-primary mb-4">
+                  <h3 className="text-lg font-semibold text-center text-grey-dark dark:text-grey-lightest hover:text-primary mb-4">
                     {project.title}
                   </h3>
-                  <p className="text-justify">{project.description}</p>
+                  <p className="text-justify dark:text-grey-lightest">
+                    {project.description}
+                  </p>
                 </div>
               </Link>
               <div>
@@ -291,7 +293,7 @@ const ProjectsPage = () => {
             <div className="mb-4">
               <label
                 htmlFor="title"
-                className="block text-md font-medium text-grey-dark mb-1">
+                className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
                 Title
               </label>
               <input
@@ -301,7 +303,7 @@ const ProjectsPage = () => {
                 value={newProject.title}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
                   (error !== null && error.title
                     ? " border-error"
                     : " border-gray-300")
@@ -314,7 +316,7 @@ const ProjectsPage = () => {
             <div className="mb-4">
               <label
                 htmlFor="description"
-                className="block text-md font-medium text-grey-dark mb-1">
+                className="block text-md font-medium text-grey-dark dark:text-grey-lightest mb-1">
                 Description
               </label>
               <textarea
@@ -324,7 +326,7 @@ const ProjectsPage = () => {
                 value={newProject.description}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
                   (error !== null && error.description
                     ? " border-error"
                     : " border-gray-300")

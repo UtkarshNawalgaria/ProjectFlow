@@ -1,23 +1,18 @@
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
-import { Task, TaskList } from "../services/tasks";
 import { HiPlus } from "react-icons/hi";
 import KanbanCard from "./kanban-card";
-import NewTaskModal from "./tasks/create-task-modal";
+import NewTaskModal from "./modals/tasks/create-task-modal";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { GroupedTasks } from "../context/TasksProvider";
 
-const KanbanList = ({
-  tasklist,
-  tasks,
-}: {
-  tasks: Task[];
-  tasklist: TaskList;
-}) => {
+const KanbanList = ({ tasklist }: { tasklist: GroupedTasks[0] }) => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+  const { tasks } = tasklist;
 
   return (
     <div className="rounded-md h-full flex flex-col justify-between">
-      <Droppable droppableId={tasklist.id.toString()}>
+      <Droppable droppableId={"droppable-" + tasklist.id.toString()}>
         {(provided) => (
           <div
             {...provided.droppableProps}
@@ -43,8 +38,10 @@ const KanbanList = ({
                 </div>
               </header>
               <div className="px-4">
-                {tasks.map((task, index) => {
-                  return <KanbanCard task={task} key={task.id} index={index} />;
+                {tasks.map((task) => {
+                  return (
+                    <KanbanCard task={task} key={task.id} index={task.id} />
+                  );
                 })}
               </div>
             </div>

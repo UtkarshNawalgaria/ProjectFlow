@@ -18,10 +18,11 @@ import TaskService, {
   TaskListCreate,
 } from "../services/tasks";
 
-type GroupedTasks = Array<{
-  list: TaskList;
-  tasks: Task[];
-}>;
+export type GroupedTasks = Array<
+  {
+    tasks: Task[];
+  } & TaskList
+>;
 
 export type TasksProviderType = {
   project: Project | null;
@@ -67,16 +68,16 @@ export const TasksProvider = ({ children }: Props) => {
   const groupedTasks = useMemo<GroupedTasks>(() => {
     const outputData: GroupedTasks = [];
 
-    if (lists.length == 0) return [{ list: DefaultTaskList, tasks: tasks }];
+    if (lists.length == 0) return [{ ...DefaultTaskList, tasks: tasks }];
 
     outputData.push({
-      list: DefaultTaskList,
+      ...DefaultTaskList,
       tasks: tasks.filter((task) => task.tasklist === null),
     });
 
     lists.forEach((list) => {
       const listTasks = tasks.filter((task) => task.tasklist === list.id);
-      outputData.push({ list, tasks: listTasks });
+      outputData.push({ ...list, tasks: listTasks });
     });
 
     return outputData;

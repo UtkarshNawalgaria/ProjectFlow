@@ -54,9 +54,8 @@ export const emptyTask: TaskCreate = {
 };
 
 export const DefaultTaskList = {
-  id: 0,
-  title: "Todo",
-  project: 0,
+  id: 99999,
+  title: "Draft",
 };
 
 export default {
