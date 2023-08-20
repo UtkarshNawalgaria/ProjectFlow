@@ -6,7 +6,13 @@ import NewTaskModal from "./modals/tasks/create-task-modal";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { GroupedTasks } from "../context/TasksProvider";
 
-const KanbanList = ({ tasklist }: { tasklist: GroupedTasks[0] }) => {
+const KanbanList = ({
+  tasklist,
+  openTask,
+}: {
+  tasklist: GroupedTasks[0];
+  openTask: (taskId: number) => void;
+}) => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const { tasks } = tasklist;
 
@@ -40,7 +46,12 @@ const KanbanList = ({ tasklist }: { tasklist: GroupedTasks[0] }) => {
               <div className="px-4">
                 {tasks.map((task) => {
                   return (
-                    <KanbanCard task={task} key={task.id} index={task.id} />
+                    <KanbanCard
+                      task={task}
+                      key={task.id}
+                      index={task.id}
+                      openTask={openTask}
+                    />
                   );
                 })}
               </div>
