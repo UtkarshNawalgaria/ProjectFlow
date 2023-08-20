@@ -12,6 +12,7 @@ export type ProjectWithTasks = {
   id: number;
   slug: string;
   title: string;
+  owner: number;
   description: string | null;
   task_count: number;
   tasks: Task[];
@@ -34,6 +35,15 @@ export default {
     return useClient<Project>("project/", {
       method: "POST",
       body: JSON.stringify(project),
+    });
+  },
+  updateProject: (
+    projectId: number,
+    update_data: Record<string, string | number | null>
+  ) => {
+    return useClient<Project>(`project/${projectId}/`, {
+      method: "PATCH",
+      body: JSON.stringify(update_data),
     });
   },
   delete: (projectId: number) => {
