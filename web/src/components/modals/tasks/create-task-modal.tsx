@@ -69,7 +69,7 @@ const NewTaskModal = ({
             required
             onChange={(e) => setNewTaskFormData(e)}
             className={
-              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
+              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest dark:bg-slate-800" +
               (error !== null && error.title
                 ? " border-error"
                 : " border-gray-300")
@@ -92,7 +92,7 @@ const NewTaskModal = ({
             value={newTask.description}
             onChange={(e) => setNewTaskFormData(e)}
             className={
-              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-slate-900" +
+              "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest dark:bg-slate-800" +
               (error !== null && error.description
                 ? " border-error"
                 : " border-gray-300")
@@ -108,10 +108,10 @@ const NewTaskModal = ({
           </label>
           <select
             onChange={(e) => setNewTaskFormData(e)}
-            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-slate-900"
+            className="rounded-md border focus:border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-grey-lightest dark:bg-slate-800"
             name="tasklist"
             defaultValue={undefined}>
-            <option value="0">Todo</option>
+            <option value="0">Draft</option>
             {lists.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.title}
@@ -125,7 +125,7 @@ const NewTaskModal = ({
           </label>
           <select
             onChange={(e) => setNewTaskFormData(e)}
-            className="rounded-md border focus: border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-slate-900"
+            className="rounded-md border focus:border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-grey-lightest dark:bg-slate-800"
             name="tasklist"
             defaultValue={undefined}>
             {Object.keys(PriorityOptions).map((priority) => (
