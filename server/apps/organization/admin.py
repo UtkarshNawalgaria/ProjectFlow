@@ -12,7 +12,7 @@ class OrganizationAdmin(admin.ModelAdmin):
         "slug",
         "owner",
     )
-    fields = ("title",)
+    fields = ("title", "slug")
     readonly_fields = ("slug",)
 
     def owner(self, organization):

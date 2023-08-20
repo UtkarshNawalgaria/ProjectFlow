@@ -35,7 +35,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    list_filter = ("email",)
+    list_filter = ("is_superuser", "email_verified_at")
     search_fields = ("email",)
     ordering = ("email",)
 
