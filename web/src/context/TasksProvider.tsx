@@ -39,6 +39,7 @@ export type TasksProviderType = {
   ) => void;
   setTasks: Dispatch<SetStateAction<Task[]>>;
   selectCurrentTask: (taskId: number) => void;
+  updateProject: (project: Project) => void;
 };
 
 type Props = {
@@ -124,6 +125,10 @@ export const TasksProvider = ({ children }: Props) => {
     setCurrentSelectedTask(item);
   };
 
+  const updateProject = (project: Project) => {
+    setProject(project);
+  };
+
   return (
     <TasksContext.Provider
       value={{
@@ -138,6 +143,7 @@ export const TasksProvider = ({ children }: Props) => {
         setTasks,
         currentSelectedTask,
         selectCurrentTask,
+        updateProject,
       }}>
       {children}
     </TasksContext.Provider>
