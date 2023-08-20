@@ -1,4 +1,6 @@
-# ProjectFlow
+<img src="https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/ea3bdad0-4f32-4bb0-b41c-85313264cc47" width="50%" />
+
+
 This is a basic project and task management web application which allows users to create their projects, create task lists and create and manage tasks. Each project's task lists can be seen in 2 ways, in a list view or in a Kanban view.
 
 
