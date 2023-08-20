@@ -19,6 +19,9 @@ class Organization(TimeStampedModel):
     def __str__(self):
         return f"Organization({self.title})"
 
+    def slugify(self, content):
+        return content.replace("_", "-").lower()
+
     @property
     def owner(self) -> User:
         """
@@ -54,6 +57,16 @@ class Organization(TimeStampedModel):
             raise ValueError("User is not part of the organization")
 
         return org_user.first().role
+
+    def save(self, **kwargs):
+        created = not self.pk
+        db_obj = Organization.objects.filter(id=self.id).last()
+
+        if db_obj:
+            if self.title != db_obj.title:
+                self.slug = self.slugify(self.title)
+
+        return super().save(**kwargs)
 
 
 class OrganizationUsers(models.Model):
