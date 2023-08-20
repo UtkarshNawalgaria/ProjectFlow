@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { BsCardHeading } from "react-icons/bs";
 import { HiFolderAdd, HiPlus, HiTrash } from "react-icons/hi";
 import { AiOutlineSetting, AiOutlineUnorderedList } from "react-icons/ai";
-import { BiInfoCircle } from "react-icons/bi";
 import { toast } from "react-toastify";
 
 import Modal from "../../components/modals/modal";
@@ -51,9 +50,6 @@ const ProjectsListView: FC<ProjectViewProps> = ({
               </Link>
             </div>
             <div className="w-full flex items-center justify-end">
-              <span className="inline-block p-2 rounded-full hover:bg-slate-700">
-                <BiInfoCircle className="cursor-pointer dark:text-grey-lightest" />
-              </span>
               <span className="inline-block p-2 rounded-full hover:bg-red-300">
                 <HiTrash
                   onClick={() => {
@@ -172,6 +168,10 @@ const ProjectsPage = () => {
       });
       toggleDeleteConfirmModal(false);
     });
+
+    setProjects((projects) =>
+      projects.filter((project) => project.id !== selectedProjectId)
+    );
   };
 
   const setNewProjectFormData = (
@@ -303,7 +303,7 @@ const ProjectsPage = () => {
                 value={newProject.title}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest bg-slate-800" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest dark:bg-slate-800" +
                   (error !== null && error.title
                     ? " border-error"
                     : " border-gray-300")
@@ -326,7 +326,7 @@ const ProjectsPage = () => {
                 value={newProject.description}
                 onChange={(e) => setNewProjectFormData(e)}
                 className={
-                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest bg-slate-800" +
+                  "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full dark:text-grey-lightest dark:bg-slate-800" +
                   (error !== null && error.description
                     ? " border-error"
                     : " border-gray-300")
@@ -374,7 +374,10 @@ const ProjectsPage = () => {
             <Button
               as="button"
               text="Delete"
-              onClick={() => deleteProject(selectedProjectId as number, true)}
+              onClick={() => {
+                deleteProject(selectedProjectId as number, true);
+                toggleDeleteConfirmModal(false);
+              }}
               type={"DANGER"}
             />
           </div>
