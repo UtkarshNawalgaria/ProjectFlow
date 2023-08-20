@@ -140,6 +140,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
             "description",
             "tasklists",
             "tasks",
+            "owner"
         )
 
     def to_representation(self, instance):
