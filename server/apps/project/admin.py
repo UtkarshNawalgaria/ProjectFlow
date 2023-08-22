@@ -10,7 +10,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 class TaskAdmin(admin.ModelAdmin):
     model = Task
-    list_display = ("id", "title", "project", "tasklist")
+    list_display = ("id", "title", "priority", "project", "tasklist")
     list_filter = ["project", "priority", "end_date"]
 
 

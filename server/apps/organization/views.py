@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from apps.users.models import OrganizationInvitation
 
 from .models import Organization, OrganizationUsers
-from .serializers import OrganizationListSerializer
+from .serializers import OrganizationDetailSerializer, OrganizationListSerializer
 
 
 class OrganizationListView(ListAPIView):
@@ -24,6 +24,17 @@ class OrganizationListView(ListAPIView):
         user_organizations = self.get_queryset()
         serializer = OrganizationListSerializer(user_organizations, many=True)
         return Response(serializer.data)
+
+
+class OrganizationDetailView(UpdateAPIView):
+    model = Organization
+    serializer_class = OrganizationDetailSerializer
+
+    def get_serializer_context(self):
+        return {"request": self.request, "user": self.request.user}
+
+    def get_queryset(self):
+        return self.request.user.organizations.all()
 
 
 @api_view(["GET"])

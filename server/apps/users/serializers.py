@@ -20,14 +20,13 @@ class UserRegistrationSerializer(serializers.Serializer):
     class Meta:
         fields = ("name", "email", "password")
 
-    def validate(self, data):
-        email = data["email"]
+    def validate_email(self, email):
         same_email_user_exists = User.objects.filter(email=email).exists()
 
         if same_email_user_exists:
             raise serializers.ValidationError("User with email already exists")
 
-        return data
+        return email
 
     def save(self, **kwargs):
         new_user = User.objects.create_user(**self.validated_data, **kwargs)
