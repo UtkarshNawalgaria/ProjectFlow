@@ -7,6 +7,7 @@ export type TUserContext = {
   user: TAuthenticatedUser | null;
   currentOrganization: Organization | null;
   changeOrganization: (orgId: number) => void;
+  updateOrganization: (org: Organization) => void;
 };
 
 const UserContext = createContext<TUserContext | null>(null);
@@ -21,6 +22,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (orgId === currentOrganization?.id) return;
 
     const org = user?.organizations.find((org) => org.id === orgId) || null;
+    setCurrentOrganization(org);
+  };
+
+  const updateOrganization = (org: Organization) => {
     setCurrentOrganization(org);
   };
 
@@ -43,7 +48,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, currentOrganization, changeOrganization }}>
+      value={{
+        user,
+        currentOrganization,
+        changeOrganization,
+        updateOrganization,
+      }}>
       {children}
     </UserContext.Provider>
   );
