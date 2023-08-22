@@ -6,13 +6,29 @@ This is a basic project and task management web application which allows users t
 
 ## Table of Contents
 - [Task Management](#task-management)
-  - [Table of Contents](#table-of-contents)
+  - [Product Images](#product-images)
+  - [App Features](#app-features)
   - [Tech Stack](#tech-stack)
   - [Deployment](#deployment)
   - [Database Design](#database-design)
-  - [App Features](#app-features)
   - [Dashboard Layout](#dashboard-layout)
   - [Upcoming Features](#upcoming-features)
+
+## Product Images
+### Kanban Board
+![Screenshot from 2023-08-22 11-41-55](https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/a98cd082-dc09-42ef-ab57-8b7781321620)
+
+### Organization Members
+![Screenshot from 2023-08-22 11-43-28](https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/aa068a2a-6807-45f8-b2e9-7f9376dc1cb0)
+
+## App Features
+What can users do in this application
+
+1. User can create multiple tasks and organize them into projects for easy user.
+2. Users can view their tasks in a project using **Kanban View**
+3. Every user is part of an organization, of which they are the owners.
+4. Users can collaborate with other users by inviting them to their Organization and working on projects together.
+5. Implemented user authentication, reset password, email verification of account, external user invitation flow.
 
 ## Tech Stack
 * Django
@@ -25,15 +41,6 @@ The api server has been deployed on [railway.app](https://railway.app/) and the 
 
 ## Database Design
 ![Database models](images/dbdiagram.png)
-
-## App Features
-What can users do in this application
-
-1. User can create multiple tasks and organize them into projects for easy user.
-2. Users can view their tasks in a project using **Kanban View**
-3. Every user is part of an organization, of which they are the owners.
-4. Users can collaborate with other users by inviting them to their Organization and working on projects together.
-5. Implemented user authentication, reset password, email verification of account, external user invitation flow.
 
 ## Dashboard Layout
 ![Layout](images/dashboard-layout.png)
