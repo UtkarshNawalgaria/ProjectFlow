@@ -1,8 +1,9 @@
 {% extends 'email/base.html' %}
 
 {% block content %}
-    <p>Hi, {{ name }}</p>
+    {% include 'partials/logo.html' %}
+    <p>Hi, <strong>{{ name }}</strong></p>
     <p>Congratulations!! You have taken the first step of creating your account.</p>
     <p>Now, Click on this link to activate your account</p>
-    <a href="{{ verification_link }}">Verify Account</a>
+    <a href="{{ verification_link }}" class="btn">Verify Account</a>
 {% endblock content %}

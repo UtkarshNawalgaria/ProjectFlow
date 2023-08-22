@@ -5,9 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+    <style>
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #8729e1;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     {% block styles %}{% endblock styles %}
-    {% block content %}{% endblock content %}
+    <div class="container" style="max-width: 50%; margin: 0 auto; border: 1px solid #e7e7e7; border-radius: 5px; padding: 20px;">
+        {% block content %}{% endblock content %}
+    </div>
 </body>
 </html>

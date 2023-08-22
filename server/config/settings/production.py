@@ -45,6 +45,7 @@ DEFAULT_FILE_STORAGE = "libs.storage_backends.MediaStorage"
 # Production checks
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+HTTPS_ENABLED = True
 
 if env("SENTRY_DSN"):
     sentry_sdk.init(

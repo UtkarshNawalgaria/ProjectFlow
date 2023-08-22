@@ -4,6 +4,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+from libs.helpers import get_static_url, get_web_url
+
 
 def send_email(
     *,
@@ -16,6 +18,10 @@ def send_email(
 ):
     html_message = None
     context = context or {}
+    context.update({
+        "STATIC_URL": get_static_url(),
+        "web_url": get_web_url(),
+    })
 
     if template:
         html_message = render_to_string(template, context).strip()
