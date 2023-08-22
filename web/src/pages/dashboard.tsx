@@ -1,8 +1,13 @@
+import Meta from "../components/meta";
+
 const Dashboard = () => {
   return (
-    <div className="text-2xl font-semibold dark:text-grey-lightest">
-      Dashboard
-    </div>
+    <>
+      <Meta title="Dashboard" />
+      <div className="text-2xl font-semibold dark:text-grey-lightest">
+        Dashboard
+      </div>
+    </>
   );
 };
 

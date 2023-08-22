@@ -1,4 +1,5 @@
 import Editable from "../../components/editable";
+import Meta from "../../components/meta";
 import useUser, { TUserContext } from "../../context/UserProvider";
 
 import OrganizationService from "../../services/organization";
@@ -8,6 +9,7 @@ const OrganizationSettings = () => {
 
   return (
     <div className="px-4 mb-8">
+      <Meta title="Organization Settings" />
       <Editable
         text={currentOrganization?.title}
         allowEditing={true}

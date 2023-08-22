@@ -10,6 +10,7 @@ import Avatar from "react-avatar";
 
 import OrganizationService, { MemberList } from "../../services/organization";
 import UserService from "../../services/users";
+import Meta from "../../components/meta";
 
 const OrganizationMembers = () => {
   const { orgId } = useParams();
@@ -31,7 +32,6 @@ const OrganizationMembers = () => {
       UserService.invite(email, parseInt(orgId) as number, user?.id as number)
         .then((res) => {
           close();
-          toast.success(res.message);
         })
         .catch((error) => toast.error(error.message));
     }
@@ -54,6 +54,7 @@ const OrganizationMembers = () => {
 
   return (
     <div>
+      <Meta title="Members" />
       <PageHeader>
         <div>
           <h2 className="text-2xl font-bold text-grey-dark dark:text-grey-lightest">

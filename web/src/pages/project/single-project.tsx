@@ -12,6 +12,7 @@ import KanbanList from "../../components/kanban-column";
 import NewTaskListModal from "../../components/modals/tasks/create-task-list-modal";
 import TaskAside from "../../components/aside/task";
 import Editable from "../../components/editable";
+import Meta from "../../components/meta";
 
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
@@ -33,7 +34,7 @@ const TaskActions = ({
   return (
     <>
       <span className="inline-block p-2 rounded-full cursor-pointer hover:bg-indigo-300">
-        <FiEdit className="text-indigo-700" />
+        <FiEdit className="text-indigo-500" />
       </span>
       <span className="inline-block p-2 rounded-full cursor-pointer hover:bg-red-300">
         <HiTrash className="text-red-700" onClick={() => deleteTask(taskId)} />
@@ -191,6 +192,7 @@ const SingleProjectPage = () => {
 
   return (
     <div className="flex flex-col h-full overflow-x-scroll">
+      <Meta title={project?.title} />
       <PageHeader>
         <div className="flex gap-4 items-center">
           <Link to="/projects">

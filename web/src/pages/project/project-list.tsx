@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Modal from "../../components/modals/modal";
 import Button from "../../components/button";
 import PageHeader from "../../components/page-header";
+import Meta from "../../components/meta";
 
 import ProjectService, { Project } from "../../services/projects";
 import { ProcessedFormErrorType } from "../../utils";
@@ -216,6 +217,7 @@ const ProjectsPage = () => {
 
   return (
     <div>
+      <Meta title="Projects" />
       <PageHeader>
         <div className="font-bold text-lg text-grey-dark dark:text-grey-lightest">
           Projects ({projects.length})
