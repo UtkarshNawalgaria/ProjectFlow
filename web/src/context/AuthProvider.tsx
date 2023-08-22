@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
-import useClient, { authTokenKey } from "../services/client";
+import useClient, { TError, authTokenKey } from "../services/client";
 import UserService from "../services/users";
 
 export type TAuth = {
@@ -20,13 +20,13 @@ export type AuthContextType = {
   login: (
     username: string,
     password: string,
-    onError: (error: Error) => void
+    onError: (error: TError) => void
   ) => void;
   guestLogin: () => void;
   register: (
     data: TAuthData,
     onSuccess: (msg: string) => void,
-    onError: (error: Error) => void
+    onError: (error: TError) => void
   ) => void;
   verifyToken: () => void;
   setAuth: (auth: TAuth | null, logout?: boolean) => void;
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   function register(
     data: TAuthData,
     onSuccess: (msg: string) => void,
-    onError: (error: Error) => void
+    onError: (error: TError) => void
   ) {
     UserService.register(data)
       .then(() => {
@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
   function login(
     email: string,
     password: string,
-    onError: (error: Error) => void
+    onError: (error: TError) => void
   ): void {
     UserService.login(email, password).then(
       (data) => {
@@ -98,7 +98,9 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
         window.localStorage.setItem(authTokenKey, data.access_token);
         window.location.assign(redirectUrl);
       },
-      (error) => onError(error)
+      (error) => {
+        onError(error);
+      }
     );
   }
 
@@ -107,7 +109,7 @@ export const AuthProvider: React.FC<Props> = ({ children, redirectUrl }) => {
       import.meta.env.VITE_GUEST_USER_EMAIL,
       import.meta.env.VITE_GUEST_USER_PASSWORD,
       (error) => {
-        toast.error(error.message);
+        console.log(error);
       }
     );
   }

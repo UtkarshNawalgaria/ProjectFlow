@@ -1,7 +1,7 @@
 import Sidebar from "../sidebar";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import { Menu } from "@headlessui/react";
 import useAuth, { AuthContextType } from "../../context/AuthProvider";
+import { Menu } from "@headlessui/react";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 

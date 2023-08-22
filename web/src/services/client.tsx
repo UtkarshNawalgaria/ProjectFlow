@@ -1,5 +1,3 @@
-import { parseValidationErrorResponse } from "../utils";
-
 const BASE_URL = import.meta.env.VITE_BASE_API_URL;
 export const authTokenKey = "accessToken";
 
@@ -9,9 +7,7 @@ export type FetchConfigType = {
   headers?: Record<string, string> | null;
 };
 
-type Default<TObj> = TObj extends { [key: string]: any }
-  ? TObj
-  : { message: string };
+export type TError = string | Record<string, string | string[]>;
 
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
@@ -21,7 +17,7 @@ export function getErrorMessage(error: unknown) {
 export default function useClient<T>(
   url: string,
   customConfig: FetchConfigType = {}
-): Promise<Default<T>> {
+): Promise<T> {
   const token = window.localStorage.getItem(authTokenKey);
   const headers: FetchConfigType["headers"] = {
     "Content-Type": "application/json",
@@ -51,8 +47,7 @@ export default function useClient<T>(
       return await response.json();
     } else {
       const errorMessage = await response.json();
-      const parsedError = parseValidationErrorResponse(errorMessage);
-      return Promise.reject(parsedError);
+      return Promise.reject<TError>(errorMessage);
     }
   });
 }
