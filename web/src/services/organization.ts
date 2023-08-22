@@ -2,7 +2,7 @@ import useClient from "./client";
 
 export type Organization = {
   id: number;
-  title: number;
+  title: string;
 };
 
 export type TMember = {
@@ -20,6 +20,15 @@ export type MemberList = {
 export default {
   getUserOrganizations: () => {
     return useClient<Organization[]>("organization/");
+  },
+  updateOrganization: (
+    orgId: number,
+    update_data: Record<string, string | number | null>
+  ) => {
+    return useClient<Organization>(`organization/${orgId}/`, {
+      method: "PATCH",
+      body: JSON.stringify(update_data),
+    });
   },
   getMembers: (organizationId: string) => {
     return useClient<MemberList>(`organization/${organizationId}/members/`);

@@ -48,7 +48,7 @@ export default {
     return useClient(`users/verify/${code}/`);
   },
   addInvitedUser: (invitationCode: string, data: InvitedUser) => {
-    return useClient(`users/join/${invitationCode}/`, {
+    return useClient<null>(`users/join/${invitationCode}/`, {
       method: "POST",
       body: JSON.stringify({ ...data }),
     });
