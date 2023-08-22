@@ -19,11 +19,8 @@ const Aside = ({ children, open, close, title }: AsideProps) => {
             {title}
           </div>
         ) : null}
-        <span className="mt-1 cursor-pointer">
-          <HiX
-            className="text-gray-500 dark:text-grey-lightest w-4 h-4"
-            onClick={close}
-          />
+        <span className="mt-1 cursor-pointer text-gray-100 hover:bg-slate-800 p-1">
+          <HiX onClick={close} />
         </span>
       </header>
       <div>{children}</div>
