@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
@@ -38,6 +38,28 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ("is_superuser", "email_verified_at")
     search_fields = ("email",)
     ordering = ("email",)
+    actions = ["send_verification_email"]
+
+    @admin.action(description="Send Verification Email")
+    def send_verification_email(self, request, queryset):
+        error = None
+
+        if queryset.count() > 1:
+            error = "Select one user at a time to send verification email"
+
+        user = queryset[0]
+
+        if user.email_verified_at:
+            error = "Cannot send verification email to verified user."
+
+        if error:
+            return self.message_user(request, error, messages.ERROR)
+
+        user.send_account_activation_email()
+
+        return self.message_user(
+            request, f"Verification Email sent to {user.email}", messages.SUCCESS
+        )
 
 
 class OrganizationInvitationAdmin(admin.ModelAdmin):
