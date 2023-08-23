@@ -46,15 +46,13 @@ class CustomUserAdmin(UserAdmin):
 
         if queryset.count() > 1:
             error = "Select one user at a time to send verification email"
-
-        user = queryset[0]
-
-        if user.email_verified_at:
+        elif queryset[0].email_verified_at:
             error = "Cannot send verification email to verified user."
 
         if error:
             return self.message_user(request, error, messages.ERROR)
 
+        user = queryset[0]
         user.send_account_activation_email()
 
         return self.message_user(

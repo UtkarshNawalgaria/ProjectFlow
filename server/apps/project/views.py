@@ -37,7 +37,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], permission_classes=[IsProjectOwner])
     def add_user(self, request, pk=None):
         """
-        Add invited user to project. Only project owner can add new
+        Add user to project. Only project owner can add new
         users to the project.
         """
 
