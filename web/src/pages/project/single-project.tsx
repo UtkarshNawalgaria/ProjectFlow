@@ -80,9 +80,9 @@ const TasksKanbanView = ({
   }
 
   return (
-    <>
+    <div className="overflow-x-scroll">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 h-full overflow-x-scroll">
+        <div className="grid grid-flow-col auto-cols-[300px] gap-4 h-full">
           {groupedTasks.map((tasksObj) => {
             return (
               <div key={tasksObj.id} className="w-[300px]">
@@ -91,13 +91,13 @@ const TasksKanbanView = ({
             );
           })}
           <button
-            className="w-[300px] h-[200px] bg-slate-800 border-2 border-dashed border-slate-900 hover:border-slate-800 hover:bg-slate-900 rounded-md transition text-center"
+            className="h-[200px] bg-slate-800 border-2 border-dashed border-slate-900 hover:border-slate-800 hover:bg-slate-900 rounded-md transition text-center"
             onClick={() => toggleModal(true)}>
             <HiPlus className="inline-block text-gray-500 text-3xl" />
           </button>
         </div>
       </DragDropContext>
-    </>
+    </div>
   );
 };
 
@@ -191,7 +191,7 @@ const SingleProjectPage = () => {
   const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null;
 
   return (
-    <div className="flex flex-col h-full overflow-x-scroll">
+    <div className="flex flex-col h-full">
       <Meta title={project?.title} />
       <PageHeader>
         <div className="flex gap-4 items-center">
@@ -240,7 +240,7 @@ const SingleProjectPage = () => {
           </div>
         </div>
       </PageHeader>
-      <section className="px-4 h-full">
+      <section className="px-4">
         {view === TasksViewType.LIST ? (
           <TasksListView
             openTask={(taskId) => {
