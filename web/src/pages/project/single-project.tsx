@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-import { HiArrowLeft, HiChevronDown, HiPlus, HiTrash } from "react-icons/hi";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { HiArrowLeft, HiChevronRight, HiPlus, HiTrash } from "react-icons/hi";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Disclosure } from "@headlessui/react";
 
@@ -115,7 +116,7 @@ const TasksListView = ({
 
   return (
     <>
-      <div className="flex dark:text-grey-lightest">
+      <div className="flex dark:text-grey-lightest ml-4">
         <div className="w-full pl-8 py-2">Task</div>
         <div className="w-full pl-4 py-2">Status</div>
         <div className="w-full pl-4 py-2">Start Date</div>
@@ -124,53 +125,71 @@ const TasksListView = ({
       </div>
       {groupedTasks.map((group) => {
         return (
-          <div key={group.id}>
+          <div key={group.id} className="relative">
             <Disclosure>
-              <Disclosure.Button className="py-2 my-2 dark:bg-slate-800 dark:text-grey-lightest w-full flex items-center justify-between pr-4 pl-8 rounded-sm">
-                <span>{group.title}</span>
-                <span>
-                  <HiChevronDown className="inline-block" />
-                </span>
-              </Disclosure.Button>
-              <Disclosure.Panel>
-                <div>
-                  {group.tasks.map((task) => {
-                    return (
-                      <div
-                        key={task.id}
-                        className="bg-gray-50 dark:bg-slate-700 mb-1 rounded-md dark:text-grey-lightest">
-                        <div className="flex items-center">
-                          <div
-                            className="w-full pl-8 py-2 hover:underline cursor-pointer"
-                            onClick={() => openTask(task.id)}>
-                            {task.title}
-                          </div>
-                          <div className="w-full pl-2 py-2">Open</div>
-                          <div className="w-full pl-4 py-2">
-                            {task?.start_date}
-                          </div>
-                          <div className="w-full pl-4 py-2">
-                            {task.due_date}
-                          </div>
-                          <div className="w-full text-left">
-                            {user?.id === task.owner ? (
-                              <TaskActions
-                                deleteTask={deleteTask}
-                                taskId={task.id}
-                              />
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {group.tasks.length === 0 ? (
-                    <div className="text-center py-2 bg-gray-50 dark:bg-slate-700">
-                      No Tasks
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="py-2 my-2 dark:bg-slate-800 dark:text-grey-lightest w-full flex gap-2 items-start pl-2 rounded-md border-l-4">
+                    <span className="text-gray-100 p-1 absolute -left-10 mt-4">
+                      <BiDotsHorizontalRounded className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <HiChevronRight
+                        className={`inline-block h-5 w-5 ${
+                          open ? "rotate-90" : ""
+                        }`}
+                      />
                     </div>
-                  ) : null}
-                </div>
-              </Disclosure.Panel>
+                    <div className="flex flex-col gap-2 items-start">
+                      <span className="text-xl font-semibold">
+                        {group.title}
+                      </span>
+                      <span className="text-gray-400">
+                        {group.tasks.length} Tasks
+                      </span>
+                    </div>
+                  </Disclosure.Button>
+                  <Disclosure.Panel>
+                    <div>
+                      {group.tasks.map((task) => {
+                        return (
+                          <div
+                            key={task.id}
+                            className="bg-gray-50 dark:bg-slate-700 mb-1 rounded-md border-l-4 dark:text-grey-lightest ml-4">
+                            <div className="flex items-center">
+                              <div
+                                className="w-full pl-8 py-2 hover:underline cursor-pointer"
+                                onClick={() => openTask(task.id)}>
+                                {task.title}
+                              </div>
+                              <div className="w-full pl-2 py-2">Open</div>
+                              <div className="w-full pl-4 py-2">
+                                {task?.start_date}
+                              </div>
+                              <div className="w-full pl-4 py-2">
+                                {task.due_date}
+                              </div>
+                              <div className="w-full text-left">
+                                {user?.id === task.owner ? (
+                                  <TaskActions
+                                    deleteTask={deleteTask}
+                                    taskId={task.id}
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {group.tasks.length === 0 ? (
+                        <div className="text-center py-2 bg-gray-50 dark:bg-slate-700">
+                          No Tasks
+                        </div>
+                      ) : null}
+                    </div>
+                  </Disclosure.Panel>
+                </>
+              )}
             </Disclosure>
           </div>
         );
