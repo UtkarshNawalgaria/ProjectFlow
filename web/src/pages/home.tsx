@@ -8,14 +8,13 @@ import FieldGroup from "../components/form/FieldGroup";
 const HomePage = () => {
   const [authData, setAuthData] = useState<TAuthData>({
     name: "",
-    email: "",
-    password: "",
+    email: "guest.projectflow@gmail.com",
+    password: "Rainy@Day77",
   });
   const [error, setError] = useState<TError>("");
   const [success, setSuccess] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { register, login, guestLogin, auth, redirectUrl } =
-    useAuth() as AuthContextType;
+  const { register, login, auth, redirectUrl } = useAuth() as AuthContextType;
 
   useEffect(() => {
     if (auth?.accessToken) {
@@ -56,9 +55,6 @@ const HomePage = () => {
     setError("");
   };
 
-  const formGroup =
-    "rounded-md border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full placeholder:text-gray-300";
-
   return (
     <div className="h-full flex items-center justify-center">
       <div className="w-full max-w-md">
@@ -93,6 +89,9 @@ const HomePage = () => {
             <Tab.Panels>
               <Tab.Panel className="px-10 pb-10 pt-5">
                 <>
+                  <div className="mb-8 font-semibold">
+                    Login as this guest user to explore the project
+                  </div>
                   <form onSubmit={(e) => handleFormSubmit(e, "login")}>
                     <ErrorList errorList={error} styles="mb-4 text-center" />
                     <FieldGroup
@@ -121,9 +120,6 @@ const HomePage = () => {
                       value="Login"
                     />
                   </form>
-                  <div className="text-center mt-5 text-gray-400 hover:underline cursor-pointer">
-                    <a onClick={guestLogin}>Login as guest</a>
-                  </div>
                 </>
               </Tab.Panel>
               <Tab.Panel className="px-10 pb-10 pt-5">
