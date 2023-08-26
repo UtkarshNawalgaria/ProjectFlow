@@ -28,7 +28,7 @@ const Editable = ({
               type="text"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="dark:text-grey-lightest dark:bg-slate-800 rounded-md text-md max-w-full focus:border-primary"
+              className="h-[30px] py-2 dark:text-grey-lightest dark:bg-slate-800 rounded-md text-md max-w-full focus:border-primary"
             />
           ) : (
             <>{Element}</>
