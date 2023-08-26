@@ -1,9 +1,10 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, UpdateAPIView
 from rest_framework.decorators import (
     api_view,
     permission_classes,
@@ -19,6 +20,7 @@ from .models import OrganizationInvitation, User
 from .serializers import (
     OrganizationSendInvitationSerializer,
     AcceptUserInvitationSerializer,
+    UpdateUserProfilePictureUpdateSerializer,
     UserRegistrationSerializer,
     LoginSerializer,
     TokenSerializer,
@@ -56,6 +58,17 @@ class UserLoginView(GenericAPIView):
         )
 
 
+class UserUpdateView(UpdateAPIView):
+    model = User
+    serializer_class = UserDetailSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(email_verified_at__isnull=False)
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+
 class OrganizationSendInvitationView(CreateAPIView):
     model = OrganizationInvitation
     serializer_class = OrganizationSendInvitationSerializer
@@ -67,8 +80,29 @@ class OrganizationSendInvitationView(CreateAPIView):
 
 @api_view(["GET"])
 def user_details(request):
-    serializer = UserDetailSerializer(instance=request.user)
+    serializer = UserDetailSerializer(
+        instance=request.user, context={"request": request}
+    )
     return Response(data=serializer.data)
+
+
+@api_view(["POST"])
+def update_user_profile_picture(request, pk=None):
+    profile_pic = request.FILES.get("profile_pic")
+    user = get_object_or_404(User, id=pk)
+
+    if not profile_pic:
+        raise ValidationError(detail={"message": "Pls upload an Image to update profile picture"})
+
+    serializer = UpdateUserProfilePictureUpdateSerializer(
+        user, data={"profile_pic": profile_pic}, context={"request": request}
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(data=serializer.data, status=201)
+
+    return Response(data={"message": "Unable to upload Image"}, status=400)
 
 
 @api_view(["GET"])

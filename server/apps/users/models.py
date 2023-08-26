@@ -13,7 +13,6 @@ class UserManager(BaseUserManager):
     use_in_migrations: bool = True
 
     def _create_user(self, email, password, **extra_fields):
-
         if not email:
             raise ValueError("Email is required")
 
@@ -55,6 +54,11 @@ class UserManager(BaseUserManager):
         return self.filter(filter_query)
 
 
+def profile_pic_path(user, filename):
+    user_id = str(user.id)
+    return f"profile_pictures/{user_id}/{filename}"
+
+
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     email = models.EmailField(_("email address"), max_length=254, unique=True)
@@ -62,6 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     verification_code = models.CharField(
         _("account verification code"), max_length=256, blank=True
     )
+    profile_pic = models.FileField(upload_to=profile_pic_path, null=True, blank=True)
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
     email_verified_at = models.DateTimeField(_("email verified at"), null=True)

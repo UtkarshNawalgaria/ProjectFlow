@@ -4,6 +4,8 @@ from .views import (
     UserRegistrationView,
     UserLoginView,
     OrganizationSendInvitationView,
+    UserUpdateView,
+    update_user_profile_picture,
     user_details,
     accept_user_invitation,
     invited_user_join,
@@ -13,6 +15,12 @@ from .views import (
 app_name = "users"
 
 urlpatterns = [
+    path("<int:pk>/", UserUpdateView.as_view(), name="update"),
+    path(
+        "<int:pk>/upload_profile_pic/",
+        update_user_profile_picture,
+        name="update-profile-pic",
+    ),
     path("me/", user_details, name="me"),
     path("login/", UserLoginView.as_view(), name="login"),
     path("signup/", UserRegistrationView.as_view(), name="signup"),

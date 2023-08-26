@@ -81,7 +81,19 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "name", "email", "organizations")
+        fields = (
+            "id",
+            "name",
+            "email",
+            "profile_pic",
+            "organizations",
+        )
+
+
+class UpdateUserProfilePictureUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["profile_pic"]
 
 
 class OrganizationSendInvitationSerializer(serializers.ModelSerializer):

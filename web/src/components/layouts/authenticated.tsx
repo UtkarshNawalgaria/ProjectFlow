@@ -4,6 +4,7 @@ import useAuth, { AuthContextType } from "../../context/AuthProvider";
 import { Menu } from "@headlessui/react";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
+import { BiLogOut, BiUser } from "react-icons/bi";
 
 const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   const { user } = useUser() as TUserContext;
@@ -30,11 +31,24 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
               <Menu.Items className="absolute right-[45px] top-[60px] p-2 bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-800/50 w-[200px] rounded-sm border-1 flex flex-col gap-2 z-40">
                 <Menu.Item>
                   {() => (
-                    <a
-                      className="block px-8 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700"
-                      onClick={logout}>
-                      Logout
-                    </a>
+                    <>
+                      <Link
+                        to="/profile"
+                        className="flex gap-2 items-center px-4 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700">
+                        <span>
+                          <BiUser />
+                        </span>
+                        <span>Profile</span>
+                      </Link>
+                      <a
+                        className="flex gap-2 items-center px-4 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700"
+                        onClick={logout}>
+                        <span>
+                          <BiLogOut />
+                        </span>
+                        <span>Logout</span>
+                      </a>
+                    </>
                   )}
                 </Menu.Item>
               </Menu.Items>

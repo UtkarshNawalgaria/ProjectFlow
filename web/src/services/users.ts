@@ -11,6 +11,7 @@ export type TAuthenticatedUser = {
   id: number;
   name: string;
   email: string;
+  profile_pic: string;
   organizations: Organization[];
 };
 
@@ -51,6 +52,15 @@ export default {
     return useClient<null>(`users/join/${invitationCode}/`, {
       method: "POST",
       body: JSON.stringify({ ...data }),
+    });
+  },
+  updateUser: (
+    userId: number,
+    user: Omit<TAuthenticatedUser, "profile_pic">
+  ) => {
+    return useClient<TAuthenticatedUser>(`users/${userId}/`, {
+      method: "PATCH",
+      body: JSON.stringify({ ...user }),
     });
   },
 };

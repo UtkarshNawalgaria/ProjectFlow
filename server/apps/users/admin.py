@@ -16,7 +16,7 @@ class CustomUserAdmin(UserAdmin):
         (
             None,
             {
-                "fields": ("name", "email", "password"),
+                "fields": ("name", "email", "password", "profile_pic"),
             },
         ),
         (

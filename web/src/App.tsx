@@ -17,6 +17,7 @@ import ProjectsPage from "./pages/project/project-list";
 
 import OrganizationSettings from "./pages/organization/settings";
 import OrganizationMembers from "./pages/organization/members";
+import ProfilePage from "./pages/profile";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="" element={<ProtectedRoute />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="projects" element={<ProjectsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route
             path="projects/:projectId"
             element={

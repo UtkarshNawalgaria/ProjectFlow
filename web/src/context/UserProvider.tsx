@@ -2,12 +2,15 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import OrganizationService, { Organization } from "../services/organization";
 import UserService, { TAuthenticatedUser } from "../services/users";
 import useAuth, { AuthContextType } from "./AuthProvider";
+import { toast } from "react-toastify";
 
 export type TUserContext = {
   user: TAuthenticatedUser | null;
   currentOrganization: Organization | null;
   changeOrganization: (orgId: number) => void;
   updateOrganization: (org: Organization) => void;
+  updateUser: (user: TAuthenticatedUser) => void;
+  updateUserProfile: (userId: number, user: TAuthenticatedUser) => void;
 };
 
 const UserContext = createContext<TUserContext | null>(null);
@@ -27,6 +30,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateOrganization = (org: Organization) => {
     setCurrentOrganization(org);
+  };
+
+  const updateUser = (user: TAuthenticatedUser) => {
+    setUser(user);
+  };
+
+  const updateUserProfile = (userId: number, user: TAuthenticatedUser) => {
+    const { profile_pic, ...rest } = user;
+    UserService.updateUser(userId, rest).then((updatedUser) => {
+      setUser(updatedUser);
+      toast.success("User successfully updated");
+    });
   };
 
   useEffect(() => {
@@ -50,9 +65,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     <UserContext.Provider
       value={{
         user,
+        updateUser,
         currentOrganization,
         changeOrganization,
         updateOrganization,
+        updateUserProfile,
       }}>
       {children}
     </UserContext.Provider>
