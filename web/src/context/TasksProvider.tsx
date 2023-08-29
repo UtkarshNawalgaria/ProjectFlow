@@ -29,7 +29,7 @@ export type TasksProviderType = {
   tasks: Task[];
   lists: TaskList[];
   groupedTasks: GroupedTasks;
-  currentSelectedTask: Task | null;
+  selectedTaskId: number;
   addNewTask: (task: TaskCreate) => void;
   createTaskList: (list: TaskListCreate) => void;
   deleteTask: (id: number) => void;
@@ -53,9 +53,7 @@ export const TasksProvider = ({ children }: Props) => {
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<TaskList[]>([]);
-  const [currentSelectedTask, setCurrentSelectedTask] = useState<Task | null>(
-    null
-  );
+  const [selectedTaskId, setSelectedTaskId] = useState<number>(0);
 
   // Fetch project details, tasks and tasklists related to the project
   useEffect(() => {
@@ -95,14 +93,21 @@ export const TasksProvider = ({ children }: Props) => {
 
   const updateTask = (
     taskId: number,
-    data: Record<string, string | number | null>
+    data: Record<keyof Task, string | number | null>
   ) => {
-    TaskService.updateTask(taskId, data).then((updatedTask) => {
-      setTasks((prevTasks) => {
-        return [...prevTasks.filter((task) => task.id !== taskId), updatedTask];
+    TaskService.updateTask(taskId, data)
+      .then((updatedTask) => {
+        setTasks((prevTasks) => {
+          return [
+            ...prevTasks.filter((task) => task.id !== taskId),
+            updatedTask,
+          ];
+        });
+        toast.success("Task Updated successfully");
+      })
+      .catch((error: { detail: string }) => {
+        toast.error(error.detail);
       });
-      toast.success("Task Updated successfully");
-    });
   };
 
   const deleteTask = (taskId: number) => {
@@ -120,9 +125,7 @@ export const TasksProvider = ({ children }: Props) => {
   };
 
   const selectCurrentTask = (taskId: number) => {
-    const item = tasks.find((x) => x.id === taskId);
-    if (!item) return;
-    setCurrentSelectedTask(item);
+    setSelectedTaskId(taskId);
   };
 
   const updateProject = (project: Project) => {
@@ -141,7 +144,7 @@ export const TasksProvider = ({ children }: Props) => {
         deleteTask,
         createTaskList,
         setTasks,
-        currentSelectedTask,
+        selectedTaskId,
         selectCurrentTask,
         updateProject,
       }}>

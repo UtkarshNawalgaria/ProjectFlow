@@ -83,10 +83,10 @@ const TasksKanbanView = ({
   return (
     <div className="overflow-x-scroll">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-flow-col auto-cols-[300px] gap-4 h-full">
+        <div className="grid grid-flow-col auto-cols-[350px] gap-4 h-full">
           {groupedTasks.map((tasksObj) => {
             return (
-              <div key={tasksObj.id} className="w-[300px]">
+              <div key={tasksObj.id}>
                 <KanbanList tasklist={tasksObj} openTask={openTask} />
               </div>
             );
@@ -199,15 +199,18 @@ const TasksListView = ({
 };
 
 const SingleProjectPage = () => {
-  const { project, tasks, createTaskList, updateProject } =
-    useTasks() as TasksProviderType;
+  const {
+    project,
+    tasks,
+    createTaskList,
+    updateProject,
+    selectCurrentTask,
+    selectedTaskId,
+  } = useTasks() as TasksProviderType;
   const { user } = useUser() as TUserContext;
   const [view, setView] = useState(TasksViewType.KANBAN);
   const [showTaskListModal, toggleTaskListModal] = useState(false);
-  const [showSelectedProject, setShowSelectedProject] = useState(false);
-  const [selectedTaskId, setSelectedTaskId] = useState<number>(0);
-
-  const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null;
+  const [showSelectedTask, setShowSelectedTask] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
@@ -234,7 +237,7 @@ const SingleProjectPage = () => {
             }
           />
         </div>
-        <div className="flex items-center gap-8" id="toolbar">
+        <div className="flex items-center gap-8">
           <div className="rounded-md shadow-md shadow-gray-200 dark:shadow-none bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-700 flex">
             <span
               className={
@@ -263,16 +266,16 @@ const SingleProjectPage = () => {
         {view === TasksViewType.LIST ? (
           <TasksListView
             openTask={(taskId) => {
-              setShowSelectedProject(true);
-              setSelectedTaskId(taskId);
+              selectCurrentTask(taskId);
+              setShowSelectedTask(true);
             }}
           />
         ) : (
           <TasksKanbanView
             toggleModal={toggleTaskListModal}
             openTask={(taskId) => {
-              setShowSelectedProject(true);
-              setSelectedTaskId(taskId);
+              selectCurrentTask(taskId);
+              setShowSelectedTask(true);
             }}
           />
         )}
@@ -283,14 +286,14 @@ const SingleProjectPage = () => {
         onFormSubmit={createTaskList}
       />
       <div className="page-asides">
-        {selectedTask ? (
+        {selectedTaskId ? (
           <TaskAside
-            open={showSelectedProject}
+            open={showSelectedTask}
             close={() => {
-              setShowSelectedProject(false);
-              setSelectedTaskId(0);
+              setShowSelectedTask(false);
+              selectCurrentTask(0);
             }}
-            task={selectedTask}>
+            task={tasks.find((task) => task.id === selectedTaskId)}>
             <div>Hello World</div>
           </TaskAside>
         ) : null}
