@@ -56,8 +56,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
         return TextJSONResponse(f"{user.email} has been added to the project")
 
     def get_serializer_context(self):
-        context = {"request": self.request, "user": self.request.user}
-        return context
+        return {"request": self.request, "user": self.request.user}
 
     def get_serializer_class(self):
         if self.action in ["list", "create"]:

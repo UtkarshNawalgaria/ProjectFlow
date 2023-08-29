@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from apps.users.serializers import LimitedUserDetailSerializer
 from apps.organization.models import Organization
 
 from .models import Project, ProjectUsers, Task, TaskList
@@ -127,9 +128,22 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
         return attrs
 
 
+class ProjectUsersSerializer(serializers.ModelSerializer):
+    user = LimitedUserDetailSerializer()
+    role = serializers.CharField()
+
+    class Meta:
+        model = ProjectUsers
+        fields = (
+            "role",
+            "user",
+        )
+
+
 class ProjectDetailSerializer(serializers.ModelSerializer):
     tasks = TasksWriteUpdateSerializer(read_only=True, many=True)
     tasklists = TasklistListCreateSerailzer(read_only=True, many=True)
+    assigned_users = ProjectUsersSerializer(many=True, read_only=True, source='projectusers_set')
 
     class Meta:
         model = Project
@@ -140,7 +154,8 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
             "description",
             "tasklists",
             "tasks",
-            "owner"
+            "owner",
+            "assigned_users",
         )
 
     def to_representation(self, instance):

@@ -15,6 +15,11 @@ export type TAuthenticatedUser = {
   organizations: Organization[];
 };
 
+export type AssociatedUsersList = {
+  role: string;
+  user: Pick<TAuthenticatedUser, "id" | "profile_pic" | "name">;
+}[];
+
 export type InvitedUser = Required<UserCreate & { organization_name: string }>;
 
 export default {

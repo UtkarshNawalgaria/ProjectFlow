@@ -19,6 +19,7 @@ import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
 import { Task } from "../../services/tasks";
 import ProjectService from "../../services/projects";
+import UserList from "../../components/user-list";
 
 const TasksViewType = {
   LIST: 0,
@@ -238,6 +239,7 @@ const SingleProjectPage = () => {
           />
         </div>
         <div className="flex items-center gap-8">
+          <UserList userList={project?.assigned_users} />
           <div className="rounded-md shadow-md shadow-gray-200 dark:shadow-none bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-700 flex">
             <span
               className={

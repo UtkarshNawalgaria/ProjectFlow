@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Avatar from "react-avatar";
 import { FaUserEdit } from "react-icons/fa";
+import UserAvatar from "./user-avatar";
 
 type TProfilePicture = {
   url?: string;
@@ -40,13 +40,7 @@ const ProfilePicture = ({ url, onPictureUpload }: TProfilePicture) => {
           />
         </label>
       </div>
-      {url ? (
-        <div className="w-[100px] rounded-full overflow-hidden">
-          <img src={url} alt="" className="w-full" />
-        </div>
-      ) : (
-        <Avatar facebookId="100008343750912" round />
-      )}
+      <UserAvatar profilePicUrl={url} width="100px" />
     </div>
   );
 };

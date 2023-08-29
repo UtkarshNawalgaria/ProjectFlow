@@ -1,5 +1,6 @@
 import useClient from "./client";
 import { Task, TaskList } from "./tasks";
+import { AssociatedUsersList } from "./users";
 
 export type ProjectData = {
   title: string;
@@ -17,6 +18,7 @@ export type ProjectWithTasks = {
   task_count: number;
   tasks: Task[];
   tasklists: TaskList[];
+  assigned_users: AssociatedUsersList;
 };
 
 export type Project = Omit<ProjectWithTasks, "tasks" | "tasklists"> & {

@@ -90,6 +90,17 @@ class UserDetailSerializer(serializers.ModelSerializer):
         )
 
 
+class LimitedUserDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "name",
+            "profile_pic",
+        )
+
+
 class UpdateUserProfilePictureUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
