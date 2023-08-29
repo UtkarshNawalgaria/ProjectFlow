@@ -113,7 +113,7 @@ const OrganizationMembers = () => {
         {members?.members.map((member) => (
           <div
             key={member.email}
-            className="flex justify-between items-center mb-4 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100">
+            className="flex justify-between items-center mb-4 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100 border-l-4">
             <div className="flex items-center gap-4">
               <div>
                 <Avatar name={member.name} round size="30" />

@@ -17,7 +17,7 @@ const KanbanList = ({
   const { tasks } = tasklist;
 
   return (
-    <div className="rounded-md h-full flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <Droppable droppableId={"droppable-" + tasklist.id.toString()}>
         {(provided) => (
           <div
