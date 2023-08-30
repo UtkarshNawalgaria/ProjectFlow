@@ -36,8 +36,8 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
     list_filter = ("is_superuser", "email_verified_at")
-    search_fields = ("email",)
-    ordering = ("email",)
+    search_fields = ("email", "name",)
+    ordering = ("email", "name",)
     actions = ["send_verification_email"]
 
     @admin.action(description="Send Verification Email")
