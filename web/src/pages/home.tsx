@@ -9,7 +9,7 @@ const HomePage = () => {
   const [authData, setAuthData] = useState<TAuthData>({
     name: "",
     email: "guest.projectflow@gmail.com",
-    password: "Rainy@Day77",
+    password: "Guest@123",
   });
   const [error, setError] = useState<TError>("");
   const [success, setSuccess] = useState<string>("");
