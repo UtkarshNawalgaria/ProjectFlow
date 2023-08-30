@@ -5,6 +5,7 @@ import { Menu } from "@headlessui/react";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { BiLogOut, BiUser } from "react-icons/bi";
+import UserAvatar from "../user-avatar";
 
 const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   const { user } = useUser() as TUserContext;
@@ -26,7 +27,11 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
           <div className="relative grow flex items-center justify-end px-10">
             <Menu>
               <Menu.Button className="mr-2 flex gap-2 items-center cursor-pointer">
-                <Avatar name={user?.name} round size="35" maxInitials={2} />
+                {user?.profile_pic ? (
+                  <UserAvatar profilePicUrl={user.profile_pic} width="35px" />
+                ) : (
+                  <Avatar name={user?.name} round size="35" maxInitials={2} />
+                )}
               </Menu.Button>
               <Menu.Items className="absolute right-[45px] top-[60px] p-2 bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-800/50 w-[200px] rounded-sm border-1 flex flex-col gap-2 z-40">
                 <Menu.Item>
