@@ -56,7 +56,10 @@ class UserManager(BaseUserManager):
 
 def profile_pic_path(user, filename):
     user_id = str(user.id)
-    return f"profile_pictures/{user_id}/{filename}"
+    user_name = str(user.name)
+    ext = filename.split(".")[-1]
+
+    return f"profile_pictures/{user_id}/{user_name}.{ext}"
 
 
 # Create your models here.
