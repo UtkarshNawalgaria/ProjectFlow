@@ -20,6 +20,7 @@ from .models import OrganizationInvitation, User
 from .serializers import (
     OrganizationSendInvitationSerializer,
     AcceptUserInvitationSerializer,
+    ResetPasswordSerializer,
     UpdateUserProfilePictureUpdateSerializer,
     UserRegistrationSerializer,
     LoginSerializer,
@@ -92,7 +93,9 @@ def update_user_profile_picture(request, pk=None):
     user = get_object_or_404(User, id=pk)
 
     if not profile_pic:
-        raise ValidationError(detail={"message": "Pls upload an Image to update profile picture"})
+        raise ValidationError(
+            detail={"message": "Pls upload an Image to update profile picture"}
+        )
 
     serializer = UpdateUserProfilePictureUpdateSerializer(
         user, data={"profile_pic": profile_pic}, context={"request": request}
@@ -187,3 +190,18 @@ def verify_account(request, code: str = None):
     user.save(update_fields=["email_verified_at"])
 
     return TextJSONResponse("Your account has been activated")
+
+
+@api_view(["POST"])
+def reset_password(request):
+    """
+    Reset user password.
+    """
+
+    serializer = ResetPasswordSerializer(
+        data=request.data, context={"request": request}
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+    return TextJSONResponse({"message": "Password Reset Succesfully."})

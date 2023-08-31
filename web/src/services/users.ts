@@ -35,6 +35,20 @@ export default {
       body: JSON.stringify(user),
     });
   },
+  resetPassword: (
+    userId: number,
+    password: string,
+    confirmPassword: string
+  ) => {
+    return useClient<{ message: string }>(`users/reset_password/`, {
+      method: "POST",
+      body: JSON.stringify({
+        user_id: userId,
+        password: password,
+        confirm_password: confirmPassword,
+      }),
+    });
+  },
   me: () => {
     return useClient<TAuthenticatedUser>("users/me/");
   },

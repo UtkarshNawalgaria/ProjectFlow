@@ -66,6 +66,27 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True, write_only=True)
+    confirm_password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError({"message": "Passwords do not match."})
+
+        return attrs
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        user.set_password(validated_data.get("password"))
+        user.save()
+
+        return user
+
+
 class TokenSerializer(serializers.ModelSerializer):
     """
     Serializer for Token model.
@@ -91,7 +112,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class LimitedUserDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = (
