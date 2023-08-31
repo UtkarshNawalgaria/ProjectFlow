@@ -168,7 +168,7 @@ const TasksListView = ({
                                 {task?.start_date}
                               </div>
                               <div className="w-full pl-4 py-2">
-                                {task.due_date}
+                                {task.end_date}
                               </div>
                               <div className="w-full text-left">
                                 {user?.id === task.owner ? (

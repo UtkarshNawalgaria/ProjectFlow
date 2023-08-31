@@ -18,7 +18,7 @@ export type Task = {
   description: string | null;
   tasklist: number | null;
   start_date: string | null;
-  due_date: string | null;
+  end_date: string | null;
 };
 
 export type TaskCreate = {
@@ -29,7 +29,7 @@ export type TaskCreate = {
   description?: string;
   tasklist: number | null;
   start_date?: string | null;
-  due_date?: string | null;
+  end_date?: string | null;
 };
 
 export type TaskListCreate = {
@@ -48,7 +48,7 @@ export const emptyTask: TaskCreate = {
   description: "",
   tasklist: null,
   start_date: null,
-  due_date: null,
+  end_date: null,
   owner: null,
   priority: "low",
 };

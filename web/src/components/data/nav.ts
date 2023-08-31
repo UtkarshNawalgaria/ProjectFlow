@@ -8,7 +8,7 @@ export const organizationNavItems = [
   {
     id: 2,
     path: "/members",
-    title: "Team Members",
+    title: "Team",
     icon: "members",
   },
 ];
