@@ -116,16 +116,15 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
 
         return project
 
-    def validate(self, attrs):
-        start_date = attrs.get("start_date")
-        end_date = attrs.get("end_date")
+    def validate_end_date(self, end_date):
+        task = self.instance
 
-        if start_date and end_date and start_date > end_date:
+        if end_date < task.start_date:
             raise serializers.ValidationError(
                 {"end_date": "Start date cannot be after the end date"}
             )
 
-        return attrs
+        return end_date
 
 
 class ProjectUsersSerializer(serializers.ModelSerializer):
@@ -143,7 +142,9 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
 class ProjectDetailSerializer(serializers.ModelSerializer):
     tasks = TasksWriteUpdateSerializer(read_only=True, many=True)
     tasklists = TasklistListCreateSerailzer(read_only=True, many=True)
-    assigned_users = ProjectUsersSerializer(many=True, read_only=True, source='projectusers_set')
+    assigned_users = ProjectUsersSerializer(
+        many=True, read_only=True, source="projectusers_set"
+    )
 
     class Meta:
         model = Project
