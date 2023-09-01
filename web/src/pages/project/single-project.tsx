@@ -165,10 +165,16 @@ const TasksListView = ({
                               </div>
                               <div className="w-full pl-2 py-2">Open</div>
                               <div className="w-full pl-4 py-2">
-                                {task?.start_date}
+                                {task.start_date
+                                  ? new Date(
+                                      task.start_date
+                                    ).toLocaleDateString()
+                                  : null}
                               </div>
                               <div className="w-full pl-4 py-2">
-                                {task.end_date}
+                                {task.end_date
+                                  ? new Date(task.end_date).toLocaleDateString()
+                                  : null}
                               </div>
                               <div className="w-full text-left">
                                 {user?.id === task.owner ? (
