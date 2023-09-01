@@ -19,7 +19,7 @@ const Aside = ({ children, open, close, title }: AsideProps) => {
         } cursor-pointer`}
         onClick={close}></div>
       <aside
-        className={`fixed top-[60px] bottom-0 right-0 bg-slate-800 shadow-2xl p-4 transform transition-transform duration-2000 ease-in-out rounded-l-xl ${
+        className={`fixed top-[60px] bottom-0 right-0 bg-slate-900 shadow-2xl p-4 transform transition-transform duration-2000 ease-in-out rounded-l-xl ${
           open ? "translate-x-0" : "translate-x-[1280px]"
         }`}
         style={{
@@ -35,7 +35,9 @@ const Aside = ({ children, open, close, title }: AsideProps) => {
             <HiX onClick={close} />
           </span>
         </header>
-        <div className="fixed top-[100px] left-0 right-0 px-4">{children}</div>
+        <div className="fixed top-[100px] left-0 right-0 bottom-0 px-4">
+          {children}
+        </div>
       </aside>
     </>
   );
