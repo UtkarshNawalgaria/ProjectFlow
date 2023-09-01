@@ -25,7 +25,7 @@ export type Project = Omit<ProjectWithTasks, "tasks" | "tasklists"> & {
   image_url?: string;
 };
 
-export default {
+const ProjectService = {
   getAll: (organizatioId: number | undefined) => {
     if (!organizatioId) return Promise.reject("No Organization Id");
     return useClient<Project[]>(`project/?organization_id=${organizatioId}`);
@@ -54,3 +54,5 @@ export default {
     });
   },
 };
+
+export default ProjectService;

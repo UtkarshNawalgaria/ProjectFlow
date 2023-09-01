@@ -22,7 +22,7 @@ export type AssociatedUsersList = {
 
 export type InvitedUser = Required<UserCreate & { organization_name: string }>;
 
-export default {
+const UserService = {
   login: (email: string, password: string) => {
     return useClient<{ access_token: string }>("users/login/", {
       method: "POST",
@@ -83,3 +83,5 @@ export default {
     });
   },
 };
+
+export default UserService;

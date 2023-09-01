@@ -1,12 +1,12 @@
 import useClient from "./client";
 
-export const PriorityOptions = {
+export const priorityOptions: { [key: string]: string } = {
   low: "Low",
   medium: "Medium",
   high: "High",
 };
 
-export type TaskPriority = keyof typeof PriorityOptions;
+export type TaskPriority = keyof typeof priorityOptions;
 
 export type Task = {
   id: number;
@@ -58,7 +58,7 @@ export const DefaultTaskList = {
   title: "Backlog",
 };
 
-export default {
+const TaskService = {
   getAll: (projectId: number) => {
     return useClient<Task[]>(`task/?project_id=${projectId}`);
   },
@@ -95,3 +95,5 @@ export default {
     });
   },
 };
+
+export default TaskService;

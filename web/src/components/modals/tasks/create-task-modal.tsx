@@ -5,7 +5,7 @@ import useUser, { TUserContext } from "../../../context/UserProvider";
 import {
   TaskCreate,
   emptyTask,
-  PriorityOptions,
+  priorityOptions,
 } from "../../../services/tasks";
 import { capitalize, ProcessedFormErrorType } from "../../../utils";
 import Modal from "../modal";
@@ -127,8 +127,8 @@ const NewTaskModal = ({
             onChange={(e) => setNewTaskFormData(e)}
             className="rounded-md border focus:border-primary focus:ring-1 focus:ring-primary w-1/2 dark:text-grey-lightest dark:bg-slate-800"
             name="tasklist"
-            defaultValue={undefined}>
-            {Object.keys(PriorityOptions).map((priority) => (
+            defaultValue={priorityOptions["low"]}>
+            {Object.keys(priorityOptions).map((priority) => (
               <option key={priority} value={priority}>
                 {capitalize(priority)}
               </option>
