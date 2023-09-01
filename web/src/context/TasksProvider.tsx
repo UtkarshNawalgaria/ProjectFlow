@@ -105,9 +105,13 @@ export const TasksProvider = ({ children }: Props) => {
         });
         toast.success("Task Updated successfully");
       })
-      .catch((error: { detail: string }) => {
-        toast.error(error.detail);
-      });
+      .catch(
+        (error: { detail: string } | { [key: string]: string | string[] }) => {
+          if ("detail" in error) {
+            toast.error(error.detail);
+          }
+        }
+      );
   };
 
   const deleteTask = (taskId: number) => {
