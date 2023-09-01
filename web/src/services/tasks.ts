@@ -1,6 +1,6 @@
 import useClient from "./client";
 
-export const priorityOptions: { [key: string]: string } = {
+export const priorityOptions = {
   low: "Low",
   medium: "Medium",
   high: "High",

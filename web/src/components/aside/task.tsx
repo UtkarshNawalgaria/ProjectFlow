@@ -1,7 +1,7 @@
 import Aside, { AsideProps } from ".";
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import { priorityOptions, Task } from "../../services/tasks";
+import { priorityOptions, Task, TaskPriority } from "../../services/tasks";
 import Editable from "../editable";
 import UserAvatar from "../user-avatar";
 import Button from "../button";
@@ -67,8 +67,9 @@ const generateTaskMetaComponents = ({ task }: { task: Task }) => {
       case "priority":
         {
           const options = Object.keys(priorityOptions).map((key) => {
+            const optionKey = key as TaskPriority;
             return {
-              label: priorityOptions[key],
+              label: priorityOptions[optionKey],
               value: key,
             };
           });
