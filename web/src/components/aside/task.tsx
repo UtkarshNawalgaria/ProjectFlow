@@ -1,10 +1,12 @@
-import { Fragment } from "react";
 import Aside, { AsideProps } from ".";
 import useTasks, { TasksProviderType } from "../../context/TasksProvider";
 import useUser, { TUserContext } from "../../context/UserProvider";
-import { PriorityOptions, Task } from "../../services/tasks";
+import { priorityOptions, Task } from "../../services/tasks";
 import Editable from "../editable";
-import { Listbox, Transition } from "@headlessui/react";
+import UserAvatar from "../user-avatar";
+import Button from "../button";
+import Dropdown from "../dropdown";
+import { useState } from "react";
 
 type TaskAsideProps = Omit<AsideProps, "title"> & {
   task?: Task;
@@ -29,7 +31,7 @@ const tableFields: TTableFields[] = [
     type: "date",
   },
   {
-    property: "due_date",
+    property: "end_date",
     name: "Due Date",
     type: "date",
   },
@@ -40,58 +42,122 @@ const tableFields: TTableFields[] = [
   },
 ];
 
-function Dropdown<Type extends string | number>({
-  initialValue,
-  valuesList,
-  onOptionSelect,
-  fullWidth = false,
-}: {
-  initialValue: Type;
-  valuesList: Type[];
-  onOptionSelect: (value: Type) => void;
-  fullWidth: boolean;
-}) {
-  return (
-    <Listbox value={initialValue} onChange={onOptionSelect}>
-      {() => (
-        <>
-          <Listbox.Button className={`h-full w-full text-left`}>
-            {initialValue}
-          </Listbox.Button>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0">
-            <Listbox.Options
-              className={`absolute left-0 top-[34px] z-20 dark:bg-slate-800 flex flex-col shadow-xl rounded-b-sm${
-                fullWidth ? " r-0 w-full" : " w-[200px]"
-              }`}>
-              {valuesList.map((value, index) => (
-                <Listbox.Option
-                  key={index}
-                  value={value}
-                  className="hover:bg-slate-700 px-2 py-1 rounded-sm ">
-                  {value}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Transition>
-        </>
-      )}
-    </Listbox>
-  );
-}
+const generateTaskMetaComponents = ({ task }: { task: Task }) => {
+  type TaskMetaField = { label: string; Element: JSX.Element };
 
-const TaskAside = ({ task, ...asideProps }: TaskAsideProps) => {
   const { updateTask, project } = useTasks() as TasksProviderType;
-  const { user } = useUser() as TUserContext;
 
-  if (!task) return null;
-
+  const fieldComponents: TaskMetaField[] = [];
   const taskOwner = project?.assigned_users.find((user) => {
     return user.user.id === task.owner;
   });
+
+  function updateDate(key: "start_end" | "end_date", value: string) {
+    if (!task) return;
+    updateTask(task.id, { [key]: value });
+  }
+
+  tableFields.forEach((field) => {
+    const component: TaskMetaField = {
+      label: field.name,
+      Element: <></>,
+    };
+
+    switch (field.property) {
+      case "priority":
+        {
+          const options = Object.keys(priorityOptions).map((key) => {
+            return {
+              label: priorityOptions[key],
+              value: key,
+            };
+          });
+
+          component["label"] = priorityOptions[task.priority];
+          component["Element"] = (
+            <Dropdown
+              initialValue={priorityOptions[task[field.property]] as string}
+              options={options}
+              onOptionSelect={(value) => {
+                updateTask(task.id, { [field.property]: value });
+              }}
+              fullWidth={true}
+            />
+          );
+        }
+        break;
+      case "end_date":
+        {
+          const date = task[field.property]
+            ? new Date(task[field.property] as string)
+                .toISOString()
+                .split("T")[0]
+            : "";
+          component["Element"] = (
+            <input
+              type="date"
+              name={field.property}
+              id={field.property}
+              value={date}
+              onChange={(e) => {
+                updateDate("end_date", e.target.value);
+              }}
+              className="w-full h-[34px] dark:text-grey-lightest dark:bg-transparent dark:hover:bg-slate-700 cursor-pointer border-none p-0 shadow-none foucs:shadow-none"
+            />
+          );
+        }
+        break;
+      case "start_date":
+        {
+          const date = task[field.property]
+            ? new Date(task[field.property] as string)
+                .toISOString()
+                .split("T")[0]
+            : "";
+          component["Element"] = (
+            <input
+              type="date"
+              name={field.property}
+              id={field.property}
+              value={date}
+              onChange={(e) => {
+                updateDate("end_date", e.target.value);
+              }}
+              className="w-full h-[34px] dark:text-grey-lightest dark:bg-transparent dark:hover:bg-slate-700 cursor-pointer border-none p-0 shadow-none foucs:shadow-none"
+            />
+          );
+        }
+        break;
+      case "owner": {
+        component["Element"] = (
+          <div className="flex gap-2 items-center">
+            <UserAvatar
+              profilePicUrl={taskOwner?.user.profile_pic}
+              width="20px"
+            />
+            <div>{taskOwner?.user?.name}</div>
+          </div>
+        );
+      }
+    }
+
+    fieldComponents.push(component);
+  });
+
+  return fieldComponents;
+};
+
+const TaskAside = ({ task, ...asideProps }: TaskAsideProps) => {
+  const { updateTask } = useTasks() as TasksProviderType;
+  const { user } = useUser() as TUserContext;
+  const [description, setDescription] = useState(task?.description || "");
+
+  if (!task) return null;
+
+  function updateDescription() {
+    if (!task || task.description === description) return;
+    updateTask(task.id, { description: description });
+  }
 
   return (
     <Aside
@@ -108,32 +174,43 @@ const TaskAside = ({ task, ...asideProps }: TaskAsideProps) => {
           Element={<span>{task.title}</span>}
         />
       }>
-      <div className="flex flex-col gap-3">
-        {tableFields.map((field) => (
-          <div
-            key={field.property}
-            className="flex items-center dark:text-grey-lightest">
-            <div className="w-[160px] text-sm py-1 min-h-[34px]">
-              {field.name}
-            </div>
-            <div className="grow relative cursor-pointer dark:hover:bg-slate-700 rounded-sm py-1 px-2 min-h-[34px]">
-              {field.type === "dropdown" ? (
-                <Dropdown
-                  initialValue={task[field.property] as string}
-                  valuesList={Object.keys(PriorityOptions)}
-                  onOptionSelect={(value) => {
-                    updateTask(task.id, { [field.property]: value });
-                  }}
-                  fullWidth={true}
-                />
-              ) : field.property === "owner" ? (
-                <div>{taskOwner?.user?.name}</div>
-              ) : (
-                task[field.property]
-              )}
-            </div>
+      <div className="flex border-t h-full dark:text-grey-lightest">
+        <div className="w-[60%] border-r pt-4 px-4">
+          <div className="mb-4">Description</div>
+          <textarea
+            name="description"
+            id="description"
+            cols={30}
+            rows={10}
+            value={description || ""}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+            className="w-full rounded-md dark:bg-slate-800 outline-none focus:outline-none"
+          />
+          <div className="text-right mt-2">
+            <Button
+              text="Save"
+              type="CONFIRM"
+              as="button"
+              onClick={updateDescription}
+            />
           </div>
-        ))}
+        </div>
+        <div className="flex flex-col gap-3 w-[40%] px-4 pt-4">
+          {generateTaskMetaComponents({ task }).map((component) => (
+            <div
+              key={component.label}
+              className="flex items-center dark:text-grey-lightest">
+              <div className="w-[160px] text-sm py-1 min-h-[34px]">
+                {component.label}
+              </div>
+              <div className="grow relative cursor-pointer dark:hover:bg-slate-700 rounded-sm py-1 px-2 min-h-[34px]">
+                {component.Element}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </Aside>
   );
