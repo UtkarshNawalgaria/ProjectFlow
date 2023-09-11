@@ -1,12 +1,6 @@
 export const BASE_URL = import.meta.env.VITE_BASE_API_URL;
 export const authTokenKey = "accessToken";
 
-export type FetchConfigType = {
-  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  body?: string;
-  headers?: Record<string, string> | null;
-};
-
 export type TError = string | Record<string, string | string[]>;
 
 export function getErrorMessage(error: unknown) {
@@ -16,10 +10,10 @@ export function getErrorMessage(error: unknown) {
 
 export default function useClient<T>(
   url: string,
-  customConfig: FetchConfigType = {}
+  customConfig: RequestInit = {}
 ): Promise<T> {
   const token = window.localStorage.getItem(authTokenKey);
-  const headers: FetchConfigType["headers"] = {
+  const headers: RequestInit["headers"] = {
     "Content-Type": "application/json",
   };
 
@@ -27,7 +21,7 @@ export default function useClient<T>(
     headers.Authorization = `Token ${token}`;
   }
 
-  const config = {
+  const config: RequestInit = {
     method: customConfig.method ?? "GET",
     ...customConfig,
     headers: {

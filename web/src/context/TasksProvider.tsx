@@ -17,6 +17,7 @@ import TaskService, {
   TaskList,
   TaskListCreate,
 } from "../services/tasks";
+import { TError } from "../services/client";
 
 export type GroupedTasks = Array<
   {
@@ -105,13 +106,13 @@ export const TasksProvider = ({ children }: Props) => {
         });
         toast.success("Task Updated successfully");
       })
-      .catch(
-        (error: { detail: string } | { [key: string]: string | string[] }) => {
+      .catch((error: TError) => {
+        if (typeof error === "object") {
           if ("detail" in error) {
             toast.error(error.detail);
           }
         }
-      );
+      });
   };
 
   const deleteTask = (taskId: number) => {
