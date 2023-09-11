@@ -116,12 +116,22 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
 
         return project
 
+    def validate_start_date(self, start_date):
+        task = self.instance
+
+        if task.end_date and start_date > task.end_date:
+            raise serializers.ValidationError(
+                {"start_date": "Start date cannot be after the end date"}
+            )
+
+        return start_date
+
     def validate_end_date(self, end_date):
         task = self.instance
 
-        if end_date < task.start_date:
+        if task.start_date and end_date < task.start_date:
             raise serializers.ValidationError(
-                {"end_date": "Start date cannot be after the end date"}
+                {"end_date": "End date cannot be before the start date"}
             )
 
         return end_date

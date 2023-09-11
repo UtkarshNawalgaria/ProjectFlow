@@ -47,7 +47,11 @@ function App() {
           <Route path="members" element={<OrganizationMembers />} />
         </Route>
       </Routes>
-      <ToastContainer autoClose={2000} position={toast.POSITION.TOP_RIGHT} />
+      <ToastContainer
+        autoClose={2000}
+        position={toast.POSITION.TOP_RIGHT}
+        newestOnTop={true}
+      />
     </>
   );
 }

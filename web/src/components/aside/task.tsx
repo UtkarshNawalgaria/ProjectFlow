@@ -52,7 +52,7 @@ const generateTaskMetaComponents = ({ task }: { task: Task }) => {
     return user.user.id === task.owner;
   });
 
-  function updateDate(key: "start_end" | "end_date", value: string) {
+  function updateDate(key: "start_date" | "end_date", value: string) {
     if (!task) return;
     updateTask(task.id, { [key]: value });
   }
@@ -122,7 +122,7 @@ const generateTaskMetaComponents = ({ task }: { task: Task }) => {
               id={field.property}
               value={date}
               onChange={(e) => {
-                updateDate("end_date", e.target.value);
+                updateDate("start_date", e.target.value);
               }}
               className="w-full h-[34px] dark:text-grey-lightest dark:bg-transparent dark:hover:bg-slate-700 cursor-pointer border-none p-0 shadow-none foucs:shadow-none"
             />
