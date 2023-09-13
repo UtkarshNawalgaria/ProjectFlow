@@ -18,9 +18,6 @@ This is a basic project and task management web application which allows users t
 ### Kanban Board
 ![Screenshot from 2023-08-22 11-41-55](https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/a98cd082-dc09-42ef-ab57-8b7781321620)
 
-### Organization Members
-![Screenshot from 2023-08-22 11-43-28](https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/aa068a2a-6807-45f8-b2e9-7f9376dc1cb0)
-
 ## App Features
 What can users do in this application
 
