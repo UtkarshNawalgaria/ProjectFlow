@@ -145,19 +145,6 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
 
         return end_date
 
-    def validate_parent(self, parent):
-        """
-        When creating subtasks, checking if the value of the parent
-        field does not reference itself
-        """
-
-        if parent and parent == self.instance.id:
-            raise serializers.ValidationError(
-                {"parent": "Task cannot reference itself"}
-            )
-
-        return parent
-
 
 class ProjectUsersSerializer(serializers.ModelSerializer):
     user = LimitedUserDetailSerializer()

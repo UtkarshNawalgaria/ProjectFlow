@@ -31,7 +31,11 @@ export type TasksProviderType = {
   lists: TaskList[];
   groupedTasks: GroupedTasks;
   selectedTaskId: number;
-  addNewTask: (task: TaskCreate) => void;
+  addNewTask: (
+    task: TaskCreate,
+    isSubtask: boolean,
+    onSuccess?: (task: Task) => void
+  ) => void;
   createTaskList: (list: TaskListCreate) => void;
   deleteTask: (id: number) => void;
   updateTask: (
@@ -83,10 +87,20 @@ export const TasksProvider = ({ children }: Props) => {
     return outputData;
   }, [tasks, lists]);
 
-  const addNewTask = (task: TaskCreate) => {
+  const addNewTask: TasksProviderType["addNewTask"] = (
+    task,
+    isSubtask,
+    onSuccess
+  ) => {
     TaskService.createTask(task)
       .then((task) => {
-        setTasks((prevTasks) => [...prevTasks, task]);
+        if (!isSubtask) {
+          setTasks((prevTasks) => [...prevTasks, task]);
+        }
+
+        if (onSuccess) {
+          onSuccess(task);
+        }
         toast.success("Task Created Successfully.");
       })
       .catch(() => toast.error("Error creating task"));

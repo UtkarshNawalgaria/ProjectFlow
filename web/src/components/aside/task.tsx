@@ -257,7 +257,11 @@ const TaskAside = ({ task, ...asideProps }: TaskAsideProps) => {
                         parent: task.id,
                         owner: task.owner,
                       };
-                      addNewTask(newSubtask);
+                      addNewTask(newSubtask, true, (task) => {
+                        setSubtaskList((prevTasks) => [task, ...prevTasks]);
+                        setCreateSubtask(false);
+                        setSubtask("");
+                      });
                     }}
                   />
                 </div>

@@ -48,7 +48,7 @@ const NewTaskModal = ({
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
-    addNewTask({ ...newTask, owner: user?.id as number });
+    addNewTask({ ...newTask, owner: user?.id as number }, false);
     reset();
   };
 
