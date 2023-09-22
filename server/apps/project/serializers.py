@@ -54,7 +54,9 @@ class ProjectListCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation["task_count"] = instance.tasks.count()
+        representation["task_count"] = instance.tasks.filter(
+            parent__isnull=True
+        ).count()
         return representation
 
     def create(self, validated_data):
@@ -93,6 +95,7 @@ class AbstractTasksSerializer(serializers.ModelSerializer):
             "project",
             "tasklist",
             "owner",
+            "parent",
         )
 
 
@@ -119,6 +122,9 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
     def validate_start_date(self, start_date):
         task = self.instance
 
+        if not task:
+            return start_date
+
         if task.end_date and start_date > task.end_date:
             raise serializers.ValidationError(
                 {"start_date": "Start date cannot be after the end date"}
@@ -129,12 +135,28 @@ class TasksWriteUpdateSerializer(AbstractTasksSerializer):
     def validate_end_date(self, end_date):
         task = self.instance
 
+        if not task:
+            return end_date
+
         if task.start_date and end_date < task.start_date:
             raise serializers.ValidationError(
                 {"end_date": "End date cannot be before the start date"}
             )
 
         return end_date
+
+    def validate_parent(self, parent):
+        """
+        When creating subtasks, checking if the value of the parent
+        field does not reference itself
+        """
+
+        if parent and parent == self.instance.id:
+            raise serializers.ValidationError(
+                {"parent": "Task cannot reference itself"}
+            )
+
+        return parent
 
 
 class ProjectUsersSerializer(serializers.ModelSerializer):
@@ -171,8 +193,13 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation["task_count"] = instance.tasks.count()
+        representation["task_count"] = instance.tasks.filter(
+            parent__isnull=True
+        ).count()
         return representation
+
+    def get_value(self, dictionary):
+        return super().get_value(dictionary)
 
 
 class AddUserToProjectSerializer(serializers.Serializer):

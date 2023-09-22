@@ -1,6 +1,6 @@
 import { Draggable } from "react-beautiful-dnd";
 import { Task } from "../services/tasks";
-import { capitalize } from "../utils";
+import Priority from "./priority";
 
 function KanbanCard({
   task,
@@ -19,18 +19,16 @@ function KanbanCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={`p-4 bg-slate-800 text-gray-100 mb-4 rounded-md shadow-md w-full text-left`}>
-          <div>
+          <div className="flex flex-col gap-1">
             <div
-              className="mb-1 hover:text-indigo-500"
+              className="hover:text-indigo-500"
               onClick={() => openTask(task.id)}>
               {task.title}
             </div>
-            <div className="text-sm text-gray-400 overflow-hidden break-all">
+            <div className="text-sm text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap">
               {task.description}
             </div>
-            <div>
-              {task.priority ? <span>{capitalize(task.priority)}</span> : null}
-            </div>
+            <Priority value={task.priority} />
           </div>
         </div>
       )}

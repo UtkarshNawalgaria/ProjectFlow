@@ -20,6 +20,7 @@ import useUser, { TUserContext } from "../../context/UserProvider";
 import { Task } from "../../services/tasks";
 import ProjectService from "../../services/projects";
 import UserList from "../../components/user-list";
+import NewTaskModal from "../../components/modals/tasks/create-task-modal";
 
 const TasksViewType = {
   LIST: 0,
@@ -47,10 +48,12 @@ const TaskActions = ({
 
 const TasksKanbanView = ({
   openTask,
-  toggleModal,
+  toggleTaskListModal,
+  toggleNewTaskModal,
 }: {
-  toggleModal: Dispatch<SetStateAction<boolean>>;
+  toggleTaskListModal: Dispatch<SetStateAction<boolean>>;
   openTask: (taskId: number) => void;
+  toggleNewTaskModal: (open: boolean) => void;
 }) => {
   const { groupedTasks, updateTask, setTasks } =
     useTasks() as TasksProviderType;
@@ -88,13 +91,17 @@ const TasksKanbanView = ({
           {groupedTasks.map((tasksObj) => {
             return (
               <div key={tasksObj.id}>
-                <KanbanList tasklist={tasksObj} openTask={openTask} />
+                <KanbanList
+                  tasklist={tasksObj}
+                  openTask={openTask}
+                  toggleNewTaskModal={toggleNewTaskModal}
+                />
               </div>
             );
           })}
           <button
             className="h-[200px] bg-slate-800 border-2 border-dashed border-slate-900 hover:border-slate-800 hover:bg-slate-900 rounded-md transition text-center"
-            onClick={() => toggleModal(true)}>
+            onClick={() => toggleTaskListModal(true)}>
             <HiPlus className="inline-block text-gray-500 text-3xl" />
           </button>
         </div>
@@ -105,8 +112,10 @@ const TasksKanbanView = ({
 
 const TasksListView = ({
   openTask,
+  toggleNewTaskModal,
 }: {
   openTask: (taskId: number) => void;
+  toggleNewTaskModal: (open: boolean) => void;
 }) => {
   const { groupedTasks, deleteTask } = useTasks() as TasksProviderType;
   const { user } = useUser() as TUserContext;
@@ -188,11 +197,16 @@ const TasksListView = ({
                           </div>
                         );
                       })}
-                      {group.tasks.length === 0 ? (
-                        <div className="text-center py-2 bg-gray-50 dark:bg-slate-700">
-                          No Tasks
+                      <div className="text-center py-2 bg-gray-50 dark:bg-slate-700 dark:text-grey-lightest cursor-pointer">
+                        <div
+                          className="flex gap-2 items-center pl-8"
+                          onClick={() => toggleNewTaskModal(true)}>
+                          <span>
+                            <HiPlus />
+                          </span>
+                          <span>Add Task</span>
                         </div>
-                      ) : null}
+                      </div>
                     </div>
                   </Disclosure.Panel>
                 </>
@@ -218,6 +232,7 @@ const SingleProjectPage = () => {
   const [view, setView] = useState(TasksViewType.KANBAN);
   const [showTaskListModal, toggleTaskListModal] = useState(false);
   const [showSelectedTask, setShowSelectedTask] = useState(false);
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
@@ -273,6 +288,7 @@ const SingleProjectPage = () => {
       <section className="px-4">
         {view === TasksViewType.LIST ? (
           <TasksListView
+            toggleNewTaskModal={(open) => setShowNewTaskForm(open)}
             openTask={(taskId) => {
               selectCurrentTask(taskId);
               setShowSelectedTask(true);
@@ -280,7 +296,8 @@ const SingleProjectPage = () => {
           />
         ) : (
           <TasksKanbanView
-            toggleModal={toggleTaskListModal}
+            toggleTaskListModal={toggleTaskListModal}
+            toggleNewTaskModal={(open) => setShowNewTaskForm(open)}
             openTask={(taskId) => {
               selectCurrentTask(taskId);
               setShowSelectedTask(true);
@@ -288,11 +305,21 @@ const SingleProjectPage = () => {
           />
         )}
       </section>
-      <NewTaskListModal
-        open={showTaskListModal}
-        closeModal={() => toggleTaskListModal(false)}
-        onFormSubmit={createTaskList}
-      />
+      <div className="page-modals">
+        {showTaskListModal ? (
+          <NewTaskListModal
+            open={showTaskListModal}
+            closeModal={() => toggleTaskListModal(false)}
+            onFormSubmit={createTaskList}
+          />
+        ) : null}
+        {showNewTaskForm ? (
+          <NewTaskModal
+            open={showNewTaskForm}
+            closeModal={() => setShowNewTaskForm(false)}
+          />
+        ) : null}
+      </div>
       <div className="page-asides">
         {selectedTaskId ? (
           <TaskAside

@@ -1,12 +1,16 @@
 from django.contrib import admin
 
 from .models import Project, Task, TaskList, ProjectUsers
+from .forms import TaskAdminForm
 
 
 class ProjectUsersInline(admin.TabularInline):
     model = ProjectUsers
     readonly_fields = ["user"]
-    fields = ["user", "role",]
+    fields = [
+        "user",
+        "role",
+    ]
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -17,7 +21,8 @@ class ProjectAdmin(admin.ModelAdmin):
 
 class TaskAdmin(admin.ModelAdmin):
     model = Task
-    list_display = ("id", "title", "priority", "project", "tasklist")
+    form = TaskAdminForm
+    list_display = ("id", "title", "priority", "project", "tasklist", "parent")
     list_filter = ["project", "priority", "end_date"]
 
 
@@ -31,7 +36,6 @@ class ProjectUsersAdmin(admin.ModelAdmin):
     model = ProjectUsers
     list_display = ("id", "project", "user", "role")
     list_filter = ["project"]
-
 
 
 admin.site.register(Project, ProjectAdmin)
