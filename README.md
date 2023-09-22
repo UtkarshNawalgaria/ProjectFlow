@@ -5,18 +5,17 @@ This is a basic project and task management web application which allows users t
 
 
 ## Table of Contents
-- [Task Management](#task-management)
-  - [Product Images](#product-images)
-  - [App Features](#app-features)
-  - [Tech Stack](#tech-stack)
-  - [Deployment](#deployment)
-  - [Database Design](#database-design)
-  - [Dashboard Layout](#dashboard-layout)
-  - [Upcoming Features](#upcoming-features)
+- [Table of Contents](#table-of-contents)
+- [Product Images](#product-images)
+- [App Features](#app-features)
+- [Tech Stack](#tech-stack)
+- [Deployment](#deployment)
+- [Database Design](#database-design)
+- [Upcoming Features](#upcoming-features)
 
 ## Product Images
-### Kanban Board
-![Screenshot from 2023-08-22 11-41-55](https://github.com/UtkarshNawalgaria/ProjectFlow/assets/28248712/a98cd082-dc09-42ef-ab57-8b7781321620)
+![Screenshot from 2023-08-22 11-41-55](./images/projects_page.png)
+![Screenshot from 2023-08-22 11-41-55](./images/single_task_sidebar.png)
 
 ## App Features
 What can users do in this application
@@ -39,8 +38,6 @@ The api server has been deployed on [railway.app](https://railway.app/) and the 
 ## Database Design
 ![Database models](images/dbdiagram.png)
 
-## Dashboard Layout
-![Layout](images/dashboard-layout.png)
 
 ## Upcoming Features
 - [ ] Add global settings for a user's account
