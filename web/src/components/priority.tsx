@@ -25,7 +25,7 @@ export default function Priority({ value }: { value: Task["priority"] }) {
     <div
       className={`mt-1 rounded-md px-2 text-sm py-1 flex items-center gap-2 w-min ${bgColor}`}>
       <span
-        className={`w-[13px] h-[13px] inline-block bg-white rounded-full ${iconColor}`}></span>
+        className={`w-[10px] h-[10px] inline-block bg-white rounded-full ${iconColor}`}></span>
       <span>{capitalize(value)}</span>
     </div>
   );

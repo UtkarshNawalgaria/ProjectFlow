@@ -19,6 +19,7 @@ export type Task = {
   tasklist: number | null;
   start_date: string | null;
   end_date: string | null;
+  parent: number | null;
 };
 
 export type TaskCreate = {
@@ -30,6 +31,7 @@ export type TaskCreate = {
   tasklist: number | null;
   start_date?: string | null;
   end_date?: string | null;
+  parent: number | null;
 };
 
 export type TaskListCreate = {
@@ -51,6 +53,7 @@ export const emptyTask: TaskCreate = {
   end_date: null,
   owner: null,
   priority: "low",
+  parent: null,
 };
 
 export const DefaultTaskList = {
@@ -62,8 +65,11 @@ const TaskService = {
   getAll: (projectId: number) => {
     return useClient<Task[]>(`task/?project_id=${projectId}`);
   },
-  getById: (taskId: number) => {
-    return useClient<Task>(`task/${taskId}/`);
+  getById: (taskId: number, getSubtasks = false) => {
+    return useClient<Task>(`task/${taskId}/?get_all=${getSubtasks}`);
+  },
+  getSubTasks: (taskId: number) => {
+    return useClient<Task[]>(`task/${taskId}/subtasks/`);
   },
   createTask: (task: TaskCreate) => {
     return useClient<Task>("task/", {

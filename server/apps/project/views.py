@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from libs.response import TextJSONResponse
 
@@ -80,10 +81,22 @@ class ProjectsViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        data["tasks"] = list(filter(
+            lambda task: task["parent"] == None, data["tasks"]
+        ))
+
+        return Response(data)
+
 
 class TasksViewSet(viewsets.ModelViewSet):
     model = Task
-    permission_classes = [CanRetreiveUpdateDeleteTask,]
+    permission_classes = [
+        CanRetreiveUpdateDeleteTask,
+    ]
 
     @action(detail=True, methods=["POST", "PATCH"])
     def assign_to_user(self, request, pk=None):
@@ -122,12 +135,30 @@ class TasksViewSet(viewsets.ModelViewSet):
         serializer = ChangeTaskTaskListSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+    @action(detail=True)
+    def subtasks(self, request, pk=None):
+        """
+        Return the subtasks of a particular task
+        """
+
+        task = self.get_queryset().filter(id=pk).first()
+
+        if not task:
+            raise ValidationError({"message": "No such task"})
+
+        subtasks = Task.objects.filter(parent=task)
+        serializer = self.get_serializer_class()(
+            subtasks, many=True, context={"request": request}
+        )
+
+        return TextJSONResponse(data=serializer.data)
+
     def get_serializer_context(self):
         context = {"request": self.request, "user": self.request.user}
         return context
 
     def get_serializer_class(self):
-        if self.action in ["list", "retreive"]:
+        if self.action in ["list", "retreive", "subtasks"]:
             return TasksReadSerializer
 
         if self.action == "assign_to_user":
@@ -142,17 +173,29 @@ class TasksViewSet(viewsets.ModelViewSet):
 
         If `project_id` is sent in the query parameter, then return all
         tasks that are part of that particular project.
+
+        If `get_all=true` is sent as query parameter, then return all tasks
+        and subtasks related to the project, otherwise, only return the
+        parent tasks.
         """
 
+        filter_params = {}
         project_id = self.request.query_params.get("project_id")
+        get_all = self.request.query_params.get("get_all") == "true"
+
         queryset = self.request.user.projects.all()
+        user_project_ids = (
+            project_id if project_id else queryset.values_list("id", flat=True)
+        )
 
-        if project_id:
-            queryset = queryset.filter(id=project_id)
+        filter_params["project_id__in"] = list(user_project_ids)
 
-        project_ids = queryset.values_list("id", flat=True)
+        if not get_all:
+            filter_params["parent__isnull"] = True
 
-        return Task.objects.filter(project_id__in=list(project_ids))
+        user_tasks = Task.objects.filter(**filter_params)
+
+        return user_tasks
 
 
 class TaskListViewSet(viewsets.ModelViewSet):

@@ -92,15 +92,21 @@ class Task(TimeStampedModel, TitleSlugDescriptionModel):
         TaskList, on_delete=models.SET_NULL, related_name="tasks", null=True
     )
     owner = models.ForeignKey(User, related_name="tasks", on_delete=models.CASCADE)
+    parent = models.ForeignKey(
+        "Task",
+        on_delete=models.SET_NULL,
+        related_name="sub_tasks",
+        null=True,
+    )
 
     def __str__(self):
         return f"Task(title={self.title}, project={self.project.title})"
 
     def can_delete_or_update(self, user: User) -> bool:
         """
-        Only allow project owners to delete/update project tasks.
+        Only allow task owner or project admins to delete/update project tasks.
         """
-        return self.owner == user
+        return self.owner == user or user in self.project.admins
 
 
 class ProjectUsers(models.Model):
