@@ -19,7 +19,7 @@ const Modal = ({
   return (
     <Dialog className="relative z-50" onClose={closeModal} open={open}>
       {/* Modal Backdrop */}
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/80" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center">
         <Dialog.Panel
           className={`mx-auto ${setWidth} bg-white dark:bg-slate-900 text-black dark:text-grey-lightest p-0 rounded-md`}>

@@ -1,19 +1,18 @@
-import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { HiPlus } from "react-icons/hi";
 import KanbanCard from "./kanban-card";
-import NewTaskModal from "./modals/tasks/create-task-modal";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { GroupedTasks } from "../context/TasksProvider";
 
 const KanbanList = ({
   tasklist,
   openTask,
+  toggleNewTaskModal,
 }: {
   tasklist: GroupedTasks[0];
   openTask: (taskId: number) => void;
+  toggleNewTaskModal: (open: boolean) => void;
 }) => {
-  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const { tasks } = tasklist;
 
   return (
@@ -33,7 +32,9 @@ const KanbanList = ({
                   <div className="flex">
                     <span className="cursor-pointer p-1 hover:bg-slate-800 rounded-md">
                       <HiPlus
-                        onClick={() => setShowNewTaskForm(true)}
+                        onClick={() => {
+                          toggleNewTaskModal(true);
+                        }}
                         className="text-base"
                       />
                     </span>
@@ -60,10 +61,6 @@ const KanbanList = ({
           </div>
         )}
       </Droppable>
-      <NewTaskModal
-        open={showNewTaskForm}
-        closeModal={() => setShowNewTaskForm(false)}
-      />
     </div>
   );
 };
