@@ -1,11 +1,12 @@
 import Sidebar from "../sidebar";
 import useUser, { TUserContext } from "../../context/UserProvider";
 import useAuth, { AuthContextType } from "../../context/AuthProvider";
-import { Menu } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { BiLogOut, BiUser } from "react-icons/bi";
 import UserAvatar from "../user-avatar";
+import { Fragment } from "react";
 
 const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
   const { user } = useUser() as TUserContext;
@@ -33,10 +34,17 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
                   <Avatar name={user?.name} round size="35" maxInitials={2} />
                 )}
               </Menu.Button>
-              <Menu.Items className="absolute right-[45px] top-[60px] p-2 bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-800/50 w-[200px] rounded-sm border-1 flex flex-col gap-2 z-40">
-                <Menu.Item>
-                  {() => (
-                    <>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95">
+                <Menu.Items className="absolute right-[45px] top-[60px] p-2 bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-800/50 w-[200px] rounded-sm border-1 flex flex-col gap-2 z-40">
+                  <Menu.Item>
+                    {() => (
                       <Link
                         to="/profile"
                         className="flex gap-2 items-center px-4 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700">
@@ -45,18 +53,22 @@ const AuthenticatedLayout = ({ children }: { children: JSX.Element }) => {
                         </span>
                         <span>Profile</span>
                       </Link>
-                      <a
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {() => (
+                      <button
                         className="flex gap-2 items-center px-4 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700"
                         onClick={logout}>
                         <span>
                           <BiLogOut />
                         </span>
                         <span>Logout</span>
-                      </a>
-                    </>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
+                      </button>
+                    )}
+                  </Menu.Item>
+                </Menu.Items>
+              </Transition>
             </Menu>
           </div>
         </header>
