@@ -53,6 +53,12 @@ const ProjectService = {
       method: "DELETE",
     });
   },
+  exportTasks: (projectId: number, data: string) => {
+    return useClient(`project/${projectId}/export_tasks/`, {
+      method: "POST",
+      body: data,
+    });
+  },
 };
 
 export default ProjectService;
