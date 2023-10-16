@@ -1,12 +1,17 @@
 from functools import cached_property
+
 from django.db import models
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel, TitleSlugDescriptionModel
 
 
 User = get_user_model()
+
+
+def file_exports_path(obj, filename):
+    return f"exports/{filename}"
 
 
 class Project(TimeStampedModel, TitleSlugDescriptionModel):
@@ -122,3 +127,16 @@ class ProjectUsers(models.Model):
     class Meta:
         unique_together = ("project", "user")
         verbose_name_plural = "Project Users"
+
+
+class FileExport(TimeStampedModel):
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name="exports"
+    )
+    exported_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="exports"
+    )
+    file = models.FileField(upload_to=file_exports_path)
+
+    def save(self, **kwargs):
+        return super().save(**kwargs)

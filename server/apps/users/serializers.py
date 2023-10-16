@@ -121,7 +121,7 @@ class LimitedUserDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class UpdateUserProfilePictureUpdateSerializer(serializers.ModelSerializer):
+class UpdateUserProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["profile_pic"]

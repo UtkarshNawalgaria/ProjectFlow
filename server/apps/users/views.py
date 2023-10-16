@@ -21,7 +21,7 @@ from .serializers import (
     OrganizationSendInvitationSerializer,
     AcceptUserInvitationSerializer,
     ResetPasswordSerializer,
-    UpdateUserProfilePictureUpdateSerializer,
+    UpdateUserProfilePictureSerializer,
     UserRegistrationSerializer,
     LoginSerializer,
     TokenSerializer,
@@ -84,6 +84,7 @@ def user_details(request):
     serializer = UserDetailSerializer(
         instance=request.user, context={"request": request}
     )
+
     return Response(data=serializer.data)
 
 
@@ -97,7 +98,7 @@ def update_user_profile_picture(request, pk=None):
             detail={"message": "Pls upload an Image to update profile picture"}
         )
 
-    serializer = UpdateUserProfilePictureUpdateSerializer(
+    serializer = UpdateUserProfilePictureSerializer(
         user, data={"profile_pic": profile_pic}, context={"request": request}
     )
 
