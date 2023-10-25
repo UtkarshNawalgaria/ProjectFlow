@@ -56,6 +56,9 @@ export const emptyTask: TaskCreate = {
   parent: null,
 };
 
+export type TaskKeys = keyof typeof emptyTask;
+export const taskKeys = Object.keys(emptyTask) as TaskKeys[];
+
 export const DefaultTaskList = {
   id: 99999,
   title: "Backlog",

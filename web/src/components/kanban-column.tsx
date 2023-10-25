@@ -30,7 +30,7 @@ const KanbanList = ({
                     {tasklist.title} ({tasks.length})
                   </h3>
                   <div className="flex">
-                    <span className="cursor-pointer p-1 hover:bg-slate-800 rounded-md">
+                    <span className="cursor-pointer p-1 dark:hover:bg-slate-800 rounded-md">
                       <HiPlus
                         onClick={() => {
                           toggleNewTaskModal(true);

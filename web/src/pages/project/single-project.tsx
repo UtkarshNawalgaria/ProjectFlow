@@ -1,12 +1,14 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Link } from "react-router-dom";
-import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BsKanban } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
+import { TbTableExport } from "react-icons/tb";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { AiOutlineUnorderedList } from "react-icons/ai";
 import { HiArrowLeft, HiChevronRight, HiPlus, HiTrash } from "react-icons/hi";
+import { RiSettings5Fill } from "react-icons/ri";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 import PageHeader from "../../components/page-header";
 import KanbanList from "../../components/kanban-column";
@@ -21,6 +23,7 @@ import { Task } from "../../services/tasks";
 import ProjectService from "../../services/projects";
 import UserList from "../../components/user-list";
 import NewTaskModal from "../../components/modals/tasks/create-task-modal";
+import CSVExport from "../../components/aside/csv-export";
 
 const TasksViewType = {
   LIST: 0,
@@ -233,6 +236,7 @@ const SingleProjectPage = () => {
   const [showTaskListModal, toggleTaskListModal] = useState(false);
   const [showSelectedTask, setShowSelectedTask] = useState(false);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+  const [showTaskExport, setShowTaskExport] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
@@ -283,6 +287,38 @@ const SingleProjectPage = () => {
               <AiOutlineUnorderedList className="h-6 w-6 text-black dark:text-grey-lightest" />
             </span>
           </div>
+          <div className="relative cursor-pointer text-grey-lightest">
+            <Menu>
+              <Menu.Button className="flex dark:hover:bg-slate-800 p-2 rounded-md">
+                <span>
+                  <RiSettings5Fill size={20} />
+                </span>
+              </Menu.Button>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95">
+                <Menu.Items className="absolute right-0 top-[50px] p-2 bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-800/50 w-[200px] rounded-sm border-1 flex flex-col gap-2 z-40">
+                  <Menu.Item>
+                    {() => (
+                      <button
+                        className="flex gap-2 items-center px-4 py-1 bg-gray-50 dark:bg-slate-800 dark:text-grey-lightest text-grey-dark font-medium rounded-md text-center cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700"
+                        onClick={() => setShowTaskExport(true)}>
+                        <span>
+                          <TbTableExport size={20} />
+                        </span>
+                        <span>Export Tasks</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                </Menu.Items>
+              </Transition>
+            </Menu>
+          </div>
         </div>
       </PageHeader>
       <section className="px-4">
@@ -331,6 +367,13 @@ const SingleProjectPage = () => {
             task={tasks.find((task) => task.id === selectedTaskId)}>
             <div>Hello World</div>
           </TaskAside>
+        ) : null}
+        {showTaskExport ? (
+          <CSVExport
+            projectId={project?.id as number}
+            open={showTaskExport}
+            onClose={() => setShowTaskExport(false)}
+          />
         ) : null}
       </div>
     </div>
