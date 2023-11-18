@@ -1,4 +1,7 @@
+from typing import List
+
 from django.contrib.auth import get_user_model
+from django.core.files import File
 
 from rest_framework.decorators import action
 from rest_framework import viewsets
@@ -7,8 +10,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from libs.response import TextJSONResponse
+from services.create_excel import create_tasks_file
 
-from .models import Project, Task, TaskList
+from .models import Project, Task, TaskList, FileExport
 from .permissions import (
     CanRetreiveUpdateDeleteTask,
     UserProjectPermission,
@@ -56,6 +60,68 @@ class ProjectsViewSet(viewsets.ModelViewSet):
 
         return TextJSONResponse(f"{user.email} has been added to the project")
 
+    @action(detail=True, methods=["POST"])
+    def export_tasks(self, request, pk=None):
+        """
+        Export project tasks to csv or excel file.
+        """
+
+        project = self.get_queryset().filter(id=pk).first()
+
+        if not project:
+            raise ValidationError("Project not found")
+
+        filter_params = {"parent__isnull": True}
+        format = request.data.get("format")
+        export_subtasks = request.data.get("export_subtasks")
+        export_fields = request.data.get("fields")
+        export_fields = self.validate_export_fields(export_fields)
+
+        if export_subtasks:
+            filter_params.pop("parent__isnull")
+        else:
+            if "parent" in export_fields:
+                export_fields.remove("parent")
+
+        tasks = project.tasks.filter(**filter_params).values(*export_fields)
+        export_model = FileExport(project=project, exported_by=request.user)
+
+        file_name = f"{project.id}/{project.title}-Tasks.{format}"
+        export_file = create_tasks_file(
+            format=format,
+            tasks=tasks,
+            fields=export_fields,
+        )
+
+        with open(export_file.name, "rb") as file:
+            export_model.file.save(file_name, File(file))
+
+        export_model.save()
+
+        return Response("File will be sent to you shortly")
+
+    def validate_export_fields(self, fields: str) -> List[str]:
+        """
+        Check if the fields sent to be exported are in the Task model
+        or not. Raise error if any extra field is sent.
+        """
+
+        error = None
+
+        if not fields:
+            error = "No columns have been specified."
+
+        export_fields = fields.split(",")
+        model_fields = [field.name for field in Task._meta.get_fields()]
+
+        if set(export_fields).intersection(model_fields) != set(export_fields):
+            error = "Some extra columns have been chosen."
+
+        if error:
+            raise ValidationError(error)
+
+        return export_fields
+
     def get_serializer_context(self):
         return {"request": self.request, "user": self.request.user}
 
@@ -85,9 +151,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         data = serializer.data
-        data["tasks"] = list(filter(
-            lambda task: task["parent"] == None, data["tasks"]
-        ))
+        data["tasks"] = list(filter(lambda task: task["parent"] == None, data["tasks"]))
 
         return Response(data)
 

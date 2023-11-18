@@ -1,0 +1,7 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    {% include "partials/logo.html" %}
+    <p>Hi, <strong>{{ name }}</strong></p>
+    <a href="{{ download_link }}" class="btn">Download</a>
+{% endblock content %}

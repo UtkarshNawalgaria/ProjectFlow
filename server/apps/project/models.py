@@ -137,6 +137,5 @@ class FileExport(TimeStampedModel):
         User, on_delete=models.CASCADE, related_name="exports"
     )
     file = models.FileField(upload_to=file_exports_path)
+    email_sent_at = models.DateTimeField(null=True)
 
-    def save(self, **kwargs):
-        return super().save(**kwargs)
